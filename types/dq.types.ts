@@ -1,0 +1,97 @@
+import type { DQDimension } from "./app.types";
+
+// ============================================================
+// Rule config — stored in Supabase, loaded for DQ runs
+// ============================================================
+
+export interface RuleConfig {
+  id: string;
+  column_name: string | null; // null = dataset-level rule
+  dimension: DQDimension;
+  rule_type: string;
+  parameters: Record<string, unknown>;
+  threshold: number; // 0–1: pass if score >= threshold
+  weight: number; // for weighted column score (default 1)
+  is_active: boolean;
+}
+
+// ============================================================
+// Rule evaluation result — computed in dq-runner.worker.ts
+// ============================================================
+
+export interface RuleResult {
+  rule_id: string;
+  column_name: string | null;
+  dimension: DQDimension;
+  rule_type: string;
+  score: number; // 0–1
+  status: "pass" | "fail";
+  severity: "low" | "medium" | "high";
+  total_records: number;
+  failed_records: number;
+  failed_indices: number[]; // row indices that failed (used for remediation)
+  message: string;
+  threshold: number;
+}
+
+export interface ColumnScore {
+  column_name: string;
+  score: number;
+  weighted_score: number;
+  rule_count: number;
+  fail_count: number;
+}
+
+export interface DQRunResult {
+  asset_id: string;
+  overall_score: number; // 0–100
+  column_scores: ColumnScore[];
+  rule_results: RuleResult[];
+  run_at: string;
+}
+
+// ============================================================
+// AI DQ Rule suggestions
+// ============================================================
+
+export interface SuggestedRule {
+  column_name: string;
+  dimension: DQDimension;
+  rule_type: string;
+  parameters: Record<string, unknown>;
+  threshold: number;
+  reason: string;
+  confidence: number; // 0–1
+}
+
+// ============================================================
+// DQ Runner Worker messages
+// ============================================================
+
+export type DQRunCommand = {
+  type: "RUN";
+  payload: {
+    rows: (string | null)[][];
+    headers: string[];
+    rules: RuleConfig[];
+    asset_id: string;
+  };
+};
+
+export type DQRunResponse =
+  | {
+      type: "RUN_PROGRESS";
+      payload: { ruleIndex: number; totalRules: number; label: string };
+    }
+  | { type: "RUN_COMPLETE"; payload: DQRunResult }
+  | { type: "RUN_ERROR"; payload: { message: string } };
+
+// ============================================================
+// Eval primitive returned by each dimension evaluator
+// ============================================================
+
+export interface EvalResult {
+  score: number;
+  failedIndices: number[];
+  message: string;
+}
