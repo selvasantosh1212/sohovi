@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { getUnreadAlertCount } from "@/app/actions/alerts";
 
@@ -16,10 +15,8 @@ export default async function DashboardLayout({
   }
 
   return (
-    <ClerkProvider>
-      <DashboardShell unreadAlertCount={unreadAlertCount}>
-        {children}
-      </DashboardShell>
-    </ClerkProvider>
+    <DashboardShell unreadAlertCount={unreadAlertCount}>
+      {children}
+    </DashboardShell>
   );
 }
