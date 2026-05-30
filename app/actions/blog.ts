@@ -17,15 +17,19 @@ function estimateReadTime(content: string): number {
 // ---- Public reads (anon key, published only) ------------------------------
 
 export async function getPublishedPosts(limit = 20, offset = 0): Promise<BlogPost[]> {
-  const supabase = createServiceClient();
-  const { data, error } = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("published", true)
-    .order("published_at", { ascending: false })
-    .range(offset, offset + limit - 1);
-  if (error) throw new Error(error.message);
-  return (data ?? []) as BlogPost[];
+  try {
+    const supabase = createServiceClient();
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .eq("published", true)
+      .order("published_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+    if (error) return [];
+    return (data ?? []) as BlogPost[];
+  } catch {
+    return [];
+  }
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
