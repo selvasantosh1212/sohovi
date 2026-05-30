@@ -16,6 +16,11 @@ export default function DashboardError({
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
       <h2 className="text-lg font-semibold text-slate-800">Something went wrong</h2>
       <p className="text-sm text-slate-500">This page failed to load. Try refreshing.</p>
+      {error.message && (
+        <p className="text-xs text-red-400 font-mono max-w-md text-center break-all">
+          {error.message}
+        </p>
+      )}
       <button
         onClick={reset}
         className="px-4 py-2 text-sm font-medium rounded-full border border-slate-200 hover:bg-slate-50"
