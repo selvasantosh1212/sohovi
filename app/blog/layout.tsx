@@ -1,8 +1,10 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { PublicNav } from "@/components/landing/PublicNav";
 import { Footer } from "@/components/landing/Footer";
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
+    <ClerkProvider>
     <div className="flex flex-col min-h-screen" style={{ background: "var(--cream)" }}>
       <a
         href="#main-content"
@@ -16,5 +18,6 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
       </main>
       <Footer />
     </div>
+    </ClerkProvider>
   );
 }
