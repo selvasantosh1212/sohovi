@@ -1,11 +1,22 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-// Bypassed while clerk.sohovi.com DNS propagates to Vercel's global edge.
-// Restore clerkMiddleware once sign-in works on sohovi.com.
-export function proxy(request: NextRequest) {
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/blog(.*)",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/blog(.*)",
+  "/api/webhooks/(.*)",
+  "/api/__clerk(.*)",
+]);
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
+  }
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
