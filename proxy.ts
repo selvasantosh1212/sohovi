@@ -1,11 +1,21 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-// Clerk middleware temporarily bypassed while production instance activates.
-// Restore clerkMiddleware once sohovi.com Clerk instance is confirmed Active.
-export function proxy(request: NextRequest) {
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/blog(.*)",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/blog(.*)",
+  "/api/webhooks/(.*)",
+]);
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
+  }
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
