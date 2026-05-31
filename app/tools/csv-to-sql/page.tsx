@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Generate SQL INSERT statements from any CSV. Multi-dialect, CREATE TABLE included. Free, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools/csv-to-sql" },
+  twitter: { card: "summary_large_image", title: "Free CSV to SQL INSERT Generator — MySQL, PostgreSQL, SQLite", description: "Generate SQL INSERT statements from any CSV. Multi-dialect, CREATE TABLE included. Free, no signup." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Generate SQL INSERT statements from CSV files. Supports MySQL, PostgreSQL, SQLite, MSSQL. Includes CREATE TABLE. 100% browser-based.",
   url: "https://sohovi.com/tools/csv-to-sql",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function CsvToSqlPage() {

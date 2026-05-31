@@ -23,6 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sohovi.com"),
   title: {
     default: "Sohovi — Privacy-First Data Quality Platform",
     template: "%s | Sohovi",

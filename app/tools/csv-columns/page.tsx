@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Pick the columns you want, drop the ones you don't, rename them, reorder — then download. Free, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools/csv-columns" },
+  twitter: { card: "summary_large_image", title: "Free CSV Column Picker — Select, Drop & Rename Columns", description: "Pick the columns you want, drop the ones you don't, rename them, reorder — then download. Free, no signup." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Select, drop, rename, and reorder columns from any CSV file. Download the result instantly. 100% browser-based.",
   url: "https://sohovi.com/tools/csv-columns",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function CsvColumnsPage() {

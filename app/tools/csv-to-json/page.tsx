@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Convert any CSV to JSON instantly. Array of objects, arrays, or nested by key. 100% browser-based.",
   },
   alternates: { canonical: "https://sohovi.com/tools/csv-to-json" },
+  twitter: { card: "summary_large_image", title: "Free CSV to JSON Converter — No Signup, No Limits", description: "Convert any CSV to JSON instantly. Array of objects, arrays, or nested by key. 100% browser-based." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Convert CSV files to JSON online for free. Supports multiple output formats. No file upload — 100% browser-based.",
   url: "https://sohovi.com/tools/csv-to-json",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function CsvToJsonPage() {

@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Convert any JSON array to CSV. Auto-flattens nested objects. Browser-based, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools/json-to-csv" },
+  twitter: { card: "summary_large_image", title: "Free JSON to CSV Converter — Paste or Upload JSON", description: "Convert any JSON array to CSV. Auto-flattens nested objects. Browser-based, no signup." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Convert JSON arrays to CSV online for free. Supports nested JSON flattening. No upload — 100% browser-based.",
   url: "https://sohovi.com/tools/json-to-csv",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function JsonToCsvPage() {

@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Remove exact duplicates or column-subset duplicates from any CSV. 100% browser-based — nothing uploaded.",
   },
   alternates: { canonical: "https://sohovi.com/tools/remove-duplicates" },
+  twitter: { card: "summary_large_image", title: "Free Duplicate Row Remover for CSV Files", description: "Remove exact duplicates or column-subset duplicates from any CSV. 100% browser-based — nothing uploaded." },
 };
 
 const toolSchema = {
@@ -31,6 +32,8 @@ const toolSchema = {
   description:
     "Remove duplicate rows from CSV files instantly in your browser. Supports exact-match and column-subset deduplication. No signup required.",
   url: "https://sohovi.com/tools/remove-duplicates",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function RemoveDuplicatesPage() {

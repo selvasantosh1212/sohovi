@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Stack rows from multiple CSVs or join them by a shared column. Free, browser-based, no limits.",
   },
   alternates: { canonical: "https://sohovi.com/tools/csv-merger" },
+  twitter: { card: "summary_large_image", title: "Free CSV Merger — Combine Multiple CSV Files Online", description: "Stack rows from multiple CSVs or join them by a shared column. Free, browser-based, no limits." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Merge multiple CSV files by stacking rows or joining by a shared column. No row limits. 100% browser-based.",
   url: "https://sohovi.com/tools/csv-merger",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function CsvMergerPage() {

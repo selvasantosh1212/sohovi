@@ -64,11 +64,12 @@ export function ToolFAQ({ items, toolUrl }: ToolFAQProps) {
                   }}
                 />
               </button>
-              {open === i && (
-                <div className="px-5 pb-4 text-[13px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-                  {item.a}
-                </div>
-              )}
+              <div
+                className="px-5 pb-4 text-[13px] leading-relaxed"
+                style={{ color: "var(--ink-soft)", display: open === i ? "block" : "none" }}
+              >
+                {item.a}
+              </div>
             </div>
           ))}
         </div>

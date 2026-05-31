@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Turn any CSV into a GitHub-ready Markdown table with alignment options and live preview. No signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools/csv-to-markdown" },
+  twitter: { card: "summary_large_image", title: "Free CSV to Markdown Table Converter", description: "Turn any CSV into a GitHub-ready Markdown table with alignment options and live preview. No signup." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Convert CSV to GitHub-flavored Markdown tables with alignment control and live preview. 100% browser-based.",
   url: "https://sohovi.com/tools/csv-to-markdown",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function CsvToMarkdownPage() {

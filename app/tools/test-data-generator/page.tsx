@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Generate realistic fake CSV or JSON data for testing. Up to 100k rows. No signup, browser-based.",
   },
   alternates: { canonical: "https://sohovi.com/tools/test-data-generator" },
+  twitter: { card: "summary_large_image", title: "Free Random Test Data Generator — Fake CSV Data", description: "Generate realistic fake CSV or JSON data for testing. Up to 100k rows. No signup, browser-based." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Generate realistic fake CSV or JSON data for testing. Custom column types, up to 100k rows. 100% browser-based.",
   url: "https://sohovi.com/tools/test-data-generator",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function TestDataGeneratorPage() {

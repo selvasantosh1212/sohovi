@@ -13,6 +13,7 @@ export const metadata: Metadata = {
       "Convert CSV to JSON, merge files, remove duplicates, generate SQL, and more — all free, in-browser, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools" },
+  twitter: { card: "summary_large_image", title: "Free CSV & Data Tools — No Signup Required | Sohovi", description: "9 free browser-based tools for CSV, JSON, SQL, Markdown, and more. In-browser, no signup, no limits." },
 };
 
 const appListSchema = {

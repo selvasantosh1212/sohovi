@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "Paste any Excel or Google Sheets formula — get a clear plain-English explanation. Covers 50+ functions. Free, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools/formula-explainer" },
+  twitter: { card: "summary_large_image", title: "Free Excel Formula Explainer — Plain English Formula Translator", description: "Paste any Excel or Google Sheets formula — get a clear plain-English explanation. Covers 50+ functions. Free, no signup." },
 };
 
 const toolSchema = {
@@ -30,6 +31,8 @@ const toolSchema = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description: "Paste any Excel or Google Sheets formula and get a plain-English explanation. Covers 50+ functions. 100% browser-based, no signup.",
   url: "https://sohovi.com/tools/formula-explainer",
+  datePublished: "2026-05-31",
+  dateModified: "2026-05-31",
 };
 
 export default function FormulaExplainerPage() {
