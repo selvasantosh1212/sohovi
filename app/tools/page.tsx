@@ -1,0 +1,102 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import Script from "next/script";
+import { ToolsGrid } from "./ToolsGrid";
+
+export const metadata: Metadata = {
+  title: "Free CSV & Data Tools — No Signup Required",
+  description:
+    "9 free browser-based tools for CSV conversion, deduplication, SQL generation, and more. Your data never leaves your browser. No signup, no limits.",
+  openGraph: {
+    title: "Free CSV & Data Tools — No Signup, No Limits | Sohovi",
+    description:
+      "Convert CSV to JSON, merge files, remove duplicates, generate SQL, and more — all free, in-browser, no signup.",
+  },
+  alternates: { canonical: "https://sohovi.com/tools" },
+};
+
+const appListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Free CSV and Data Tools by Sohovi",
+  description: "Browser-based free tools for CSV conversion, deduplication, SQL generation, and data wrangling.",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Duplicate Row Remover", url: "https://sohovi.com/tools/remove-duplicates" },
+    { "@type": "ListItem", position: 2, name: "CSV to JSON Converter", url: "https://sohovi.com/tools/csv-to-json" },
+    { "@type": "ListItem", position: 3, name: "JSON to CSV Converter", url: "https://sohovi.com/tools/json-to-csv" },
+    { "@type": "ListItem", position: 4, name: "CSV Column Picker", url: "https://sohovi.com/tools/csv-columns" },
+    { "@type": "ListItem", position: 5, name: "CSV to Markdown Table", url: "https://sohovi.com/tools/csv-to-markdown" },
+    { "@type": "ListItem", position: 6, name: "CSV to SQL Generator", url: "https://sohovi.com/tools/csv-to-sql" },
+    { "@type": "ListItem", position: 7, name: "CSV Merger", url: "https://sohovi.com/tools/csv-merger" },
+    { "@type": "ListItem", position: 8, name: "Test Data Generator", url: "https://sohovi.com/tools/test-data-generator" },
+    { "@type": "ListItem", position: 9, name: "Excel Formula Explainer", url: "https://sohovi.com/tools/formula-explainer" },
+  ],
+};
+
+export default function ToolsHubPage() {
+  return (
+    <>
+      <Script
+        id="tools-hub-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appListSchema) }}
+      />
+
+      {/* Hero */}
+      <section className="pt-16 pb-10 px-6" style={{ background: "var(--cream)" }}>
+        <div className="mx-auto max-w-[760px] text-center">
+          <div
+            className="inline-block text-[12px] font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5"
+            style={{ background: "rgba(0,201,167,0.1)", color: "#007A65", border: "1px solid rgba(0,201,167,0.2)" }}
+          >
+            Free tools — no signup required
+          </div>
+          <h1 className="text-[38px] sm:text-[48px] font-bold leading-tight mb-4" style={{ color: "var(--ink)" }}>
+            Free CSV &amp; Data Tools
+          </h1>
+          <p className="text-[17px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+            9 browser-based utilities for converting, cleaning, and wrangling data.
+            <strong style={{ color: "var(--ink)" }}> Your files never leave your device.</strong> No signup. No limits.
+          </p>
+        </div>
+      </section>
+
+      {/* Tools grid (client component for hover interactivity) */}
+      <section className="pb-20 px-6">
+        <div className="mx-auto max-w-[1100px]">
+          <ToolsGrid />
+        </div>
+      </section>
+
+      {/* Privacy badge */}
+      <section className="pb-16 px-6">
+        <div className="mx-auto max-w-[760px]">
+          <div
+            className="rounded-2xl p-8 text-center"
+            style={{ background: "var(--paper)", border: "1px solid var(--hair-strong)" }}
+          >
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              style={{ background: "rgba(0,201,167,0.1)" }}
+            >
+              <svg className="w-6 h-6" style={{ color: "#00C9A7" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <h2 className="text-[20px] font-bold mb-2" style={{ color: "var(--ink)" }}>
+              100% private — your data stays in your browser
+            </h2>
+            <p className="text-[14px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+              Every tool processes your files locally using Web APIs. Nothing is uploaded to any server.
+              Close the tab and the data is gone. We built these tools to the same privacy standard as{" "}
+              <Link href="/" className="underline underline-offset-2 font-medium" style={{ color: "var(--ink)" }}>
+                Sohovi
+              </Link>
+              {" "}— our data quality platform.
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
