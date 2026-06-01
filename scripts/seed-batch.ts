@@ -60,6 +60,15 @@ import { cat21 } from "./blog-data/cat-21";
 import { cat22 } from "./blog-data/cat-22";
 import { cat23 } from "./blog-data/cat-23";
 import { cat24 } from "./blog-data/cat-24";
+import { toolsCluster } from "./blog-data/tools-cluster";
+import { cat25 } from "./blog-data/cat-25";
+import { cat26 } from "./blog-data/cat-26";
+import { cat27 } from "./blog-data/cat-27";
+import { cat28 } from "./blog-data/cat-28";
+import { cat29 } from "./blog-data/cat-29";
+import { cat30 } from "./blog-data/cat-30";
+import { cat31 } from "./blog-data/cat-31";
+import { cat32 } from "./blog-data/cat-32";
 
 const ALL_POSTS = [
   ...cat01,
@@ -84,6 +93,15 @@ const ALL_POSTS = [
   ...cat22,
   ...cat23,
   ...cat24,
+  ...toolsCluster,
+  ...cat25,
+  ...cat26,
+  ...cat27,
+  ...cat28,
+  ...cat29,
+  ...cat30,
+  ...cat31,
+  ...cat32,
 ];
 
 // ── Seed ────────────────────────────────────────────────────────────────────
