@@ -60,22 +60,22 @@
   /* Sohovi brand */
   --brand-primary: #1A1A2E;
   --brand-primary-dark: #0D0D1A;
-  --brand-accent: #E07150;
-  --brand-accent-dark: #C96040;
+  --brand-accent: #2D7FF9;
+  --brand-accent-dark: #1B63E6;
   --brand-surface: #F8FAFC;
 
   /* Design-handoff palette */
-  --cream: #FBF7F2;
-  --cream-deep: #F4EDE2;
+  --cream: #F6F8FC;
+  --cream-deep: #EEF2F8;
   --paper: #FFFFFF;
   --ink: #1A1A2E;
   --ink-soft: #4B4B63;
   --ink-mute: #8A8AA3;
   --hair: #EBE3D6;
   --hair-strong: #D9CFBC;
-  --terracotta: #E07150;
-  --terracotta-deep: #C45A3C;
-  --terracotta-soft: #FFE4D9;
+  --terracotta: #2D7FF9;
+  --terracotta-deep: #1B63E6;
+  --terracotta-soft: rgba(45,127,249,0.12);
   --butter: #F7D67A;
   --butter-soft: #FCEEC2;
   --sage: #A8C8A6;
@@ -87,7 +87,7 @@
   --mint: #00C9A7;
 
   /* shadcn/ui semantic tokens — mapped to Sohovi palette */
-  --background: oklch(0.982 0.008 60);         /* #FBF7F2 cream */
+  --background: oklch(0.971 0.006 247);         /* #F6F8FC cool near-white */
   --foreground: oklch(0.18 0.04 240);           /* near #1E3A5F dark */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.04 240);
@@ -99,12 +99,12 @@
   --secondary-foreground: oklch(0.28 0.08 240);
   --muted: oklch(0.96 0.005 240);
   --muted-foreground: oklch(0.5 0.02 240);
-  --accent: oklch(0.62 0.14 33);                /* #E07150 terracotta */
+  --accent: oklch(0.57 0.19 248);               /* #2D7FF9 electric blue */
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.577 0.245 27.325);     /* red */
   --border: oklch(0.9 0.005 240);
   --input: oklch(0.9 0.005 240);
-  --ring: oklch(0.62 0.14 33);                  /* terracotta ring */
+  --ring: oklch(0.57 0.19 248);                  /* blue ring */
   --chart-1: oklch(0.78 0.12 178);              /* teal (data viz) */
   --chart-2: oklch(0.28 0.08 240);              /* navy */
   --chart-3: oklch(0.72 0.18 142);              /* emerald */
@@ -180,11 +180,11 @@
 
 /* Landing page button utilities */
 .btn-teal {
-  background-color: #E07150;
+  background-color: #2D7FF9;
   color: #fff;
   transition: background-color 0.15s ease;
 }
-.btn-teal:hover { background-color: #C96040; }
+.btn-teal:hover { background-color: #1B63E6; }
 
 .btn-outline-light {
   border: 1px solid rgba(255,255,255,0.25);
