@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { PublicNav } from "@/components/landing/PublicNav";
 import { Hero } from "@/components/landing/Hero";
@@ -14,7 +16,10 @@ import { FAQSection } from "@/components/landing/FAQSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const { userId } = await auth();
+  if (userId) redirect("/dashboard");
+
   return (
     <div className="flex flex-col min-h-screen">
       <AnnouncementBar />

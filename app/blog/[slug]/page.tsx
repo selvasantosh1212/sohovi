@@ -11,6 +11,8 @@ import { BlogFAQ } from "@/components/blog/BlogFAQ";
 import { BlogPostAuthor } from "@/components/blog/BlogPostAuthor";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { extractToc, formatDate } from "@/lib/blog-utils";
+import { getBlogCTA, splitAtMidpoint } from "@/lib/blog-cta";
+import { BlogSoftCTA } from "@/components/blog/BlogSoftCTA";
 import rehypeSlug from "rehype-slug";
 
 // On-demand ISR: pages render on first request and are cached for 1 hour.
@@ -248,12 +250,20 @@ export default async function BlogPostPage({
               </div>
             )}
 
-            <MDXRemote
-              source={post.content
+            {(() => {
+              const cleaned = post.content
                 .replace(/<!--[\s\S]*?-->/g, "")
-                .replace(/<(?![a-zA-Z/!])/g, "&lt;")}
-              options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }}
-            />
+                .replace(/<(?![a-zA-Z/!])/g, "&lt;");
+              const { firstHalf, secondHalf } = splitAtMidpoint(cleaned);
+              const ctaProps = getBlogCTA(post.category, post.tags ?? []);
+              return (
+                <>
+                  <MDXRemote source={firstHalf} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
+                  <BlogSoftCTA text={ctaProps.text} href={ctaProps.href} />
+                  <MDXRemote source={secondHalf} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
+                </>
+              );
+            })()}
 
             {/* Internal links */}
             {post.internal_links && post.internal_links.length > 0 && (

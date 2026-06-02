@@ -85,16 +85,6 @@ export function PublicNav() {
                   Sign in
                 </button>
               </SignInButton>
-              <SignUpButton mode="redirect">
-                <button
-                  className="text-[14px] font-semibold px-4 py-1.5 text-white transition-all"
-                  style={{ background: "#0A0A0A", borderRadius: "12px" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#2A2A2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0A0A0A"; }}
-                >
-                  Get started
-                </button>
-              </SignUpButton>
             </>
           )}
           {isSignedIn && (
@@ -148,11 +138,6 @@ export function PublicNav() {
                     Sign in
                   </button>
                 </SignInButton>
-                <SignUpButton mode="redirect">
-                  <button className="w-full text-center py-2.5 text-[14px] font-semibold text-white transition-colors" style={{ background: "#0A0A0A", borderRadius: "12px" }}>
-                    Get started
-                  </button>
-                </SignUpButton>
               </>
             )}
             {isSignedIn && (

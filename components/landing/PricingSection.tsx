@@ -188,7 +188,7 @@ export function PricingSection() {
               >
                 {isPrimary && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="text-[11px] font-bold px-3.5 py-1.5 rounded-full" style={{ background: "#0A0A0A", color: "#fff", whiteSpace: "nowrap" }}>
+                    <span className="text-[11px] font-bold px-3.5 py-1.5 rounded-full" style={{ background: "#ffe439", color: "#0A0A0A", whiteSpace: "nowrap" }}>
                       Most Popular
                     </span>
                   </div>
