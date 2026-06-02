@@ -44,16 +44,16 @@ function ScoreArc({ score }: { score: number }) {
   return (
     <svg viewBox="0 0 100 100" width="96" height="96" aria-label={`Score ${score} out of 100`}>
       <title>{`DQ Score ${score}/100`}</title>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--hair-strong)" strokeWidth="6"
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#E9E9EC" strokeWidth="6"
         strokeDasharray={`${arc} ${C}`} strokeLinecap="round"
         transform={`rotate(135 ${cx} ${cy})`} />
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--mint)" strokeWidth="6"
         strokeDasharray={`${arc} ${C}`} strokeDashoffset={off} strokeLinecap="round"
         transform={`rotate(135 ${cx} ${cy})`} />
       <text x={cx} y={cy + 2} textAnchor="middle" dominantBaseline="middle"
-        fill="var(--ink)" fontWeight="700" fontSize="22">{score}</text>
+        fill="#0A0A0A" fontWeight="700" fontSize="22">{score}</text>
       <text x={cx} y={cy + 16} textAnchor="middle" dominantBaseline="middle"
-        fill="var(--ink-mute)" fontSize="9">/100</text>
+        fill="#8A8A90" fontSize="9">/100</text>
     </svg>
   );
 }
@@ -63,8 +63,8 @@ function DimensionBars({ animate }: { animate: boolean }) {
     <div className="flex flex-col gap-[5px]">
       {dimensions.map(({ label, score }, i) => (
         <div key={label} className="flex items-center gap-2">
-          <span className="text-[10px] w-[76px] shrink-0" style={{ color: "var(--ink-mute)" }}>{label}</span>
-          <div className="flex-1 h-[4px] rounded-full overflow-hidden" style={{ background: "var(--hair-strong)" }}>
+          <span className="text-[10px] w-[76px] shrink-0" style={{ color: "#8A8A90" }}>{label}</span>
+          <div className="flex-1 h-[4px] rounded-full overflow-hidden" style={{ background: "#E9E9EC" }}>
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -76,7 +76,7 @@ function DimensionBars({ animate }: { animate: boolean }) {
               }}
             />
           </div>
-          <span className="text-[10px] font-semibold w-[20px] text-right" style={{ color: "var(--ink)" }}>{score}</span>
+          <span className="text-[10px] font-semibold w-[20px] text-right" style={{ color: "#0A0A0A" }}>{score}</span>
         </div>
       ))}
     </div>
@@ -99,12 +99,15 @@ function HeroDashboard() {
     <div
       ref={ref}
       className="rounded-[20px] overflow-hidden"
-      style={{ boxShadow: "0 30px 60px -20px rgba(26,26,46,0.18), 0 12px 30px -12px rgba(26,26,46,0.1)", border: "1px solid var(--hair)" }}
+      style={{
+        boxShadow: "0 1px 2px rgba(10,10,10,.04), 0 30px 70px -34px rgba(10,10,10,.22)",
+        border: "1px solid #E9E9EC",
+      }}
     >
       {/* Browser chrome */}
-      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "var(--ink)" }}>
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#0A0A0A" }}>
         <div className="flex gap-1.5">
-          {["#FF5F57", "#FEBC2E", "#27C840"].map(c => (
+          {["#FF5C7A", "#FFC53D", "#22E586"].map(c => (
             <div key={c} className="w-[10px] h-[10px] rounded-full" style={{ background: c }} aria-hidden />
           ))}
         </div>
@@ -118,13 +121,13 @@ function HeroDashboard() {
       </div>
 
       {/* Dashboard content */}
-      <div className="p-4" style={{ background: "var(--cream-deep)" }}>
+      <div className="p-4" style={{ background: "#F4F4F5" }}>
         <div className="flex items-start justify-between mb-3">
           <div>
-            <div className="font-mono font-bold text-[15px]" style={{ color: "var(--ink)" }}>customer_data.csv</div>
-            <div className="font-mono text-[10px] mt-0.5" style={{ color: "var(--ink-mute)" }}>128,447 rows · 23 columns · Profiled 3s ago</div>
+            <div className="font-mono font-bold text-[15px]" style={{ color: "#0A0A0A" }}>customer_data.csv</div>
+            <div className="font-mono text-[10px] mt-0.5" style={{ color: "#8A8A90" }}>128,447 rows · 23 columns · Profiled 3s ago</div>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold" style={{ background: "var(--mint)", color: "var(--ink)" }}>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold" style={{ background: "var(--mint)", color: "#0A0A0A" }}>
             DQ Score 87
           </div>
         </div>
@@ -132,30 +135,30 @@ function HeroDashboard() {
         {/* 3-column grid */}
         <div className="grid gap-3" style={{ gridTemplateColumns: "1.1fr 1fr 0.9fr" }}>
           {/* Col 1: Score gauge */}
-          <div className="rounded-[16px] p-3 flex flex-col items-center justify-center gap-1" style={{ background: "#fff", border: "1px solid var(--hair)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8)" }}>
+          <div className="rounded-[16px] p-3 flex flex-col items-center justify-center gap-1" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
             <ScoreArc score={87} />
-            <div className="text-[9px] uppercase tracking-widest font-semibold" style={{ color: "var(--ink-mute)" }}>Overall Health</div>
+            <div className="text-[9px] uppercase tracking-widest font-semibold" style={{ color: "#8A8A90" }}>Overall Health</div>
           </div>
 
           {/* Col 2: Dimension bars */}
-          <div className="rounded-[16px] p-3" style={{ background: "#fff", border: "1px solid var(--hair)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8)" }}>
-            <div className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--ink-mute)" }}>Dimensions</div>
+          <div className="rounded-[16px] p-3" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
+            <div className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: "#8A8A90" }}>Dimensions</div>
             <DimensionBars animate={animate} />
           </div>
 
           {/* Col 3: Sparkline + alert + upload */}
           <div className="flex flex-col gap-2">
-            <div className="rounded-[14px] p-2.5" style={{ background: "#fff", border: "1px solid var(--hair)" }}>
-              <div className="text-[9px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "var(--ink-mute)" }}>8-week trend</div>
+            <div className="rounded-[14px] p-2.5" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
+              <div className="text-[9px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "#8A8A90" }}>8-week trend</div>
               <Sparkline />
             </div>
-            <div className="rounded-[14px] p-2.5" style={{ background: "var(--terracotta-soft)", border: "1px solid rgba(224,113,80,0.2)" }}>
-              <div className="text-[10px] font-bold" style={{ color: "var(--terracotta-deep)" }}>⚠ Null rate spike</div>
-              <div className="font-mono text-[9px] mt-0.5" style={{ color: "var(--terracotta-deep)", opacity: 0.75 }}>phone col · 12.4%</div>
+            <div className="rounded-[14px] p-2.5" style={{ background: "rgba(45,127,249,0.08)", border: "1px solid rgba(45,127,249,0.2)" }}>
+              <div className="text-[10px] font-bold" style={{ color: "#1B63E6" }}>⚠ Null rate spike</div>
+              <div className="font-mono text-[9px] mt-0.5" style={{ color: "#1B63E6", opacity: 0.75 }}>phone col · 12.4%</div>
             </div>
-            <div className="rounded-[14px] p-2.5" style={{ background: "var(--sage-soft)", border: "1px solid var(--sage)" }}>
-              <div className="text-[10px] font-bold" style={{ color: "#2D6A4F" }}>🔒 PII detected</div>
-              <div className="font-mono text-[9px] mt-0.5" style={{ color: "#2D6A4F", opacity: 0.75 }}>email, phone columns</div>
+            <div className="rounded-[14px] p-2.5" style={{ background: "rgba(0,201,167,0.08)", border: "1px solid rgba(0,201,167,0.2)" }}>
+              <div className="text-[10px] font-bold" style={{ color: "#00876F" }}>🔒 PII detected</div>
+              <div className="font-mono text-[9px] mt-0.5" style={{ color: "#00876F", opacity: 0.75 }}>email, phone columns</div>
             </div>
           </div>
         </div>
@@ -165,41 +168,64 @@ function HeroDashboard() {
 }
 
 export function Hero() {
+  const penRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    const path = penRef.current;
+    if (!path) return;
+    const L = Math.ceil(path.getTotalLength());
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const style = document.createElement("style");
+    if (reduced) {
+      style.textContent = `.hero-pen path{stroke-dasharray:${L};stroke-dashoffset:0;opacity:1}`;
+    } else {
+      style.textContent = `
+        .hero-pen path{stroke-dasharray:${L};stroke-dashoffset:${L};animation:heroPenDraw 5.4s cubic-bezier(.55,0,.3,1) 1s infinite}
+        @keyframes heroPenDraw{
+          0%{stroke-dashoffset:${L};opacity:1}
+          16%,70%{stroke-dashoffset:0;opacity:1}
+          85%,100%{stroke-dashoffset:0;opacity:0}
+        }`;
+    }
+    document.head.appendChild(style);
+    return () => { document.head.removeChild(style); };
+  }, []);
+
   return (
     <section className="relative overflow-hidden" style={{ paddingTop: "64px", paddingBottom: "40px" }}>
-      {/* Soft pastel halos */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden
-        style={{
-          background: `
-            radial-gradient(ellipse 700px 400px at 50% 20%, rgba(255,243,196,0.6), transparent 65%),
-            radial-gradient(ellipse 500px 350px at 15% 50%, rgba(221,213,243,0.45), transparent 65%),
-            radial-gradient(ellipse 500px 350px at 88% 45%, rgba(212,232,208,0.45), transparent 65%)
-          `,
-        }}
-      />
-
       <div className="mx-auto max-w-[1080px] px-6 relative text-center">
         {/* Eyebrow chip */}
-        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full text-[12px] font-semibold" style={{ background: "var(--terracotta-soft)", border: "1px solid rgba(224,113,80,0.25)" }}>
-          <span className="px-1.5 py-0.5 rounded-full text-white text-[10px] font-bold" style={{ background: "var(--terracotta)" }}>NEW</span>
-          <span style={{ color: "var(--terracotta-deep)" }}>AI DQ Rule suggestions, now built in</span>
+        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full text-[12px] font-semibold" style={{ background: "#F4F4F5", border: "1px solid #E9E9EC" }}>
+          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "#FFE439", color: "#0A0A0A" }}>NEW</span>
+          <span style={{ color: "#5B5B63" }}>AI DQ Rule suggestions, now built in</span>
         </div>
 
-        {/* H1 with italic serif accent */}
+        {/* H1 with pen-strike on "expensive tools" */}
         <h1
-          className="font-bold leading-[1.04] m-0"
-          style={{ fontSize: "clamp(40px, 6.6vw, 84px)", letterSpacing: "-0.035em", color: "var(--ink)" }}
+          className="font-extrabold leading-[1.02] m-0"
+          style={{ fontSize: "clamp(40px, 6.4vw, 80px)", letterSpacing: "-0.045em", color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}
         >
           You don&apos;t need{" "}
-          <em className="serif-accent not-italic" style={{ fontStyle: "italic", color: "var(--terracotta-deep)" }}>
+          <span className="hero-strike">
             expensive tools
-          </em>
+            <svg
+              className="hero-pen"
+              viewBox="0 0 300 20"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                ref={penRef}
+                pathLength="100"
+                d="M2,11 C58,8 104,13.5 150,10.5 C200,7.5 250,13 298,9.5"
+              />
+            </svg>
+          </span>
           <br />to understand your data.
         </h1>
 
-        <p className="mx-auto mt-7 leading-[1.55]" style={{ fontSize: "19px", color: "var(--ink-soft)", maxWidth: "620px" }}>
+        <p className="mx-auto mt-7 leading-[1.55]" style={{ fontSize: "18px", color: "#5B5B63", maxWidth: "620px", textWrap: "pretty" } as React.CSSProperties}>
           Know exactly where your data is broken. Get instant data quality insights in your browser — no setup, no code, no months-long onboarding.
         </p>
 
@@ -207,10 +233,10 @@ export function Hero() {
         <div className="flex flex-wrap items-center justify-center gap-3 mt-9">
           <Link
             href="/sign-up"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-[16px] font-semibold text-white transition-all"
-            style={{ background: "var(--terracotta)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 20px -6px rgba(224,113,80,0.5)" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--terracotta-deep)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--terracotta)"; }}
+            className="inline-flex items-center gap-2 px-7 py-3.5 text-[16px] font-semibold text-white transition-all"
+            style={{ background: "#0A0A0A", borderRadius: "12px" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#2A2A2E"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#0A0A0A"; }}
           >
             Get started →
           </Link>
@@ -219,7 +245,7 @@ export function Hero() {
         {/* Reassurance chips */}
         <div className="flex flex-wrap justify-center gap-2 mt-5">
           {["No credit card", "Free forever for solo", "Data stays in your browser"].map((t) => (
-            <span key={t} className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ color: "var(--ink-mute)", background: "rgba(26,26,46,0.05)" }}>
+            <span key={t} className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ color: "#8A8A90", background: "rgba(10,10,10,0.04)" }}>
               {t}
             </span>
           ))}
@@ -228,26 +254,8 @@ export function Hero() {
 
       {/* Dashboard widget */}
       <div className="mx-auto max-w-[1100px] px-6 mt-14 relative">
-        {/* Floating sticker 1 — top-right, butter */}
-        <div
-          className="absolute -right-2 top-4 z-10 hidden md:flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold"
-          style={{ background: "var(--butter-soft)", border: "1px solid var(--butter)", color: "var(--ink)", transform: "rotate(6deg)", animation: "float 6s ease-in-out infinite" }}
-          aria-hidden
-        >
-          <span>✨</span> profiled in 2.3s
-        </div>
-        {/* Floating sticker 2 — bottom-left, lavender */}
-        <div
-          className="absolute -left-2 bottom-8 z-10 hidden md:flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold"
-          style={{ background: "var(--lavender-soft)", border: "1px solid var(--lavender)", color: "var(--ink)", transform: "rotate(-4deg)", animation: "float 9s ease-in-out infinite reverse" }}
-          aria-hidden
-        >
-          <span>🔒</span> zero bytes uploaded
-        </div>
-
         <HeroDashboard />
       </div>
-
     </section>
   );
 }

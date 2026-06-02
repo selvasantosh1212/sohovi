@@ -46,22 +46,21 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24" style={{ background: "var(--cream-deep)" }}>
+    <section id="faq" className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-2xl px-6">
         <div className="mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
             FAQ
           </p>
           <h2
             className="font-bold"
-            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "var(--ink)" }}
+            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "#0A0A0A" }}
           >
-            Questions we hear{" "}
-            <em className="serif-accent" style={{ color: "var(--terracotta-deep)" }}>most often</em>.
+            Questions we hear most often.
           </h2>
-          <p style={{ color: "var(--ink-mute)" }}>
+          <p style={{ color: "#8A8A90" }}>
             Still have questions?{" "}
-            <a href="mailto:hello@sohovi.com" className="underline hover:no-underline transition-all" style={{ color: "var(--terracotta)" }}>
+            <a href="mailto:hello@sohovi.com" className="underline hover:no-underline transition-all" style={{ color: "#0A0A0A" }}>
               Email us.
             </a>
           </p>
@@ -71,23 +70,23 @@ export function FAQSection() {
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={i} style={{ borderBottom: "1px solid var(--hair)" }}>
+              <div key={i} style={{ borderBottom: "1px solid #E9E9EC" }}>
                 <button
                   className="w-full flex items-center justify-between gap-4 py-5 text-left focus:outline-none"
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   aria-expanded={isOpen}
                 >
-                  <span className="font-medium" style={{ color: "var(--ink)" }}>{faq.q}</span>
+                  <span className="font-medium" style={{ color: "#0A0A0A" }}>{faq.q}</span>
                   <ChevronDown
                     className="w-5 h-5 shrink-0 transition-transform duration-200"
-                    style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", color: "var(--ink-mute)" }}
+                    style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", color: "#8A8A90" }}
                   />
                 </button>
                 <div
                   className="overflow-hidden transition-all duration-300 ease-in-out"
                   style={{ maxHeight: isOpen ? "24rem" : "0" }}
                 >
-                  <div className="rounded-[16px] px-5 py-4 mb-5 text-sm leading-relaxed" style={{ background: "#fff", border: "1px solid var(--hair)", color: "var(--ink-mute)" }}>
+                  <div className="rounded-[16px] px-5 py-4 mb-5 text-sm leading-relaxed" style={{ background: "#fff", border: "1px solid #E9E9EC", color: "#5B5B63" }}>
                     {faq.a}
                   </div>
                 </div>

@@ -16,11 +16,11 @@ export function BrandStrip() {
   return (
     <section
       className="border-y py-8 overflow-hidden"
-      style={{ background: "var(--cream-deep)", borderColor: "var(--hair)" }}
+      style={{ background: "#FFFFFF", borderColor: "#E9E9EC" }}
     >
       <p
         className="text-center text-[11px] font-bold uppercase tracking-[0.18em] mb-5"
-        style={{ color: "var(--ink-mute)" }}
+        style={{ color: "#8A8A90" }}
       >
         Built for data-sensitive teams in
       </p>
@@ -37,9 +37,9 @@ export function BrandStrip() {
               key={i}
               className="inline-flex items-center mx-2 px-4 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap shrink-0"
               style={{
-                color: "var(--ink-soft)",
-                background: "rgba(26,26,46,0.05)",
-                border: "1px solid var(--hair-strong)",
+                color: "#5B5B63",
+                background: "rgba(10,10,10,0.05)",
+                border: "1px solid #E9E9EC",
               }}
             >
               {industry}

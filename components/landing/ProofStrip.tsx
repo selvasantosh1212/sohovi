@@ -61,7 +61,7 @@ export function ProofStrip() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="border-y" style={{ background: "var(--cream-deep)", borderColor: "var(--hair)" }}>
+    <section ref={sectionRef} className="border-y" style={{ background: "#FFFFFF", borderColor: "#E9E9EC" }}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-4">
           {stats.map((s, i) => (

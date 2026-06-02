@@ -6,7 +6,7 @@ import { Globe, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer style={{ background: "var(--cream-deep)", borderTop: "1px solid var(--hair)" }}>
+    <footer style={{ background: "#FFFFFF", borderTop: "1px solid #E9E9EC" }}>
       <div className="mx-auto max-w-[1200px] px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
@@ -21,15 +21,15 @@ export function Footer() {
                 priority
               />
             </Link>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--ink-soft)", opacity: 0.75 }}>
+            <p className="text-sm leading-relaxed" style={{ color: "#5B5B63" }}>
               Privacy-first data quality for small businesses and data teams. Your data never leaves your browser.
             </p>
             <div
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-              style={{ background: "rgba(0,201,167,0.12)", color: "#00A882", border: "1px solid rgba(0,201,167,0.25)" }}
+              style={{ background: "#0A0A0A", color: "#FFE439", border: "1px solid #0A0A0A" }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-current" aria-hidden />
-              100% client-side processing
+              Zero bytes uploaded
             </div>
           </div>
 
@@ -37,7 +37,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4
               className="font-bold uppercase"
-              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "var(--ink)" }}
+              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Product
             </h4>
@@ -53,9 +53,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "var(--ink-mute)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-mute)"; }}
+                    style={{ color: "#8A8A90" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
                   >
                     {link.label}
                   </Link>
@@ -68,7 +68,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4
               className="font-bold uppercase"
-              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "var(--ink)" }}
+              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Resources
             </h4>
@@ -82,9 +82,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "var(--ink-mute)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-mute)"; }}
+                    style={{ color: "#8A8A90" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
                   >
                     {link.label}
                   </Link>
@@ -97,7 +97,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4
               className="font-bold uppercase"
-              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "var(--ink)" }}
+              style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Legal
             </h4>
@@ -111,9 +111,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "var(--ink-mute)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-mute)"; }}
+                    style={{ color: "#8A8A90" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
                   >
                     {link.label}
                   </Link>
@@ -125,12 +125,12 @@ export function Footer() {
 
         <div
           className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderTop: "1px solid var(--hair)" }}
+          style={{ borderTop: "1px solid #E9E9EC" }}
         >
-          <p className="text-sm" style={{ color: "var(--ink-mute)" }}>
+          <p className="text-sm" style={{ color: "#8A8A90" }}>
             © {new Date().getFullYear()} Sohovi. All rights reserved.
           </p>
-          <p className="text-xs text-center" style={{ color: "var(--ink-mute)", opacity: 0.6 }}>
+          <p className="text-xs text-center" style={{ color: "#8A8A90", opacity: 0.8 }}>
             Built privacy-first. Your data never leaves your browser. GDPR-friendly by design.
           </p>
           <div className="flex items-center gap-3">
@@ -139,9 +139,9 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1px solid var(--hair-strong)", color: "var(--ink-mute)" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-mute)"; }}
+              style={{ border: "1px solid #E9E9EC", color: "#8A8A90" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
               aria-label="Website"
             >
               <Globe className="w-3.5 h-3.5" />
@@ -149,9 +149,9 @@ export function Footer() {
             <a
               href="mailto:hello@sohovi.com"
               className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1px solid var(--hair-strong)", color: "var(--ink-mute)" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-mute)"; }}
+              style={{ border: "1px solid #E9E9EC", color: "#8A8A90" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
               aria-label="Email"
             >
               <Mail className="w-3.5 h-3.5" />

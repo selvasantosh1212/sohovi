@@ -46,7 +46,7 @@ export function PrivacySection() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#FFE439" }}>
             Privacy Architecture
           </p>
           <h2
@@ -71,7 +71,7 @@ export function PrivacySection() {
                 <li key={idx} className="flex items-start gap-4">
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5"
-                    style={{ background: "var(--terracotta)" }}
+                    style={{ background: "#FFE439", color: "#0A0A0A" }}
                   >
                     {idx + 1}
                   </div>
@@ -98,8 +98,8 @@ export function PrivacySection() {
                   className="rounded-[20px] p-5 space-y-3 transition-all duration-200"
                   style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }}
                 >
-                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ background: "rgba(224,113,80,0.2)" }}>
-                    <Icon className="w-4 h-4" style={{ color: "var(--terracotta)" }} />
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ background: "rgba(255,228,57,0.15)" }}>
+                    <Icon className="w-4 h-4" style={{ color: "#FFE439" }} />
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-semibold text-sm" style={{ color: "var(--cream)" }}>{item.title}</h4>

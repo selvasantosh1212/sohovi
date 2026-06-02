@@ -34,13 +34,13 @@ export function PublicNav() {
       <nav
         className="w-full max-w-[1200px] flex items-center justify-between transition-all duration-300"
         style={{
-          background: "rgba(251,247,242,0.88)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          border: "1px solid var(--hair-strong)",
+          background: "rgba(255,255,255,0.72)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          border: "1px solid #E9E9EC",
           borderRadius: "999px",
           padding: "6px 8px 6px 20px",
-          boxShadow: scrolled ? "0 4px 20px rgba(26,26,46,0.08)" : "none",
+          boxShadow: scrolled ? "0 10px 30px -12px rgba(0,0,0,0.1)" : "none",
         }}
       >
         {/* Logo */}
@@ -62,9 +62,9 @@ export function PublicNav() {
               key={link.label}
               href={link.href}
               className="text-[14px] font-medium px-3 py-1.5 rounded-full transition-colors"
-              style={{ color: "var(--ink-soft)" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(26,26,46,0.06)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--ink-soft)"; }}
+              style={{ color: "#5B5B63" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(10,10,10,0.05)"; (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent"; (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
             >
               {link.label}
             </Link>
@@ -78,8 +78,8 @@ export function PublicNav() {
               <SignInButton mode="redirect">
                 <button
                   className="text-[14px] font-medium px-4 py-1.5 rounded-full transition-colors"
-                  style={{ color: "var(--ink-soft)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(26,26,46,0.06)"; }}
+                  style={{ color: "#5B5B63" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(10,10,10,0.05)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
                 >
                   Sign in
@@ -87,10 +87,10 @@ export function PublicNav() {
               </SignInButton>
               <SignUpButton mode="redirect">
                 <button
-                  className="text-[14px] font-semibold px-4 py-1.5 rounded-full text-white transition-all"
-                  style={{ background: "var(--terracotta)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 12px -4px rgba(224,113,80,0.5)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--terracotta-deep)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--terracotta)"; }}
+                  className="text-[14px] font-semibold px-4 py-1.5 text-white transition-all"
+                  style={{ background: "#0A0A0A", borderRadius: "12px" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#2A2A2E"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0A0A0A"; }}
                 >
                   Get started
                 </button>
@@ -127,7 +127,7 @@ export function PublicNav() {
       {menuOpen && (
         <div
           className="md:hidden absolute top-full left-4 right-4 mt-2 rounded-[24px] border px-5 py-4 space-y-1"
-          style={{ background: "rgba(251,247,242,0.97)", backdropFilter: "blur(12px)", borderColor: "var(--hair-strong)" }}
+          style={{ background: "rgba(255,255,255,0.97)", backdropFilter: "blur(14px)", borderColor: "#E9E9EC" }}
         >
           {navLinks.map((link) => (
             <Link
@@ -144,12 +144,12 @@ export function PublicNav() {
             {!isSignedIn && (
               <>
                 <SignInButton mode="redirect">
-                  <button className="w-full text-center py-2.5 text-[14px] font-medium rounded-full border transition-colors" style={{ borderColor: "var(--hair-strong)", color: "var(--ink)" }}>
+                  <button className="w-full text-center py-2.5 text-[14px] font-medium rounded-full border transition-colors" style={{ borderColor: "#E9E9EC", color: "#0A0A0A" }}>
                     Sign in
                   </button>
                 </SignInButton>
                 <SignUpButton mode="redirect">
-                  <button className="w-full text-center py-2.5 text-[14px] font-semibold rounded-full text-white transition-colors" style={{ background: "var(--terracotta)" }}>
+                  <button className="w-full text-center py-2.5 text-[14px] font-semibold text-white transition-colors" style={{ background: "#0A0A0A", borderRadius: "12px" }}>
                     Get started
                   </button>
                 </SignUpButton>

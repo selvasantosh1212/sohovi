@@ -61,10 +61,10 @@ const pillars = [
 ];
 
 const pillarBgs = [
-  "var(--butter-soft)",
-  "var(--lavender-soft)",
-  "var(--sky-soft)",
-  "var(--sage-soft)",
+  "#BDBDDA",
+  "#BDBDDA",
+  "#BDBDDA",
+  "#BDBDDA",
 ];
 
 function ProfilingMockup() {
@@ -80,7 +80,7 @@ function ProfilingMockup() {
           <div className="flex items-center justify-between">
             <span className="font-mono text-sm text-slate-800">{c.col}</span>
             <div className="flex gap-2">
-              <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: "rgba(224,113,80,0.10)", color: "#C96040" }}>{c.type}</span>
+              <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: "rgba(45,127,249,0.10)", color: "#2D7FF9" }}>{c.type}</span>
               {c.pii && <span className="text-xs px-2 py-0.5 rounded font-medium bg-red-50 text-red-500 border border-red-100">PII</span>}
             </div>
           </div>
@@ -135,7 +135,7 @@ function RulesMockup() {
     <div className="rounded-[24px] p-5 space-y-3" style={{ background: "#fff", border: "1px solid var(--hair)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 14px -10px rgba(26,26,46,0.12)" }}>
       <div className="flex items-center justify-between mb-1">
         <p className="text-xs font-mono text-slate-400">Suggested Rules</p>
-        <span className="text-xs px-2 py-0.5 rounded font-semibold" style={{ background: "rgba(224,113,80,0.12)", color: "#C96040" }}>ML SUGGESTED</span>
+        <span className="text-xs px-2 py-0.5 rounded font-semibold" style={{ background: "rgba(45,127,249,0.12)", color: "#2D7FF9" }}>ML SUGGESTED</span>
       </div>
       {[
         { col: "email", rules: ["not_null — HIGH confidence", "regex_match — email format"] },
@@ -146,7 +146,7 @@ function RulesMockup() {
           <span className="font-mono text-sm text-slate-800">{item.col}</span>
           {item.rules.map((r) => (
             <div key={r} className="flex items-center gap-2 text-xs text-slate-500">
-              <Check className="w-3 h-3 shrink-0" style={{ color: "#E07150" }} />
+              <Check className="w-3 h-3 shrink-0" style={{ color: "#37376B" }} />
               {r}
             </div>
           ))}
@@ -154,7 +154,7 @@ function RulesMockup() {
       ))}
       <div
         className="text-center text-sm font-semibold py-2.5 rounded-lg cursor-pointer transition-colors"
-        style={{ background: "#E07150", color: "#fff" }}
+        style={{ background: "#FFE439", color: "#0A0A0A" }}
       >
         Apply All Suggestions →
       </div>
@@ -195,54 +195,54 @@ function TrendsMockup() {
 
 export function CapabilityPillars() {
   return (
-    <section id="features" className="py-24" style={{ background: "var(--cream)" }}>
+    <section id="features" className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-7xl px-6">
         {/* Section header */}
         <div className="max-w-2xl mb-20 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
             Platform Capabilities
           </p>
           <h2
             className="font-bold"
-            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "var(--ink)" }}
+            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.028em", lineHeight: 1.05, color: "#0A0A0A" }}
           >
-            Everything your team needs to{" "}
-            <em className="serif-accent" style={{ color: "var(--terracotta-deep)" }}>measure and improve</em>
-            {" "}data quality.
+            Everything your team needs to measure and improve data quality.
           </h2>
         </div>
 
-        {/* Pillars — each in its own pastel color block */}
+        {/* Pillars — each in periwinkle */}
         <div className="space-y-8">
           {pillars.map((pillar, idx) => (
             <div
               key={pillar.id}
-              className="rounded-[32px] p-12 grid lg:grid-cols-2 gap-16 items-center"
+              className="grid lg:grid-cols-2 gap-16 items-center"
               style={{
                 background: pillarBgs[idx],
-                border: "1px solid var(--hair)",
+                border: "1px solid #E9E9EC",
+                borderRadius: "28px",
+                padding: "44px",
               }}
             >
               {/* Text side */}
               <div className={`space-y-6 ${idx % 2 === 1 ? "lg:order-2" : ""}`}>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color: "#37376B" }}>
                   {pillar.label}
                 </p>
-                <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug" style={{ color: "var(--ink)" }}>
+                <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug" style={{ color: "#0A0A0A" }}>
                   {pillar.headline}
                 </h3>
-                <p className="leading-relaxed" style={{ color: "var(--ink-mute)" }}>{pillar.body}</p>
+                <p className="leading-relaxed" style={{ color: "#5B5B63" }}>{pillar.body}</p>
                 <ul className="space-y-3">
                   {pillar.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-3 text-sm" style={{ color: "var(--ink-soft)" }}>
-                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "var(--terracotta)" }} />
+                    <li key={b} className="flex items-start gap-3 text-sm" style={{ color: "#5B5B63" }}>
+                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#37376B" }} />
                       {b}
                     </li>
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-2 pt-1">
                   {pillar.tags.map((tag) => (
-                    <span key={tag} className="text-[12px] px-3 py-1 rounded-full font-medium" style={{ background: "rgba(26,26,46,0.07)", color: "var(--ink-soft)", border: "1px solid var(--hair-strong)" }}>
+                    <span key={tag} className="text-[12px] px-3 py-1 rounded-full font-medium" style={{ background: "rgba(55,55,107,0.10)", color: "#37376B", border: "1px solid rgba(55,55,107,0.18)" }}>
                       {tag}
                     </span>
                   ))}

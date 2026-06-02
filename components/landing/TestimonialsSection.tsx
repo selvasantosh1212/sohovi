@@ -78,21 +78,19 @@ export function TestimonialsSection() {
   const visible = testimonials.slice(page * 3, page * 3 + 3);
 
   return (
-    <section className="py-24" style={{ background: "var(--cream-deep)" }}>
+    <section className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
             Customer Stories
           </p>
           <h2
             className="font-bold"
-            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "var(--ink)" }}
+            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "#0A0A0A" }}
           >
-            Teams that ship{" "}
-            <em className="serif-accent" style={{ color: "var(--terracotta-deep)" }}>cleaner data</em>
-            {" "}with Sohovi.
+            Teams that ship cleaner data with Sohovi.
           </h2>
-          <p className="text-lg" style={{ color: "var(--ink-mute)" }}>
+          <p className="text-lg" style={{ color: "#8A8A90" }}>
             From freelance consultants to 50-person data teams.
           </p>
         </div>
@@ -104,12 +102,12 @@ export function TestimonialsSection() {
               className="rounded-[24px] p-7 flex flex-col gap-5"
               style={{
                 background: "#fff",
-                border: "1px solid var(--hair)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 14px -10px rgba(26,26,46,0.08)",
+                border: "1px solid #E9E9EC",
+                boxShadow: "0 1px 2px rgba(10,10,10,.03), 0 10px 28px -18px rgba(10,10,10,.12)",
               }}
             >
               {/* Highlight callout */}
-              <div className="rounded-[14px] px-4 py-3 text-sm font-medium" style={{ background: "var(--terracotta-soft)", color: "var(--terracotta-deep)", border: "1px solid rgba(224,113,80,0.2)" }}>
+              <div className="rounded-[14px] px-4 py-3 text-sm font-medium" style={{ background: "#F4F4F5", color: "#5B5B63", border: "1px solid #E9E9EC" }}>
                 &ldquo;{t.highlight}&rdquo;
               </div>
 
@@ -121,7 +119,7 @@ export function TestimonialsSection() {
               </div>
 
               {/* Quote */}
-              <p className="leading-relaxed flex-1 text-sm" style={{ color: "var(--ink-mute)" }}>&ldquo;{t.quote}&rdquo;</p>
+              <p className="leading-relaxed flex-1 text-sm" style={{ color: "#5B5B63" }}>&ldquo;{t.quote}&rdquo;</p>
 
               {/* Author */}
               <div className="flex items-center gap-3 pt-1">
@@ -132,8 +130,8 @@ export function TestimonialsSection() {
                   {t.initials}
                 </div>
                 <div>
-                  <div className="font-semibold text-sm" style={{ color: "var(--ink)" }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: "var(--ink-mute)" }}>{t.role} · {t.company}</div>
+                  <div className="font-semibold text-sm" style={{ color: "#0A0A0A" }}>{t.name}</div>
+                  <div className="text-xs" style={{ color: "#8A8A90" }}>{t.role} · {t.company}</div>
                 </div>
               </div>
             </div>
@@ -146,22 +144,22 @@ export function TestimonialsSection() {
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
             className="w-9 h-9 rounded-full flex items-center justify-center transition-colors disabled:opacity-40"
-            style={{ border: "1px solid var(--hair-strong)", background: "#fff" }}
+            style={{ border: "1px solid #DBDBDF", background: "#fff" }}
             aria-label="Previous page"
           >
-            <ChevronLeft className="w-4 h-4" style={{ color: "var(--ink-soft)" }} />
+            <ChevronLeft className="w-4 h-4" style={{ color: "#5B5B63" }} />
           </button>
-          <span className="text-sm font-medium" style={{ color: "var(--ink-mute)" }}>
+          <span className="text-sm font-medium" style={{ color: "#8A8A90" }}>
             0{page + 1} / 0{pageCount}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
             disabled={page === pageCount - 1}
             className="w-9 h-9 rounded-full flex items-center justify-center transition-colors disabled:opacity-40"
-            style={{ border: "1px solid var(--hair-strong)", background: "#fff" }}
+            style={{ border: "1px solid #DBDBDF", background: "#fff" }}
             aria-label="Next page"
           >
-            <ChevronRight className="w-4 h-4" style={{ color: "var(--ink-soft)" }} />
+            <ChevronRight className="w-4 h-4" style={{ color: "#5B5B63" }} />
           </button>
         </div>
       </div>

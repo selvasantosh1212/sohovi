@@ -128,31 +128,29 @@ export function PricingSection() {
   }
 
   return (
-    <section id="pricing" className="py-24" style={{ background: "var(--cream)" }}>
+    <section id="pricing" className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-12 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "var(--terracotta)" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
             Pricing
           </p>
           <h2
             className="font-bold"
-            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "var(--ink)" }}
+            style={{ fontSize: "clamp(32px, 4.4vw, 56px)", letterSpacing: "-0.025em", lineHeight: 1.05, color: "#0A0A0A" }}
           >
-            Simple,{" "}
-            <em className="serif-accent" style={{ color: "var(--terracotta-deep)" }}>transparent</em>
-            {" "}pricing.
+            Simple, transparent pricing.
           </h2>
-          <p className="text-lg" style={{ color: "var(--ink-mute)" }}>
+          <p className="text-lg" style={{ color: "#8A8A90" }}>
             Start free. Scale when you need to. No hidden fees.
           </p>
 
           {/* Toggle */}
           <div className="flex items-center gap-3 pt-2">
-            <span className="text-sm font-medium" style={{ color: isAnnual ? "var(--ink-mute)" : "var(--ink)" }}>Monthly</span>
+            <span className="text-sm font-medium" style={{ color: isAnnual ? "#8A8A90" : "#0A0A0A" }}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               className="relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none"
-              style={{ background: isAnnual ? "var(--terracotta)" : "var(--hair-strong)" }}
+              style={{ background: isAnnual ? "#0A0A0A" : "#E9E9EC" }}
               aria-label="Toggle annual billing"
               aria-pressed={isAnnual}
             >
@@ -161,9 +159,9 @@ export function PricingSection() {
                 style={{ left: isAnnual ? "calc(100% - 1.375rem)" : "0.125rem" }}
               />
             </button>
-            <span className="text-sm font-medium" style={{ color: isAnnual ? "var(--ink)" : "var(--ink-mute)" }}>Annual</span>
+            <span className="text-sm font-medium" style={{ color: isAnnual ? "#0A0A0A" : "#8A8A90" }}>Annual</span>
             {isAnnual && (
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-white" style={{ background: "var(--terracotta)" }}>
+              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#FFE439", color: "#0A0A0A" }}>
                 Save 20%
               </span>
             )}
@@ -184,39 +182,39 @@ export function PricingSection() {
                 className="relative rounded-[24px] p-8"
                 style={
                   isPrimary
-                    ? { background: "var(--ink)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 8px 32px -8px rgba(26,26,46,0.3)" }
-                    : { background: "#fff", border: "1px solid var(--hair)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)" }
+                    ? { background: "#0A0A0A", border: "1px solid #0A0A0A", boxShadow: "0 18px 40px -22px rgba(10,10,10,0.25)" }
+                    : { background: "#fff", border: "1px solid #E9E9EC", boxShadow: "0 1px 2px rgba(10,10,10,.03), 0 10px 28px -18px rgba(10,10,10,.12)" }
                 }
               >
                 {isPrimary && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="text-[11px] font-bold px-3.5 py-1.5 rounded-full text-white" style={{ background: "var(--terracotta)" }}>
+                    <span className="text-[11px] font-bold px-3.5 py-1.5 rounded-full" style={{ background: "#0A0A0A", color: "#fff", whiteSpace: "nowrap" }}>
                       Most Popular
                     </span>
                   </div>
                 )}
 
                 <div className="mb-6 space-y-2">
-                  <h3 className="text-lg font-bold" style={{ color: isPrimary ? "var(--cream)" : "var(--ink)" }}>{plan.name}</h3>
+                  <h3 className="text-lg font-bold" style={{ color: isPrimary ? "#fff" : "#0A0A0A" }}>{plan.name}</h3>
                   <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold tracking-tight" style={{ color: isPrimary ? "#fff" : "var(--ink)" }}>
+                    <span className="text-4xl font-bold tracking-tight" style={{ color: isPrimary ? "#fff" : "#0A0A0A" }}>
                       {price}
                     </span>
-                    <span className="mb-1 text-sm" style={{ color: isPrimary ? "rgba(251,247,242,0.5)" : "var(--ink-mute)" }}>/{plan.period}</span>
+                    <span className="mb-1 text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.45)" : "#8A8A90" }}>/{plan.period}</span>
                   </div>
                   {showAnnualNote && (
-                    <p className="text-sm font-medium" style={{ color: isPrimary ? "var(--terracotta-soft)" : "var(--terracotta)" }}>
+                    <p className="text-sm font-medium" style={{ color: isPrimary ? "#FFE439" : "#5B5B63" }}>
                       {plan.annualTotal} billed annually — {plan.annualSavings}
                     </p>
                   )}
-                  <p className="text-sm" style={{ color: isPrimary ? "rgba(251,247,242,0.55)" : "var(--ink-mute)" }}>{plan.description}</p>
+                  <p className="text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.5)" : "#8A8A90" }}>{plan.description}</p>
                 </div>
 
                 {plan.planKey === "free" ? (
                   <Link
                     href="/sign-up"
-                    className={`w-full block text-center font-semibold rounded-full py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"}`}
-                    style={{ background: "var(--cream-deep)", color: "var(--ink)", border: "1px solid var(--hair-strong)" }}
+                    className={`w-full block text-center font-semibold py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"}`}
+                    style={{ background: "#F4F4F5", color: "#0A0A0A", border: "1px solid #E9E9EC", borderRadius: "12px" }}
                   >
                     {plan.cta}
                   </Link>
@@ -224,11 +222,11 @@ export function PricingSection() {
                   <button
                     onClick={() => handlePaidPlan(plan.planKey as "pro" | "business")}
                     disabled={isLoading}
-                    className={`w-full flex items-center justify-center gap-2 font-semibold rounded-full py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"} disabled:opacity-70 disabled:cursor-not-allowed`}
+                    className={`w-full flex items-center justify-center gap-2 font-semibold py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"} disabled:opacity-70 disabled:cursor-not-allowed`}
                     style={
                       isPrimary
-                        ? { background: "var(--terracotta)", color: "#fff" }
-                        : { background: "var(--cream-deep)", color: "var(--ink)", border: "1px solid var(--hair-strong)" }
+                        ? { background: "#FFE439", color: "#0A0A0A", borderRadius: "12px" }
+                        : { background: "#F4F4F5", color: "#0A0A0A", border: "1px solid #E9E9EC", borderRadius: "12px" }
                     }
                   >
                     {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -236,14 +234,14 @@ export function PricingSection() {
                   </button>
                 )}
                 {plan.trialNote && (
-                  <p className="text-center text-[11px] mb-5" style={{ color: isPrimary ? "rgba(251,247,242,0.4)" : "var(--ink-mute)" }}>{plan.trialNote}</p>
+                  <p className="text-center text-[11px] mb-5" style={{ color: isPrimary ? "rgba(255,255,255,0.4)" : "#8A8A90" }}>{plan.trialNote}</p>
                 )}
 
                 <ul className="space-y-3">
                   {plan.features.map((feat) => (
                     <li key={feat} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: isPrimary ? "var(--mint)" : "var(--terracotta)" }} />
-                      <span className="text-sm" style={{ color: isPrimary ? "rgba(251,247,242,0.75)" : "var(--ink-soft)" }}>{feat}</span>
+                      <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: isPrimary ? "var(--mint)" : "#37376B" }} />
+                      <span className="text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.75)" : "#5B5B63" }}>{feat}</span>
                     </li>
                   ))}
                 </ul>
@@ -252,7 +250,7 @@ export function PricingSection() {
           })}
         </div>
 
-        <p className="text-sm mt-10" style={{ color: "var(--ink-mute)", opacity: 0.6 }}>
+        <p className="text-sm mt-10" style={{ color: "#8A8A90", opacity: 0.8 }}>
           All plans include 100% client-side processing — your data never leaves your browser.
         </p>
       </div>
