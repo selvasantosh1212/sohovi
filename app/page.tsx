@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { PublicNav } from "@/components/landing/PublicNav";
 import { Hero } from "@/components/landing/Hero";
 import { BrandStrip } from "@/components/landing/BrandStrip";
@@ -22,7 +21,6 @@ export default async function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <AnnouncementBar />
       <PublicNav />
       <main className="flex-1">
         <Hero />

@@ -238,7 +238,7 @@ export function Hero() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#2A2A2E"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#0A0A0A"; }}
           >
-            Get started for free →
+            Run Data Profiling & DQ checks for free →
           </Link>
         </div>
 
