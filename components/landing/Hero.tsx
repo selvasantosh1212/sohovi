@@ -233,12 +233,12 @@ export function Hero() {
         <div className="flex flex-wrap items-center justify-center gap-3 mt-9">
           <Link
             href="/sign-up"
-            className="inline-flex items-center gap-2 px-7 py-3.5 text-[16px] font-semibold text-white transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 text-[17px] font-semibold text-white transition-all"
             style={{ background: "#0A0A0A", borderRadius: "12px" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#2A2A2E"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#0A0A0A"; }}
           >
-            Get started →
+            Get started for free →
           </Link>
         </div>
 
