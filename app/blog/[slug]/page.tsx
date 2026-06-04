@@ -11,8 +11,8 @@ import { BlogFAQ } from "@/components/blog/BlogFAQ";
 import { BlogPostAuthor } from "@/components/blog/BlogPostAuthor";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { extractToc, formatDate } from "@/lib/blog-utils";
-import { getBlogCTA, splitAtMidpoint } from "@/lib/blog-cta";
-import { BlogSoftCTA } from "@/components/blog/BlogSoftCTA";
+import { injectInlineSohoviMentions } from "@/lib/blog-cta";
+import { injectInternalLinks, cleanInternalLinkPlaceholders } from "@/lib/blog-internal-links";
 import rehypeSlug from "rehype-slug";
 
 // On-demand ISR: pages render on first request and are cached for 1 hour.
@@ -251,17 +251,15 @@ export default async function BlogPostPage({
             )}
 
             {(() => {
-              const cleaned = post.content
-                .replace(/<!--[\s\S]*?-->/g, "")
-                .replace(/<(?![a-zA-Z/!])/g, "&lt;");
-              const { firstHalf, secondHalf } = splitAtMidpoint(cleaned);
-              const ctaProps = getBlogCTA(post.category, post.tags ?? []);
+              const cleaned = cleanInternalLinkPlaceholders(
+                post.content
+                  .replace(/<!--[\s\S]*?-->/g, "")
+                  .replace(/<(?![a-zA-Z/!])/g, "&lt;")
+              );
+              const withLinks = injectInternalLinks(cleaned, slug);
+              const withCTAs = injectInlineSohoviMentions(withLinks, post.category, post.tags ?? []);
               return (
-                <>
-                  <MDXRemote source={firstHalf} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
-                  <BlogSoftCTA text={ctaProps.text} href={ctaProps.href} />
-                  <MDXRemote source={secondHalf} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
-                </>
+                <MDXRemote source={withCTAs} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
               );
             })()}
 
