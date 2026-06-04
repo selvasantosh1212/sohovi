@@ -42,7 +42,7 @@ const TERM_SLUG_MAP: [string, string][] = [
   ["data standardization", "what-is-data-standardization"],
   ["data lineage", "what-is-data-lineage"],
   ["data wrangling", "what-is-data-wrangling"],
-  ["data catalog", "what-is-a-data-catalog"],
+  ["data catalog", "what-is-data-catalog"],
   ["data dictionary", "what-is-data-dictionary"],
   ["data drift", "what-is-data-drift"],
   ["data currency", "what-is-data-currency"],
