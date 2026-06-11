@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { Lightbulb, CheckCircle2, X, AlertTriangle } from "lucide-react";
+import { Lightbulb, CheckCircle2, X, AlertTriangle, Sparkles } from "lucide-react";
 import { createRule } from "@/app/actions/rules";
+import { parseRulesFromDescription } from "@/lib/ml/nl-rule-parser";
 import {
   Select,
   SelectContent,
@@ -11,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { DQDimension, DQRule } from "@/types/app.types";
+import type { SuggestedRule } from "@/types/dq.types";
 import { useProfilingStore } from "@/store/profilingStore";
 import { getRuleExample, type RuleExample } from "@/lib/dq-rule-examples";
 import type { DetectedDateFormat } from "@/types/profiling.types";
@@ -79,6 +81,7 @@ interface Props {
 }
 
 export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existingRules = [] }: Props) {
+  const [activeTab, setActiveTab] = useState<"manual" | "ai">("manual");
   const [dimension, setDimension] = useState<DQDimension>("completeness");
   const [ruleType, setRuleType] = useState("not_null");
   const [columnName, setColumnName] = useState(initialColumn ?? columnNames[0] ?? "");
@@ -87,6 +90,12 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [, startTransition] = useTransition();
+
+  // AI Builder state
+  const [aiDescription, setAiDescription] = useState("");
+  const [aiResults, setAiResults] = useState<SuggestedRule[]>([]);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [acceptedRules, setAcceptedRules] = useState<Set<number>>(new Set());
 
   // Profiling store — resolve active column profile for date format detection
   const profiles = useProfilingStore((s) => s.profiles);
@@ -189,12 +198,162 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
     });
   }
 
+  function handleAiGenerate() {
+    if (!aiDescription.trim() || !columnName) return;
+    setAiError(null);
+    setAiResults([]);
+    setAcceptedRules(new Set());
+    const inferredType = activeProfile?.inferred_type ?? "string";
+    const rules = parseRulesFromDescription(aiDescription, columnName, inferredType);
+    if (rules.length === 0) {
+      setAiError("No rules matched. Try describing a specific constraint — e.g. \"must not be blank\", \"must be a valid email\", \"must be between 0 and 1000\".");
+    } else {
+      setAiResults(rules);
+    }
+  }
+
+  function handleAcceptRule(rule: SuggestedRule, index: number) {
+    startTransition(async () => {
+      try {
+        await createRule({
+          asset_id: assetId,
+          column_name: rule.column_name || null,
+          dimension: rule.dimension,
+          rule_type: rule.rule_type,
+          parameters: rule.parameters,
+          threshold: rule.threshold,
+        });
+        setAcceptedRules((prev) => new Set([...prev, index]));
+      } catch {
+        // silently ignore per-card errors; user can retry
+      }
+    });
+  }
+
   const example = getRuleExample(dimension, ruleType);
   const hasMixedFormats =
     dateFormats !== null &&
     dateFormats.filter((f) => f.matchPct > 10).length > 1;
 
   return (
+    <div className="space-y-4">
+      {/* Tab toggle */}
+      <div className="flex rounded-lg border border-slate-200 overflow-hidden text-xs font-medium">
+        <button
+          type="button"
+          onClick={() => setActiveTab("manual")}
+          className={`flex-1 py-2 transition-colors ${
+            activeTab === "manual"
+              ? "bg-[#1E3A5F] text-white"
+              : "bg-white text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Manual
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("ai")}
+          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
+            activeTab === "ai"
+              ? "bg-[#1E3A5F] text-white"
+              : "bg-white text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Sparkles className="w-3 h-3" />
+          AI Builder
+        </button>
+      </div>
+
+      {activeTab === "ai" ? (
+        <div className="space-y-4">
+          {/* Column selector (shared with manual) */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-slate-600">Column</label>
+            <Select value={columnName} onValueChange={(v) => setColumnName(v ?? "")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select column…" />
+              </SelectTrigger>
+              <SelectContent>
+                {columnNames.map((col) => (
+                  <SelectItem key={col} value={col}>{col}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Description textarea */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-slate-600">
+              Describe what this column must satisfy
+            </label>
+            <textarea
+              rows={3}
+              className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none"
+              placeholder='e.g. "Email must never be blank and must be a valid email address"'
+              value={aiDescription}
+              onChange={(e) => setAiDescription(e.target.value)}
+            />
+            <p className="text-[10px] text-slate-400">
+              Rules are generated locally in your browser — your data never leaves your machine.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAiGenerate}
+            disabled={!aiDescription.trim() || !columnName}
+            className="w-full inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+            style={{ background: "#1E3A5F" }}
+          >
+            <Sparkles className="w-3.5 h-3.5" /> Generate Rules
+          </button>
+
+          {aiError && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{aiError}</p>
+          )}
+
+          {aiResults.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-slate-600">{aiResults.length} rule{aiResults.length !== 1 ? "s" : ""} generated</p>
+              {aiResults.map((rule, i) => {
+                const accepted = acceptedRules.has(i);
+                return (
+                  <div key={i} className={`rounded-lg border px-3 py-3 space-y-1.5 ${accepted ? "border-emerald-200 bg-emerald-50" : "border-slate-200 bg-white"}`}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-semibold text-slate-800">{rule.rule_type.replace(/_/g, " ")}</span>
+                          <span className="inline-flex items-center rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500 capitalize">{rule.dimension}</span>
+                          <span className="inline-flex items-center rounded-full bg-teal-50 px-1.5 py-0.5 text-[10px] text-teal-700">{Math.round(rule.confidence * 100)}% confidence</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 leading-relaxed">{rule.reason}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAcceptRule(rule, i)}
+                        disabled={accepted}
+                        className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                          accepted
+                            ? "bg-emerald-100 text-emerald-700 cursor-default"
+                            : "bg-[#1E3A5F] text-white hover:opacity-90"
+                        }`}
+                      >
+                        {accepted ? "✓ Added" : "Accept"}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-slate-400">
+                      Threshold: {Math.round(rule.threshold * 100)}%
+                      {Object.keys(rule.parameters).length > 0 && (
+                        <> · Params: {JSON.stringify(rule.parameters)}</>
+                      )}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ) : (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Column */}
       <div className="space-y-1.5">
@@ -355,6 +514,8 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
         Add Rule
       </button>
     </form>
+      )}
+    </div>
   );
 }
 

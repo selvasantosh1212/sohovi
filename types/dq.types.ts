@@ -87,6 +87,38 @@ export type DQRunResponse =
   | { type: "RUN_ERROR"; payload: { message: string } };
 
 // ============================================================
+// Adaptive Behavioral Scoring (cross-run statistical comparison)
+// ============================================================
+
+export type BehaviorMetric =
+  | "null_pct"
+  | "unique_pct"
+  | "avg_value"
+  | "min_value"
+  | "max_value"
+  | "std_dev"
+  | "row_count"
+  | "type_shift"
+  | "distribution";
+
+export interface BehaviorFlag {
+  column_name: string;
+  metric: BehaviorMetric;
+  observed: number;
+  expected_mean: number;
+  expected_std: number;
+  z_score: number;
+  severity: "low" | "medium" | "high";
+  message: string;
+}
+
+export interface BehaviorResult {
+  behavior_score: number; // 0–100
+  flags: BehaviorFlag[];
+  runs_compared: number;
+}
+
+// ============================================================
 // Eval primitive returned by each dimension evaluator
 // ============================================================
 

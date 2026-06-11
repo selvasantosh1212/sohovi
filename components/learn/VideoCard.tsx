@@ -15,6 +15,8 @@ export const VIDEO_TUTORIALS: VideoEntry[] = [
   { num: 5, title: "Running Checks & Reading Scores", duration: "~5 min", description: "Run DQ checks, read the score gauge, explore column scores, failed records, and score transparency." },
   { num: 6, title: "Alerts & Monitoring", duration: "~3 min", description: "Create score-drop and schema-change alerts, manage workflows, and read alert events." },
   { num: 7, title: "Remediation & Reporting", duration: "~3 min", description: "Review failed records, export cleaned files, and generate PDF/Excel DQ reports." },
+  { num: 8, title: "AI Rule Builder", duration: "~3 min", description: "Describe what your column must satisfy in plain English — Sohovi generates the exact DQ rules for you instantly." },
+  { num: 9, title: "Behavioral Scoring & Data Drift Detection", duration: "~4 min", description: "See how Sohovi automatically compares runs, flags statistical anomalies, and catches distribution shifts without writing rules." },
 ];
 
 interface VideoCardProps {
@@ -24,10 +26,17 @@ interface VideoCardProps {
 export function VideoCard({ video }: VideoCardProps) {
   return (
     <div className="group rounded-xl border border-slate-200 bg-white overflow-hidden hover:shadow-sm transition-all duration-150">
-      {/* Thumbnail placeholder */}
-      <div className="relative w-full aspect-video bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
-          <Play className="w-5 h-5 text-slate-400 ml-0.5" />
+      {/* Thumbnail */}
+      <div className="relative w-full aspect-video overflow-hidden bg-slate-100 flex items-center justify-center">
+        <img
+          src={`/assets/video-thumbs/thumb-${String(video.num).padStart(2, "0")}.webp`}
+          alt={video.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
+            <Play className="w-5 h-5 text-slate-400 ml-0.5" />
+          </div>
         </div>
         <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-medium px-2 py-0.5 rounded">
           Video {video.num}

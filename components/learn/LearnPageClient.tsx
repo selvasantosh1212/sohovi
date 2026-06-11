@@ -67,7 +67,7 @@ export function LearnPageClient() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-800">Sohovi Learn Center</h1>
-            <p className="text-sm text-slate-500">{totalGuides} step-by-step guides · 7 video tutorials coming soon</p>
+            <p className="text-sm text-slate-500">{totalGuides} step-by-step guides · 9 video tutorials coming soon</p>
           </div>
         </div>
         <p className="text-sm text-slate-600 max-w-xl">

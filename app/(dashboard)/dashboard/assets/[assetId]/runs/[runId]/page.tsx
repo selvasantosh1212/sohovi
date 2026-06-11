@@ -5,6 +5,8 @@ import { getAsset } from "@/app/actions/assets";
 import { getRunWithScores } from "@/app/actions/runs";
 import { ScoreGauge } from "@/components/scoring/ScoreGauge";
 import { ScoreBadge } from "@/components/shared/ScoreBadge";
+import { BehaviorScoreCard } from "@/components/runs/BehaviorScoreCard";
+import type { BehaviorFlag } from "@/types/dq.types";
 
 export async function generateMetadata({
   params,
@@ -101,7 +103,7 @@ export default async function RunDetailPage({
         </div>
       </div>
 
-      {/* Score gauge + summary */}
+      {/* Score gauges — DQ + Behavior side by side */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
         <ScoreGauge score={run.overall_dq_score ?? 0} size="lg" label="Overall DQ Score" />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
@@ -123,6 +125,13 @@ export default async function RunDetailPage({
           ))}
         </div>
       </div>
+
+      {/* Behavioral score card */}
+      <BehaviorScoreCard
+        behaviorScore={run.behavior_score ?? null}
+        flags={(run.behavior_flags as BehaviorFlag[]) ?? []}
+        runsCompared={run.runs_compared ?? 0}
+      />
 
       {/* Schema change banner */}
       {run.schema_changed && run.schema_diff && (

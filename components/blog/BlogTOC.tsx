@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { TocItem } from "@/lib/blog-utils";
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 export function BlogTOC({ items }: Props) {
   const [activeId, setActiveId] = useState<string>("");
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const pathname = usePathname();
+  const canonicalUrl = `https://sohovi.com${pathname}`;
 
   useEffect(() => {
     if (!items.length) return;
@@ -44,7 +47,7 @@ export function BlogTOC({ items }: Props) {
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(window.location.href).catch(() => {});
+    navigator.clipboard.writeText(canonicalUrl).catch(() => {});
   }
 
   if (!items.length) return null;
@@ -70,7 +73,7 @@ export function BlogTOC({ items }: Props) {
         <p className="toc__share-label">Share</p>
         <div className="toc__share-btns">
           <a
-            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="toc__share-btn"
@@ -81,7 +84,7 @@ export function BlogTOC({ items }: Props) {
             </svg>
           </a>
           <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="toc__share-btn"

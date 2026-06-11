@@ -3,8 +3,10 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import type { AssetRun, DQScore } from "@/types/app.types";
-import type { DQRunResult } from "@/types/dq.types";
+import type { AssetRun, DQScore, ProfilingSummary } from "@/types/app.types";
+import type { BehaviorFlag, DQRunResult } from "@/types/dq.types";
+import type { ColumnProfile } from "@/types/profiling.types";
+import { computeBehavioralScore } from "@/lib/dq-engine/behavioral-scorer";
 
 // ---- Save a completed DQ run result to Supabase -------------------------
 
@@ -22,6 +24,7 @@ export interface SaveRunInput {
   } | null;
   workflow_id?: string | null;
   notes?: string | null;
+  column_profiles?: ColumnProfile[];
 }
 
 export async function saveRunResult(
@@ -75,7 +78,106 @@ export async function saveRunResult(
     if (scoresErr) throw new Error(scoresErr.message);
   }
 
-  // 3. Update data_asset with latest score + run id
+  // 3. Save profiling summaries (aggregated only — no raw row data)
+  if (input.column_profiles && input.column_profiles.length > 0) {
+    const profilingRows = input.column_profiles.map((p) => ({
+      run_id: run.id,
+      asset_id: input.asset_id,
+      column_name: p.column_name,
+      inferred_type: p.inferred_type,
+      row_count: p.row_count,
+      null_count: p.null_count,
+      null_pct: p.null_pct,
+      unique_count: p.unique_count,
+      unique_pct: p.unique_pct,
+      min_value: p.min_value,
+      max_value: p.max_value,
+      avg_value: p.avg_value,
+      std_dev: p.std_dev,
+      min_length: p.min_length,
+      max_length: p.max_length,
+      avg_length: p.avg_length,
+      top_values: p.top_values,
+      bottom_values: p.bottom_values,
+      value_frequency: p.value_frequency,
+      pattern_summary: p.pattern_summary,
+      pii_detected: p.pii_detected,
+      pii_type: p.pii_type,
+      outlier_count: p.outlier_count,
+      // sample_values intentionally omitted — privacy-first
+    }));
+    await supabase.from("profiling_summaries").insert(profilingRows);
+    // Non-fatal: behavioral scoring degrades gracefully if this fails
+
+    // 3b. Compute behavioral score by comparing against last 10 runs
+    const { data: histRuns } = await supabase
+      .from("asset_runs")
+      .select("id, row_count")
+      .eq("asset_id", input.asset_id)
+      .eq("clerk_user_id", userId)
+      .eq("status", "completed")
+      .neq("id", run.id)
+      .order("run_at", { ascending: false })
+      .limit(10);
+
+    if (histRuns && histRuns.length > 0) {
+      const histRunIds = histRuns.map((r) => r.id);
+      const { data: histProfiles } = await supabase
+        .from("profiling_summaries")
+        .select("*")
+        .in("run_id", histRunIds);
+
+      if (histProfiles && histProfiles.length > 0) {
+        // Group profiles by run_id, preserving order from histRuns
+        const profilesByRunId = new Map<string, ProfilingSummary[]>();
+        for (const p of histProfiles as ProfilingSummary[]) {
+          const arr = profilesByRunId.get(p.run_id) ?? [];
+          arr.push(p);
+          profilesByRunId.set(p.run_id, arr);
+        }
+        // oldest-first for the scorer
+        const history = histRunIds
+          .map((id) => profilesByRunId.get(id) ?? [])
+          .filter((g) => g.length > 0)
+          .reverse();
+
+        const rowCountHistory = histRuns.map((r) => r.row_count ?? 0).reverse();
+
+        const currentProfiles = input.column_profiles.map((p) => ({
+          ...p,
+          id: run.id,
+          run_id: run.id,
+          asset_id: input.asset_id,
+          bottom_values: p.bottom_values,
+          value_frequency: p.value_frequency,
+          sample_values: null,
+          created_at: run.run_at,
+        })) as unknown as ProfilingSummary[];
+
+        const behaviorResult = computeBehavioralScore(
+          currentProfiles,
+          history,
+          input.row_count,
+          rowCountHistory
+        );
+
+        await supabase
+          .from("asset_runs")
+          .update({
+            behavior_score: behaviorResult.behavior_score,
+            behavior_flags: behaviorResult.flags as unknown as BehaviorFlag[],
+            runs_compared: behaviorResult.runs_compared,
+          })
+          .eq("id", run.id);
+
+        run.behavior_score = behaviorResult.behavior_score;
+        run.behavior_flags = behaviorResult.flags;
+        run.runs_compared = behaviorResult.runs_compared;
+      }
+    }
+  }
+
+  // 4. Update data_asset with latest score + run id
   await supabase
     .from("data_assets")
     .update({

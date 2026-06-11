@@ -4,7 +4,10 @@ import { requireAdmin } from "@/lib/clerk/utils";
 import { getAdminPosts, deletePost } from "@/app/actions/blog";
 import { Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 
-export const metadata: Metadata = { title: "Blog Admin" };
+export const metadata: Metadata = {
+  title: "Blog Admin",
+  robots: { index: false, follow: false },
+};
 
 export default async function BlogAdminPage() {
   await requireAdmin();

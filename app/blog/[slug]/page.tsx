@@ -13,6 +13,7 @@ import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { extractToc, formatDate } from "@/lib/blog-utils";
 import { injectInlineSohoviMentions } from "@/lib/blog-cta";
 import { injectInternalLinks, cleanInternalLinkPlaceholders } from "@/lib/blog-internal-links";
+import { resolveDiagram } from "@/lib/blog/diagram-map";
 import rehypeSlug from "rehype-slug";
 
 // On-demand ISR: pages render on first request and are cached for 1 hour.
@@ -196,17 +197,6 @@ export default async function BlogPostPage({
             <p className="article-lede">{post.excerpt}</p>
           )}
 
-          {/* Cover image */}
-          {post.cover_image_url && (
-            <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 28 }}>
-              <img
-                src={post.cover_image_url}
-                alt={post.title}
-                style={{ width: "100%", height: "auto", maxHeight: 460, objectFit: "cover", display: "block" }}
-              />
-            </div>
-          )}
-
           {/* Byline */}
           <div className="byline">
             <div className="byline__avatar" aria-hidden="true">{authorInitial}</div>
@@ -265,8 +255,15 @@ export default async function BlogPostPage({
               );
               const withLinks = injectInternalLinks(cleaned, slug);
               const withCTAs = injectInlineSohoviMentions(withLinks, post.category, post.tags ?? []);
+              const withDiagrams = withCTAs.replace(
+                /\[IMAGE:\s*(.*?)\]/g,
+                (_, desc: string) => {
+                  const file = resolveDiagram(desc);
+                  return file ? `\n\n![${desc}](/diagrams/${file})\n\n` : "";
+                }
+              );
               return (
-                <MDXRemote source={withCTAs} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
+                <MDXRemote source={withDiagrams} options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }} />
               );
             })()}
 

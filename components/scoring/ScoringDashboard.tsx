@@ -10,6 +10,7 @@ import { ScoreTransparencyPanel } from "./ScoreTransparencyPanel";
 import { FailedRecordsTable } from "./FailedRecordsTable";
 import { saveRunResult } from "@/app/actions/runs";
 import type { DQRunResult } from "@/types/dq.types";
+import { useProfilingStore } from "@/store/profilingStore";
 import Link from "next/link";
 
 interface Props {
@@ -22,6 +23,7 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
   const result = useDQStore((s) => s.result);
   const fileData = useFileStore((s) => s.data);
   const schemaDiff = useFileStore((s) => s.schemaDiff);
+  const columnProfiles = useProfilingStore((s) => s.profiles);
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -62,6 +64,7 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
             column_count: fileData.headers.length,
             schema_changed: schemaDiff !== null,
             schema_diff: schemaDiff ?? null,
+            column_profiles: columnProfiles ?? [],
           },
           result
         );

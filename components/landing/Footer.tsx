@@ -75,8 +75,8 @@ export function Footer() {
             <ul className="space-y-2.5">
               {[
                 { label: "Blog", href: "/blog" },
-                { label: "DQ Dimensions Guide", href: "/blog" },
-                { label: "Templates Library", href: "/#features" },
+                { label: "DQ Dimensions Guide", href: "/blog?category=Data+Quality+Dimensions" },
+                { label: "Free Tools", href: "/tools" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link

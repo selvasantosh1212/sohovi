@@ -226,7 +226,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-7 leading-[1.55]" style={{ fontSize: "18px", color: "#5B5B63", maxWidth: "620px", textWrap: "pretty" } as React.CSSProperties}>
-          Know exactly where your data is broken. Get instant data quality insights in your browser — no setup, no code, no months-long onboarding.
+          Sohovi is a privacy-first <strong style={{ color: "#0A0A0A", fontWeight: 600 }}>data quality tool</strong> that profiles, scores, and validates your CSV and Excel files entirely in your browser — no setup, no code, no upload.
         </p>
 
         {/* CTAs */}

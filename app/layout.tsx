@@ -40,9 +40,11 @@ export const metadata: Metadata = {
     "privacy-first",
     "no upload",
   ],
+  alternates: { canonical: "https://sohovi.com" },
   openGraph: {
     type: "website",
     siteName: "Sohovi",
+    url: "https://sohovi.com",
     title: "Sohovi — Privacy-First Data Quality Platform",
     description:
       "Profile and score your CSV/Excel data entirely in the browser. Zero server upload. Enterprise-grade data quality for small teams.",

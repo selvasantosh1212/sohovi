@@ -69,6 +69,7 @@ import { cat29 } from "./blog-data/cat-29";
 import { cat30 } from "./blog-data/cat-30";
 import { cat31 } from "./blog-data/cat-31";
 import { cat32 } from "./blog-data/cat-32";
+import { catBehavior } from "./blog-data/cat-behavior";
 
 const ALL_POSTS = [
   ...cat01,
@@ -102,7 +103,21 @@ const ALL_POSTS = [
   ...cat30,
   ...cat31,
   ...cat32,
+  ...catBehavior,
 ];
+
+// ── Cover image mapping ──────────────────────────────────────────────────────
+function getCoverImage(category: string): string {
+  const c = category.toLowerCase();
+  if (c.includes("dedup")) return "/assets/covers/cover-deduplication.webp";
+  if (c.includes("profiling")) return "/assets/covers/cover-data-profiling.webp";
+  if (c.includes("governance")) return "/assets/covers/cover-data-governance.webp";
+  if (c.includes("ai ") || c.includes("ai &") || c.startsWith("ai")) return "/assets/covers/cover-ai-automation.webp";
+  if (c.includes("pipeline") || c.includes("engineering") || c.includes("workflow") || c.includes("migration")) return "/assets/covers/cover-data-pipelines.webp";
+  if (c.includes("cleaning") || c.includes("standardiz") || c.includes("validation") || c.includes("how-to") || c.includes("spreadsheet") || c.includes("csv")) return "/assets/covers/cover-data-cleaning.webp";
+  if (c.includes("behavioral") || c.includes("analytics") || c.includes("bi &") || c.includes("downstream")) return "/assets/covers/cover-behavioral-scoring.webp";
+  return "/assets/covers/cover-data-quality.webp";
+}
 
 // ── Seed ────────────────────────────────────────────────────────────────────
 async function seed() {
@@ -116,6 +131,8 @@ async function seed() {
         clerk_user_id: SEED_USER,
         read_time_min: readTime(post.content),
         published_at: NOW,
+        cover_image_url: post.cover_image_url ?? getCoverImage(post.category),
+        og_image_url: post.og_image_url ?? getCoverImage(post.category),
       },
       { onConflict: "slug" }
     );

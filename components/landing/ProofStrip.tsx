@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 function useCountUp(end: number, duration: number, trigger: boolean) {
-  const [count, setCount] = useState(0);
+  // Initialize to `end` so SSR/crawlers see the real value, not 0.
+  // The animation still runs from 0 → end on scroll trigger.
+  const [count, setCount] = useState(end);
   useEffect(() => {
     if (!trigger) return;
     const start = performance.now();

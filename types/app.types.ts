@@ -66,6 +66,9 @@ export interface AssetRun {
   workflow_id: string | null;
   status: "completed" | "failed" | "processing" | "profiled";
   notes: string | null;
+  behavior_score: number | null;
+  behavior_flags: import("./dq.types").BehaviorFlag[] | null;
+  runs_compared: number | null;
 }
 
 export interface SchemaDiff {

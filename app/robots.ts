@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/api/"],
+        disallow: ["/dashboard", "/api/", "/blog/admin"],
       },
     ],
     sitemap: "https://sohovi.com/sitemap.xml",
