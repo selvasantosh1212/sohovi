@@ -1,0 +1,212 @@
+/* ============================================================
+   SOHOVI DESIGN SYSTEM — colors_and_type.css
+   "ELECTRIC DATA — LIGHT" — white canvas, electric blue + green.
+   Privacy-first data quality platform.
+   ------------------------------------------------------------
+   A crisp near-white canvas with white cards, electric-blue +
+   emerald-green accents, soft colored glow on key actions, and
+   monospace metadata. Same modern design language as the dark
+   theme — just light. (Dark theme preserved in
+   colors_and_type_dark.css for reference.)
+   Fonts: Inter (sans), Geist Mono (mono/data), Instrument Serif
+   (rare italic accent). Loaded from Google Fonts. See README.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@1&family=Geist+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ---------- CANVAS / SURFACES (light) ---------- */
+  --bg:          #F6F8FC;  /* app canvas — near-white, cool       */
+  --bg-soft:     #EEF2F8;  /* recessed wells, page sections       */
+  --surface:     #FFFFFF;  /* cards, panels                       */
+  --surface-2:   #F3F6FB;  /* elevated / hover / inputs           */
+  --surface-3:   #E9EEF6;  /* popovers, active rows               */
+  --line:        #E2E8F2;  /* hairline borders                    */
+  --line-soft:   #EDF1F7;  /* faint internal dividers             */
+
+  /* ---------- TEXT ---------- */
+  --text:        #0F1B2D;  /* primary — near-black navy ink       */
+  --text-soft:   #44546B;  /* body / secondary                    */
+  --text-mute:   #8593A8;  /* meta, captions, placeholders        */
+  --text-faint:  #AEB9C9;  /* disabled, ghost                     */
+  --white:       #FFFFFF;  /* text on colored fills               */
+
+  /* ---------- ACCENTS ---------- */
+  /* Electric blue — primary action, links, focus, info.
+     (-bright is the HOVER/active shade — darker on light.) */
+  --blue:        #2D7FF9;
+  --blue-bright: #1B63E6;  /* hover (darken) / text-on-tint / glow*/
+  --blue-deep:   #1550C0;  /* pressed                             */
+  --blue-soft:   rgba(45,127,249,0.12);  /* tints / chip bg       */
+
+  /* Emerald green — data / live / success / secondary accent. */
+  --green:       #13B981;
+  --green-bright:#0E9E68;  /* hover (darken) / text-on-tint       */
+  --green-deep:  #0B7E52;
+  --green-soft:  rgba(19,185,129,0.12);
+
+  /* ---------- DQ SCORE SCALE (tuned for white) ---------- */
+  --score-high:      #10B981;  --score-high-soft:   #ECFDF5;   /* 95–100 Excellent */
+  --score-good:      #0AAEC0;  --score-good-soft:   #E6FAFB;   /* 80–94  Good      */
+  --score-warn:      #E0900C;  --score-warn-soft:   #FEF6E7;   /* 60–79  Warning   */
+  --score-danger:    #E5484D;  --score-danger-soft: #FDECEC;   /* <60    Critical  */
+
+  /* ---------- SEMANTIC TOKENS ---------- */
+  --background:        var(--bg);
+  --foreground:        var(--text);
+  --card:              var(--surface);
+  --card-foreground:   var(--text);
+  --primary:           var(--blue);
+  --primary-foreground:#FFFFFF;
+  --accent:            var(--green);
+  --accent-foreground: #053D29;
+  --muted:             var(--surface-2);
+  --muted-foreground:  var(--text-mute);
+  --border:            var(--line);
+  --input:             var(--surface-2);
+  --ring:              var(--blue);
+  --destructive:       var(--score-danger);
+
+  /* App-shell sidebar (light, blue active) */
+  --sidebar:           #FFFFFF;
+  --sidebar-foreground:#44546B;
+  --sidebar-active-bg: rgba(45,127,249,0.10);
+  --sidebar-active-fg: var(--blue-bright);
+  --sidebar-border:    #E6EBF3;
+
+  /* Theme-aware helpers */
+  --logo-filter:       none;                          /* dark logo on light */
+  --glass-bg:          rgba(255,255,255,0.72);         /* topbar / nav glass */
+
+  /* ---------- TYPE FAMILIES ---------- */
+  --font-sans:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:   'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-serif-accent: 'Instrument Serif', Georgia, serif; /* italic, rare */
+
+  /* ---------- TYPE RAMP ---------- */
+  --text-display:  clamp(40px, 6.4vw, 80px);
+  --text-h1:       clamp(30px, 4.2vw, 52px);
+  --text-h2:       clamp(22px, 2.4vw, 30px);
+  --text-h3:       19px;
+  --text-lead:     18px;
+  --text-body:     15px;
+  --text-sm:       13px;
+  --text-meta:     12px;
+  --text-eyebrow:  11px;
+
+  /* ---------- RADII ---------- */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
+  --radius-2xl:  28px;
+  --radius-pill: 999px;
+
+  /* ---------- SHADOWS / GLOW (light — FLAT, no neon glow) ---------- */
+  /* Soft, low-opacity, tinted toward navy-ink — never pure black. */
+  --shadow-card: 0 1px 2px rgba(15,27,45,0.04), 0 6px 20px -10px rgba(15,27,45,0.12);
+  --shadow-lg:   0 24px 50px -22px rgba(15,27,45,0.18);
+  --rim:         inset 0 1px 0 rgba(255,255,255,0.6);
+
+  /* Flat light theme: glow tokens resolve to no shadow. The dark variant
+     (colors_and_type_dark.css) sets these to real colored glows + --theme-glow:1. */
+  --glow-blue:       none;
+  --glow-green:      none;
+  --glow-blue-soft:  none;
+  --glow-green-soft: none;
+  --nav-active-shadow: none;
+  --theme-glow: 0;
+
+  /* Signature gradient — blue→green. */
+  --grad-bg:     linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
+  --grad-text:   linear-gradient(100deg, #2D7FF9 0%, #13B981 100%);
+}
+
+/* ============================================================
+   BASE TEXT STYLES
+   ============================================================ */
+.ds-display {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-display);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.ds-h1 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-h1);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.ds-h2 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-h2);
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  color: var(--text);
+}
+.ds-h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--text-h3);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.ds-lead {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--text-lead);
+  line-height: 1.55;
+  color: var(--text-soft);
+  text-wrap: pretty;
+}
+.ds-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+.ds-sm   { font-family: var(--font-sans); font-size: var(--text-sm);   color: var(--text-soft); }
+.ds-meta { font-family: var(--font-sans); font-size: var(--text-meta); color: var(--text-mute); }
+
+/* Gradient text — blue→green. Use on a hero accent word or metric. */
+.ds-grad-text {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Rare italic-serif accent (marketing flourish only). */
+.ds-serif-accent {
+  font-family: var(--font-serif-accent);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Uppercase eyebrow / kicker. */
+.ds-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue-bright);
+}
+
+/* Monospace — file names, row counts, technical metadata. THE data signature. */
+.ds-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  letter-spacing: 0;
+}

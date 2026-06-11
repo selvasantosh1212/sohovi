@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sohovi — Image System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F4F5; --ink:#0A0A0A; --blue:#2D7FF9; --mint:#00C9A7; --butter:#FFE439;
+    --white:#FFFFFF; --hair:#E2E8F2; --gray:#8A8F98;
+    --font:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 32px;}
+
+  header{border-bottom:1.5px solid var(--ink);background:var(--cream);position:sticky;top:0;z-index:20;}
+  .head-inner{display:flex;align-items:center;justify-content:space-between;padding:22px 32px;max-width:1280px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo{width:34px;height:34px;border-radius:8px;background:var(--ink);display:grid;place-items:center;}
+  .logo span{color:var(--white);font-weight:800;font-size:18px;letter-spacing:-0.5px;}
+  .wordmark{font-weight:700;font-size:21px;letter-spacing:-0.4px;}
+  .head-meta{font-family:var(--mono);font-size:12px;color:var(--gray);}
+
+  .hero{padding:64px 0 40px;}
+  .hero h1{font-size:46px;line-height:1.04;font-weight:800;letter-spacing:-1.6px;margin:0 0 18px;max-width:760px;}
+  .hero p{font-size:18px;line-height:1.5;color:#3a3f48;max-width:640px;margin:0;}
+  .stats{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .stat{background:var(--white);border:1.5px solid var(--ink);border-radius:10px;padding:16px 22px;min-width:120px;}
+  .stat .n{font-size:30px;font-weight:800;letter-spacing:-1px;}
+  .stat .l{font-size:12px;color:var(--gray);margin-top:2px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;}
+  .stat.accent{background:var(--blue);border-color:var(--blue);color:var(--white);}
+  .stat.accent .l{color:#cfe0ff;}
+
+  nav.filters{display:flex;gap:8px;flex-wrap:wrap;padding:26px 0 8px;position:sticky;top:79px;background:var(--cream);z-index:15;}
+  .chip{font-family:var(--font);font-size:13px;font-weight:600;border:1.5px solid var(--ink);background:var(--white);color:var(--ink);
+    padding:8px 16px;border-radius:100px;cursor:pointer;transition:background .12s,color .12s;}
+  .chip:hover{background:var(--cream);}
+  .chip.active{background:var(--ink);color:var(--white);}
+
+  section.group{padding:30px 0 8px;}
+  .group-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;border-bottom:1px solid var(--hair);padding-bottom:14px;}
+  .group-head h2{font-size:23px;font-weight:700;letter-spacing:-0.6px;margin:0;}
+  .group-head .count{font-family:var(--mono);font-size:13px;color:var(--gray);}
+  .group-head .spec{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--gray);}
+  .group-desc{font-size:14.5px;color:#3a3f48;margin:14px 0 22px;max-width:680px;line-height:1.5;}
+
+  .grid{display:grid;gap:20px;}
+  .grid.diagram{grid-template-columns:repeat(2,1fr);}
+  .grid.thumb{grid-template-columns:repeat(3,1fr);}
+  .grid.cover{grid-template-columns:repeat(2,1fr);}
+  .grid.og{grid-template-columns:repeat(2,1fr);}
+
+  .card{background:var(--white);border:1.5px solid var(--ink);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
+  .card .imgwrap{background:var(--cream);display:grid;place-items:center;padding:0;overflow:hidden;}
+  .card.diagram .imgwrap{background:var(--cream);}
+  .card img{width:100%;height:auto;display:block;}
+  .card .meta{padding:12px 16px;border-top:1.5px solid var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .card .fname{font-family:var(--mono);font-size:11.5px;color:var(--ink);word-break:break-all;line-height:1.4;}
+  .card .fmt{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--cream);color:var(--gray);white-space:nowrap;border:1px solid var(--hair);}
+  .card .fmt.svg{color:var(--blue);}
+  .card .fmt.webp{color:var(--mint);}
+  .card .fmt.png{color:var(--ink);}
+
+  footer{border-top:1.5px solid var(--ink);margin-top:60px;padding:34px 0;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  footer .note{font-size:13px;color:var(--gray);max-width:560px;line-height:1.5;}
+  footer .palette{display:flex;gap:8px;}
+  .sw{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--ink);}
+
+  @media(max-width:820px){
+    .grid.diagram,.grid.cover,.grid.og,.grid.thumb{grid-template-columns:1fr;}
+    .hero h1{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <div class="brand">
+      <div class="logo"><span>S</span></div>
+      <div class="wordmark">Sohovi</div>
+    </div>
+    <div class="head-meta">Image System · v1</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>The complete Sohovi image library.</h1>
+    <p>Every illustration, chart, thumbnail, cover, and social card from the Sohovi image spec — built in one rigid visual language: flat vector, three colors, clean geometric type, generous whitespace.</p>
+    <div class="stats">
+      <div class="stat accent"><div class="n" id="total">99</div><div class="l">Images</div></div>
+      <div class="stat"><div class="n">76</div><div class="l">SVG diagrams</div></div>
+      <div class="stat"><div class="n">9</div><div class="l">Video thumbs</div></div>
+      <div class="stat"><div class="n">8</div><div class="l">Blog covers</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">OG cards</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="filters" id="filters"></nav>
+  <div id="content"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="note">All images use the Sohovi palette — Cream, Ink, Electric Blue, Mint, Butter — at most three colors per image. SVG diagrams are infinitely scalable; thumbnails and covers ship as WebP; OG cards as PNG for crawler compatibility.</div>
+    <div class="palette">
+      <div class="sw" style="background:#F4F4F5" title="Cream #F4F4F5"></div>
+      <div class="sw" style="background:#0A0A0A" title="Ink #0A0A0A"></div>
+      <div class="sw" style="background:#2D7FF9" title="Electric Blue #2D7FF9"></div>
+      <div class="sw" style="background:#00C9A7" title="Mint #00C9A7"></div>
+      <div class="sw" style="background:#FFE439" title="Butter #FFE439"></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const D='diagrams/', T='assets/video-thumbs/', C='assets/covers/', O='assets/og/';
+const groups=[
+ {id:'flow',name:'Flow & Workflow Diagrams',spec:'SVG · inline',gridCls:'diagram',cardCls:'diagram',
+  desc:'Process flows, pipeline architectures, routing logic, and cycles — left-to-right or top-to-bottom, with quality gates marked by shield icons.',
+  files:[...Array(25)].map((_,i)=>String(i+1).padStart(2,'0')).map(n=>{
+    const slugs={'01':'automated-dq-workflow','02':'dq-framework-components','03':'problem-cascade','04':'duplicate-cascade','05':'etl-quality-gates','06':'etl-validation-stages','07':'api-validation-flow','08':'streaming-dead-letter-queue','09':'account-tier-routing','10':'training-data-model-quality','11':'dedup-strategy-cycle','12':'prevention-vs-reactive','13':'presend-quality-check','14':'dead-letter-queue-alert','15':'data-lineage','16':'mdm-golden-record','17':'hr-termination-gap','18':'null-entry-points','19':'three-system-unification','20':'list-import-dedup','21':'analyst-workflow','22':'raw-csv-to-clean','23':'proactive-vs-reactive','24':'integration-checkpoints','25':'validation-layer'};
+    return {src:D+'blog-flow-'+n+'-'+slugs[n]+'.svg',fmt:'svg'};})},
+ {id:'ba',name:'Before / After Comparisons',spec:'SVG · inline',gridCls:'diagram',cardCls:'diagram',
+  desc:'Side-by-side dirty-vs-clean data: normalization, deduplication, enrichment, schema and format fixes.',
+  files:['01-dirty-vs-clean','02-phone-normalization','03-address-normalization','04-duplicate-contacts-merged','05-state-iso-normalization','06-encoding-fix','07-contact-enrichment','08-schema-mismatch','09-date-format-variants','10-order-id-format-validation','11-cross-field-failure','12-usps-address-normalization'].map(s=>({src:D+'blog-ba-'+s+'.svg',fmt:'svg'}))},
+ {id:'chart',name:'Charts & Graphs',spec:'SVG · inline',gridCls:'diagram',cardCls:'diagram',
+  desc:'Trend lines, distributions, heatmaps, funnels, maturity models, and threshold zones — minimal axes, flat fills, electric-blue highlights.',
+  files:['01-quality-score-decline','02-order-status-distribution','03-zscore-bell-curve','04-null-rate-heatmap','05-pipeline-detection-cost','06-dq-problem-cost','07-cleanup-vs-maintenance','08-three-dq-metrics','09-email-list-funnel','10-address-validation-funnel','11-email-bounce-sources','12-schema-vs-statistical-drift','13-maturity-model','14-prevention-cost-comparison','15-quality-threshold-zones','16-status-field-variants','17-industry-field-standardization'].map(s=>({src:D+'blog-chart-'+s+'.svg',fmt:'svg'}))},
+ {id:'table',name:'Tables & Dashboard Mockups',spec:'SVG · inline',gridCls:'diagram',cardCls:'diagram',
+  desc:'Data profiles, scorecards, rule templates, dictionaries, and product UI mockups — ink headers, hairline rows, highlighted cells.',
+  files:['01-data-profile-report','02-dq-scorecard','03-rule-definition-template','04-quality-threshold-dashboard','05-observability-dashboard','06-premigration-quality-dashboard','07-data-dictionary','08-tiered-thresholds','09-vendor-master-dedup','10-product-id-mapping','11-pivot-case-variants','12-ai-rule-builder','13-dq-vs-behavior-score','14-behavioral-scoring-blindspots'].map(s=>({src:D+'blog-table-'+s+'.svg',fmt:'svg'}))},
+ {id:'venn',name:'Venn & Funnel Diagrams',spec:'SVG · inline',gridCls:'diagram',cardCls:'diagram',
+  desc:'Relationship overlaps, wheels, funnels, priority matrices, and recovery spectrums.',
+  files:[{src:D+'blog-venn-01-governance-quality-venn.svg',fmt:'svg'},{src:D+'blog-venn-02-accuracy-within-dq.svg',fmt:'svg'},{src:D+'blog-venn-03-database-merge-complexity.svg',fmt:'svg'},{src:D+'blog-venn-04-data-management-wheel.svg',fmt:'svg'},{src:D+'blog-funnel-01-prevention-vs-detective.svg',fmt:'svg'},{src:D+'blog-funnel-02-priority-matrix.svg',fmt:'svg'},{src:D+'blog-funnel-03-recovery-spectrum.svg',fmt:'svg'},{src:D+'blog-funnel-04-ai-automation-suitability.svg',fmt:'svg'}]},
+ {id:'thumb',name:'Video Tutorial Thumbnails',spec:'WebP · 1280×720',gridCls:'thumb',cardCls:'thumb',
+  desc:'16:9 thumbnails for the learn section — numbered top-left, "Sohovi" wordmark bottom-left, one concept illustration centered.',
+  files:['01-org-setup','02-connecting-data','03-data-profiling','04-building-rules','05-running-checks','06-alerts-monitoring','07-remediation-reporting','08-ai-rule-builder','09-behavioral-scoring'].map(s=>({src:T+'thumb-'+s+'.webp',fmt:'webp'}))},
+ {id:'cover',name:'Blog Cover Images',spec:'WebP · 1200×628',gridCls:'cover',cardCls:'cover',
+  desc:'Illustration on the right, blank left half for the headline overlay, a color anchor strip on the left edge.',
+  files:['data-quality','deduplication','data-governance','ai-automation','data-pipelines','data-profiling','behavioral-scoring','data-cleaning'].map(s=>({src:C+'cover-'+s+'.webp',fmt:'webp'}))},
+ {id:'og',name:'OG / Social Cards',spec:'PNG · 1200×630',gridCls:'og',cardCls:'og',
+  desc:'Static Open Graph cards for the homepage, blog index, tools hub, and individual tool pages.',
+  files:['homepage','blog','tools','tool-csv-to-markdown','tool-json-to-csv','tool-test-data-generator'].map(s=>({src:O+'og-'+s+'.png',fmt:'png'}))},
+];
+
+const fname=p=>p.split('/').pop();
+const filters=document.getElementById('filters');
+const content=document.getElementById('content');
+
+const allChip=document.createElement('button');allChip.className='chip active';allChip.textContent='All';allChip.dataset.id='all';filters.appendChild(allChip);
+groups.forEach(g=>{const b=document.createElement('button');b.className='chip';b.textContent=g.name.replace(/ (Diagrams|Comparisons|Images|Mockups|& Graphs|Thumbnails|Cards)$/,'');b.dataset.id=g.id;filters.appendChild(b);});
+
+function render(filter){
+  content.innerHTML='';
+  groups.filter(g=>filter==='all'||g.id===filter).forEach(g=>{
+    const sec=document.createElement('section');sec.className='group';
+    sec.innerHTML=`<div class="group-head"><h2>${g.name}</h2><span class="count">${g.files.length}</span><span class="spec">${g.spec}</span></div><p class="group-desc">${g.desc}</p>`;
+    const grid=document.createElement('div');grid.className='grid '+g.gridCls;
+    g.files.forEach(f=>{
+      const card=document.createElement('div');card.className='card '+g.cardCls;
+      card.innerHTML=`<div class="imgwrap"><img loading="lazy" src="${f.src}" alt="${fname(f.src)}"></div>`
+        +`<div class="meta"><span class="fname">${fname(f.src)}</span><span class="fmt ${f.fmt}">${f.fmt.toUpperCase()}</span></div>`;
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);content.appendChild(sec);
+  });
+}
+filters.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+  [...filters.children].forEach(c=>c.classList.remove('active'));b.classList.add('active');render(b.dataset.id);window.scrollTo({top:0,behavior:'instant'});});
+render('all');
+</script>
+</body>
+</html>
