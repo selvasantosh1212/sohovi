@@ -35,6 +35,9 @@ export async function generateMetadata({
   const description = post.seo_description ?? post.excerpt ?? undefined;
   const canonicalUrl = `${SITE_URL}/blog/${slug}`;
   const imageUrl = post.og_image_url ?? post.cover_image_url ?? undefined;
+  const publishedAt = post.published_at ?? undefined;
+  const modifiedAt =
+    post.updated_at > (post.published_at ?? "") ? post.updated_at : (post.published_at ?? post.updated_at);
 
   return {
     title,
@@ -46,8 +49,8 @@ export async function generateMetadata({
       description,
       type: "article",
       url: canonicalUrl,
-      publishedTime: post.published_at ?? undefined,
-      modifiedTime: post.updated_at,
+      publishedTime: publishedAt,
+      modifiedTime: modifiedAt,
       section: post.category ?? undefined,
       tags: post.tags,
       images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
@@ -87,7 +90,8 @@ function buildJsonLd(post: Awaited<ReturnType<typeof getPostBySlug>>, slug: stri
       description,
       url: canonicalUrl,
       datePublished: post.published_at ?? post.created_at,
-      dateModified: post.updated_at,
+      dateModified:
+        post.updated_at > (post.published_at ?? "") ? post.updated_at : (post.published_at ?? post.updated_at),
       author: {
         "@type": "Organization",
         name: post.author_name ?? "Sohovi Team",
@@ -222,6 +226,9 @@ export default async function BlogPostPage({
               )}
             </div>
           </div>
+          {post.author_bio && (
+            <p className="byline__bio">{post.author_bio}</p>
+          )}
         </header>
       </div>
 

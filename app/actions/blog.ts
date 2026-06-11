@@ -44,6 +44,50 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   return data as BlogPost;
 }
 
+export async function getPublishedPostCount(): Promise<number> {
+  try {
+    const supabase = createServiceClient();
+    const { count } = await supabase
+      .from("blog_posts")
+      .select("*", { count: "exact", head: true })
+      .eq("published", true);
+    return count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+export async function getAllCategories(): Promise<string[]> {
+  try {
+    const supabase = createServiceClient();
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("category")
+      .eq("published", true)
+      .not("category", "is", null);
+    const cats = (data ?? []).map((r: { category: string }) => r.category).filter(Boolean);
+    return Array.from(new Set(cats)).sort();
+  } catch {
+    return [];
+  }
+}
+
+export async function getPostsByCategory(category: string): Promise<BlogPost[]> {
+  try {
+    const supabase = createServiceClient();
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .eq("published", true)
+      .eq("category", category)
+      .order("published_at", { ascending: false });
+    if (error) return [];
+    return (data ?? []) as BlogPost[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getAllPublishedSlugs(): Promise<string[]> {
   // Use service client — called from generateStaticParams where cookies() is unavailable
   const supabase = createServiceClient();

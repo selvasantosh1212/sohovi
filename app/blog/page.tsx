@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getPublishedPosts } from "@/app/actions/blog";
+import { getPublishedPosts, getPublishedPostCount } from "@/app/actions/blog";
 import { BlogHomeClient } from "@/components/blog/BlogHomeClient";
 
 export const revalidate = 3600;
 
 const SITE_URL = "https://sohovi.com";
+const PAGE_SIZE = 24;
 
 export const metadata: Metadata = {
   title: "Blog — Data Quality Insights",
@@ -26,7 +27,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BlogListPage() {
-  const posts = await getPublishedPosts(24);
-  return <BlogHomeClient posts={posts} />;
+type Props = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function BlogListPage({ searchParams }: Props) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const [posts, total] = await Promise.all([
+    getPublishedPosts(PAGE_SIZE, (page - 1) * PAGE_SIZE),
+    getPublishedPostCount(),
+  ]);
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  return <BlogHomeClient posts={posts} page={page} totalPages={totalPages} />;
 }

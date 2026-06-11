@@ -5,7 +5,15 @@ import Link from "next/link";
 import type { BlogPost } from "@/types/app.types";
 import { formatDate } from "@/lib/blog-utils";
 
-export function BlogHomeClient({ posts }: { posts: BlogPost[] }) {
+export function BlogHomeClient({
+  posts,
+  page = 1,
+  totalPages = 1,
+}: {
+  posts: BlogPost[];
+  page?: number;
+  totalPages?: number;
+}) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const searchRef = useRef<HTMLInputElement>(null);
@@ -96,14 +104,26 @@ export function BlogHomeClient({ posts }: { posts: BlogPost[] }) {
         <div className="bh-chipbar" role="navigation" aria-label="Filter by category">
           <div className="bh-chipbar__inner">
             {categories.map((cat) => (
-              <button
-                key={cat}
-                className={`bh-chip${activeCategory === cat ? " is-active" : ""}`}
-                onClick={() => setActiveCategory(cat)}
-                aria-pressed={activeCategory === cat}
-              >
-                {cat === "all" ? "All" : cat}
-              </button>
+              cat === "all" ? (
+                <button
+                  key="all"
+                  className={`bh-chip${activeCategory === "all" ? " is-active" : ""}`}
+                  onClick={() => setActiveCategory("all")}
+                  aria-pressed={activeCategory === "all"}
+                >
+                  All
+                </button>
+              ) : (
+                <a
+                  key={cat}
+                  href={`/blog/category/${encodeURIComponent(cat)}`}
+                  className={`bh-chip${activeCategory === cat ? " is-active" : ""}`}
+                  onClick={(e) => { e.preventDefault(); setActiveCategory(cat); }}
+                  aria-pressed={activeCategory === cat}
+                >
+                  {cat}
+                </a>
+              )
             ))}
           </div>
         </div>
@@ -179,12 +199,25 @@ export function BlogHomeClient({ posts }: { posts: BlogPost[] }) {
         )}
       </section>
 
-      {/* Admin link */}
-      <div style={{ textAlign: "center", paddingTop: 48 }}>
-        <Link href="/blog/admin" style={{ fontSize: 12, color: "var(--hair-strong)" }}>
-          Admin
-        </Link>
-      </div>
+      {/* Pagination — plain <a> links so crawlers can follow them */}
+      {totalPages > 1 && (
+        <nav className="bh-pagination" aria-label="Blog pagination">
+          {page > 1 && (
+            <a href={`/blog?page=${page - 1}`} className="bh-pagination__link" rel="prev">
+              ← Newer
+            </a>
+          )}
+          <span className="bh-pagination__info">
+            Page {page} of {totalPages}
+          </span>
+          {page < totalPages && (
+            <a href={`/blog?page=${page + 1}`} className="bh-pagination__link" rel="next">
+              Older →
+            </a>
+          )}
+        </nav>
+      )}
+
     </div>
   );
 }

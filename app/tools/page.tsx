@@ -13,6 +13,7 @@ export const metadata: Metadata = {
       "Convert CSV to JSON, merge files, remove duplicates, generate SQL, and more — all free, in-browser, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools" },
+  keywords: ["free csv tools", "csv to json converter", "remove duplicate rows csv", "online data tools", "browser based csv tools", "csv to sql", "json to csv", "csv column picker"],
   twitter: { card: "summary_large_image", title: "Free CSV & Data Tools — No Signup Required | Sohovi", description: "9 free browser-based tools for CSV, JSON, SQL, Markdown, and more. In-browser, no signup, no limits." },
 };
 
@@ -66,6 +67,35 @@ export default function ToolsHubPage() {
       <section className="pb-20 px-6">
         <div className="mx-auto max-w-[1100px]">
           <ToolsGrid />
+        </div>
+      </section>
+
+      {/* Related blog guides */}
+      <section className="pb-10 px-6">
+        <div className="mx-auto max-w-[760px]">
+          <h2 className="text-[20px] font-bold mb-4" style={{ color: "var(--ink)" }}>
+            Related guides
+          </h2>
+          <ul className="grid gap-3">
+            {[
+              { href: "/blog/what-is-data-uniqueness", label: "What is data uniqueness? (and how to find duplicates)" },
+              { href: "/blog/what-is-data-cleansing", label: "What is data cleansing?" },
+              { href: "/blog/what-is-data-validation", label: "What is data validation?" },
+              { href: "/blog/what-is-data-profiling", label: "What is data profiling?" },
+              { href: "/blog/what-is-data-normalization", label: "What is data normalization?" },
+              { href: "/blog/what-is-etl", label: "What is an ETL pipeline?" },
+            ].map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="text-[15px] underline underline-offset-2"
+                  style={{ color: "var(--ink-soft)" }}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

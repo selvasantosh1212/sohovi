@@ -295,5 +295,13 @@ export function injectInlineSohoviMentions(
     }
   }
 
-  return output.join("\n\n");
+  const joined = output.join("\n\n");
+
+  // Remove duplicate blockquote CTAs (same text injected by both section and inline rules)
+  const seen = new Set<string>();
+  return joined.replace(/^> .+$/gm, (match) => {
+    if (seen.has(match)) return "";
+    seen.add(match);
+    return match;
+  });
 }

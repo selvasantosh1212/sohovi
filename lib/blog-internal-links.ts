@@ -54,11 +54,30 @@ const TERM_SLUG_MAP: [string, string][] = [
   // Single-word / short concepts — lower priority
   ["ETL pipeline", "what-is-etl"],
   ["data audit", "what-is-data-audit"],
+  // Free tools — link to the matching browser-based tool
+  ["remove duplicate rows", "/tools/remove-duplicates"],
+  ["duplicate row remover", "/tools/remove-duplicates"],
+  ["remove duplicates from CSV", "/tools/remove-duplicates"],
+  ["CSV to JSON converter", "/tools/csv-to-json"],
+  ["convert CSV to JSON", "/tools/csv-to-json"],
+  ["JSON to CSV converter", "/tools/json-to-csv"],
+  ["convert JSON to CSV", "/tools/json-to-csv"],
+  ["CSV to SQL generator", "/tools/csv-to-sql"],
+  ["convert CSV to SQL", "/tools/csv-to-sql"],
+  ["merge CSV files", "/tools/csv-merger"],
+  ["CSV merger", "/tools/csv-merger"],
+  ["test data generator", "/tools/test-data-generator"],
+  ["generate test data", "/tools/test-data-generator"],
+  ["Excel formula explainer", "/tools/formula-explainer"],
+  ["explain Excel formula", "/tools/formula-explainer"],
 ];
 
-/** Strip `[INTERNAL LINK: ...]` placeholder lines left by the seed process. */
+/** Strip `[INTERNAL LINK: ...]` and `[IMAGE: ...]` placeholder lines left by the seed process. */
 export function cleanInternalLinkPlaceholders(content: string): string {
-  return content.replace(/^\[INTERNAL LINK:[^\]]*\]\s*$/gm, "").replace(/\n{3,}/g, "\n\n");
+  return content
+    .replace(/^\[INTERNAL LINK:[^\]]*\]\s*$/gm, "")
+    .replace(/\[IMAGE:[^\]]*\]/g, "")
+    .replace(/\n{3,}/g, "\n\n");
 }
 
 /**
@@ -133,7 +152,8 @@ function injectIntoLine(line: string, currentSlug: string, linked: Set<string>):
     const closeBrackets = (before.match(/\]/g) ?? []).length;
     if (openBrackets > closeBrackets) continue; // we're inside [...
 
-    line = line.slice(0, m.index) + `[${m[1]}](/blog/${slug})` + line.slice(m.index + m[1].length);
+    const href = slug.startsWith("/") ? slug : `/blog/${slug}`;
+    line = line.slice(0, m.index) + `[${m[1]}](${href})` + line.slice(m.index + m[1].length);
     linked.add(term.toLowerCase());
   }
   return line;
