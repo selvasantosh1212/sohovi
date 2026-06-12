@@ -116,6 +116,34 @@ const sectionCtaRules: { keywords: string[]; text: string }[] = [
     keywords: ["small business", "non-technical", "no-code", "without an engineer", "without it"],
     text: "No engineers or code needed — Sohovi is built for business users who need real data quality answers fast",
   },
+  {
+    keywords: ["leading zero", "zip code format", "serial number format", "remove leading zero"],
+    text: "Stop re-fixing the same file every week — set a validation rule once in Sohovi and get flagged the moment a leading zero goes missing",
+  },
+  {
+    keywords: ["date format", "mm/dd", "dd/mm", "iso 8601", "date corruption", "date silently", "wrong date"],
+    text: "Not sure if your dates are already silently corrupted? Profile the file free in Sohovi — mixed date formats light up instantly",
+  },
+  {
+    keywords: ["merge csv", "combine csv", "schema mismatch", "mismatched column", "different columns"],
+    text: "Merging files with mismatched columns? Drop them into our free CSV merger — it aligns columns and flags what doesn't match",
+  },
+  {
+    keywords: ["anonymize", "anonymization", "pseudonymize", "re-identify", "dpa", "data processor", "gdpr tool"],
+    text: "Anonymize your file in the browser — it never touches a server, which means the anonymization itself doesn't create a privacy problem",
+  },
+  {
+    keywords: ["rag pipeline", "retrieval", "llm data", "fine-tun", "knowledge base", "chatbot answer", "vector embed"],
+    text: "Before you blame the model, profile your source data — drag your knowledge-base export into Sohovi and see what your AI has been reading",
+  },
+  {
+    keywords: ["quickbooks", "xero import", "import error", "csv import fail", "rejected import"],
+    text: "Run your import file through Sohovi first — catch format errors, duplicates, and missing fields in one screen before QuickBooks sees it",
+  },
+  {
+    keywords: ["salesforce migration", "go-live", "crm migration", "data migration checklist", "pre-migration"],
+    text: "The data prep phase of this checklist takes days in Excel or an afternoon in Sohovi — upload your export and work through it free",
+  },
 ];
 
 /**
