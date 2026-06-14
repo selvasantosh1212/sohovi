@@ -2,7 +2,7 @@
 
 > **What this file is:** A single source of truth for the Sohovi blog. It covers (1) every published post with its slug, (2) which roadmap topics are done vs still pending, and (3) the exact writing guide every future post must follow.
 >
-> **Last updated:** June 2026 · **Published posts:** 172 · **Pending (from roadmap):** ~90
+> **Last updated:** June 2026 · **Published posts:** 516 · **Pending (from roadmap):** 52
 
 ---
 
@@ -16,7 +16,7 @@
 
 ## 1. Published Posts — Full Inventory
 
-172 posts total. All are live in Supabase and available at `/blog/[slug]`.
+516 posts total. All are live in Supabase and available at `/blog/[slug]`.
 
 ### Comparisons & Alternatives
 
@@ -265,86 +265,86 @@
 
 Cross-referenced against the 122-topic roadmap. ✅ = published, ⬜ = not yet written.
 
-### Priority 1 — Comparison & Alternatives 🔴 BOFU (3/15 done)
+### Priority 1 — Comparison & Alternatives 🔴 BOFU (14/15 done)
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
 | 1 | ✅ | Sohovi vs OpenRefine: Which Should You Use? | `sohovi-vs-openrefine` |
-| 2 | ⬜ | Sohovi vs Great Expectations: No-Code vs Code-First | `sohovi-vs-great-expectations` |
-| 3 | ⬜ | Sohovi vs Excel for Data Quality Checks | `sohovi-vs-excel-data-quality` |
+| 2 | ✅ | Sohovi vs Great Expectations: No-Code vs Code-First | `sohovi-vs-great-expectations` |
+| 3 | ✅ | Sohovi vs Excel for Data Quality Checks | `sohovi-vs-excel-data-quality` |
 | 4 | ✅ | Best Data Quality Tools for Small Businesses (2026) | `best-data-quality-tools-small-business-2026` |
-| 5 | ⬜ | Best Free Data Profiling Tools (2026) | `best-free-data-profiling-tools-2026` |
-| 6 | ⬜ | Soda Alternatives for Teams Without Data Engineers | `soda-alternatives-no-data-engineers` |
-| 7 | ⬜ | Monte Carlo Alternatives for Small Teams | `monte-carlo-alternatives-small-teams` |
-| 8 | ⬜ | Talend Open Studio Is Gone: 7 Alternatives | `talend-open-studio-alternatives` |
-| 9 | ⬜ | OpenRefine Alternatives That Run in Your Browser | `openrefine-alternatives-browser` |
-| 10 | ⬜ | Great Expectations Too Complex? Simpler Alternatives | `great-expectations-alternatives-simpler` |
-| 11 | ⬜ | Informatica Data Quality Alternatives for SMBs | `informatica-data-quality-alternatives-smb` |
-| 12 | ⬜ | Data Ladder / WinPure Alternatives: Modern Dedupe | `data-ladder-winpure-alternatives` |
-| 13 | ⬜ | Why We Built a Tool That Never Uploads Your Data | `why-sohovi-never-uploads-your-data` |
+| 5 | ✅ | Best Free Data Profiling Tools (2026) | `best-free-data-profiling-tools-2026` |
+| 6 | ✅ | Soda Alternatives for Teams Without Data Engineers | `soda-alternatives-no-data-engineers` |
+| 7 | ✅ | Monte Carlo Alternatives for Small Teams | `monte-carlo-alternatives-small-teams` |
+| 8 | ✅ | Talend Open Studio Is Gone: 7 Alternatives | `talend-open-studio-alternatives` |
+| 9 | ✅ | OpenRefine Alternatives That Run in Your Browser | `openrefine-alternatives-browser` |
+| 10 | ✅ | Great Expectations Too Complex? Simpler Alternatives | `great-expectations-alternatives-simpler` |
+| 11 | ✅ | Informatica Data Quality Alternatives for SMBs | `informatica-data-quality-alternatives-smb` |
+| 12 | ✅ | Data Ladder / WinPure Alternatives: Modern Dedupe | `data-ladder-winpure-alternatives` |
+| 13 | ✅ | Why We Built a Tool That Never Uploads Your Data | `why-sohovi-never-uploads-your-data` |
 | 14 | ✅ | How Much Does Bad Data Cost a Small Business? | `bad-data-cost-small-business` |
-| 15 | ⬜ | Data Quality Tool Pricing Compared: 2026 | `data-quality-tool-pricing-compared-2026` |
+| 15 | ✅ | Data Quality Tool Pricing Compared: 2026 | `data-quality-tool-pricing-compared-2026` |
 
-### Priority 2 — Free Tool Support Cluster 🟡 MOFU (4/19 done)
+### Priority 2 — Free Tool Support Cluster 🟡 MOFU (19/19 done)
 
 **Duplicate Remover:**
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
 | 16 | ✅ | How to Remove Duplicate Rows in Excel (3 Methods) | `remove-duplicate-rows-excel` |
-| 17 | ⬜ | How to Remove Duplicates in Google Sheets Without Formulas | `remove-duplicates-google-sheets` |
-| 18 | ⬜ | How to Find Duplicates Across Two CSV Files | `find-duplicates-across-two-csv-files` |
+| 17 | ✅ | How to Remove Duplicates in Google Sheets Without Formulas | `remove-duplicates-google-sheets` |
+| 18 | ✅ | How to Find Duplicates Across Two CSV Files | `find-duplicates-across-two-csv-files` |
 | 19 | ✅ | Fuzzy Matching: Finding Near-Duplicate Customer Records | `fuzzy-matching-customer-data` |
-| 20 | ⬜ | Why "Remove Duplicates" in Excel Misses Most Duplicates | `why-excel-remove-duplicates-misses-most` |
+| 20 | ✅ | Why "Remove Duplicates" in Excel Misses Most Duplicates | `why-excel-remove-duplicates-misses-most` |
 
 **CSV Converters:**
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
-| 21 | ⬜ | CSV to JSON: Arrays, Objects, and Which Format APIs Expect | `csv-to-json-api-formats` |
-| 22 | ⬜ | How to Convert JSON to Excel Without Coding | `json-to-excel-without-coding` |
-| 23 | ⬜ | CSV to SQL: Generating INSERT Statements Safely | `csv-to-sql-insert-statements` |
-| 24 | ⬜ | How to Bulk-Import a CSV into MySQL / PostgreSQL / SQLite | `bulk-import-csv-mysql-postgresql-sqlite` |
-| 25 | ⬜ | How to Put a CSV Table into GitHub README or Notion | `csv-to-markdown-github-notion` |
+| 21 | ✅ | CSV to JSON: Arrays, Objects, and Which Format APIs Expect | `csv-to-json-api-formats` |
+| 22 | ✅ | How to Convert JSON to Excel Without Coding | `json-to-excel-without-coding` |
+| 23 | ✅ | CSV to SQL: Generating INSERT Statements Safely | `csv-to-sql-insert-statements` |
+| 24 | ✅ | How to Bulk-Import a CSV into MySQL / PostgreSQL / SQLite | `bulk-import-csv-mysql-postgresql-sqlite` |
+| 25 | ✅ | How to Put a CSV Table into GitHub README or Notion | `csv-to-markdown-github-notion` |
 
 **CSV Merger / Column Picker:**
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
 | 26 | ✅ | How to Merge Multiple CSV Files into One | `merge-multiple-csv-files` |
-| 27 | ⬜ | How to Combine CSVs with Different Columns | `combine-csvs-different-columns` |
-| 28 | ⬜ | How to Split One Huge CSV into Smaller Files | `split-large-csv-into-smaller-files` |
-| 29 | ⬜ | How to Reorder, Rename, and Drop CSV Columns in Bulk | `reorder-rename-drop-csv-columns` |
+| 27 | ✅ | How to Combine CSVs with Different Columns | `combine-csvs-different-columns` |
+| 28 | ✅ | How to Split One Huge CSV into Smaller Files | `split-large-csv-into-smaller-files` |
+| 29 | ✅ | How to Reorder, Rename, and Drop CSV Columns in Bulk | `reorder-rename-drop-csv-columns` |
 
 **Test Data Generator:**
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
-| 30 | ⬜ | How to Generate Realistic Fake Customer Data for Testing | `generate-realistic-fake-customer-data` |
-| 31 | ⬜ | Test Data vs Production Data: Why You Should Never Test with Real PII | `test-data-vs-production-data-pii` |
-| 32 | ⬜ | Seed Data for Demos: Generating 100k Realistic Rows in Seconds | `seed-data-demos-100k-rows` |
+| 30 | ✅ | How to Generate Realistic Fake Customer Data for Testing | `generate-realistic-fake-customer-data` |
+| 31 | ✅ | Test Data vs Production Data: Why You Should Never Test with Real PII | `test-data-vs-production-data-pii` |
+| 32 | ✅ | Seed Data for Demos: Generating 100k Realistic Rows in Seconds | `seed-data-demos-100k-rows` |
 
 **Formula Explainer:**
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
-| 33 | ⬜ | The 15 Excel Formulas Every Data Cleaner Needs | `excel-formulas-data-cleaning` |
-| 34 | ⬜ | What Does This Excel Formula Do? Decoding Nested IFs, VLOOKUP, INDEX/MATCH | `what-does-excel-formula-do` |
+| 33 | ✅ | The 15 Excel Formulas Every Data Cleaner Needs | `excel-formulas-data-cleaning` |
+| 34 | ✅ | What Does This Excel Formula Do? Decoding Nested IFs, VLOOKUP, INDEX/MATCH | `what-does-excel-formula-do` |
 
-### Priority 3 — Excel & Google Sheets Pain Points 🟡 MOFU (3/11 done)
+### Priority 3 — Excel & Google Sheets Pain Points 🟡 MOFU (10/11 done)
 
 | # | Status | Topic | Suggested Slug |
 |---|--------|-------|----------------|
 | 35 | ✅ | Excel Keeps Removing Leading Zeros | `excel-leading-zeros-fix` |
 | 36 | ✅ | CSV Dates Display Wrong in Excel: The Real Fix | `csv-dates-wrong-excel-fix` |
-| 37 | ⬜ | Excel Converted My Numbers to Scientific Notation | `excel-scientific-notation-fix` |
-| 38 | ⬜ | Excel's 1,048,576 Row Limit: How to Work with Bigger Files | `excel-row-limit-workaround` |
-| 39 | ⬜ | Excel Turned My Gene Names / Product Codes into Dates | `excel-auto-date-product-codes-fix` |
-| 40 | ⬜ | UTF-8 Characters Look Broken in Excel: Encoding Fix Guide | `utf8-characters-broken-excel-encoding` |
+| 37 | ✅ | Excel Converted My Numbers to Scientific Notation | `excel-scientific-notation-fix` |
+| 38 | ✅ | Excel's 1,048,576 Row Limit: How to Work with Bigger Files | `excel-row-limit-workaround` |
+| 39 | ✅ | Excel Turned My Gene Names / Product Codes into Dates | `excel-auto-date-product-codes-fix` |
+| 40 | ✅ | UTF-8 Characters Look Broken in Excel: Encoding Fix Guide | `utf8-characters-broken-excel-encoding` |
 | 41 | ✅ | How to Clean Phone Numbers in Excel and Google Sheets | `standardize-phone-numbers-spreadsheet` |
-| 42 | ⬜ | TRIM, CLEAN, and the Invisible Characters Breaking Your VLOOKUPs | `trim-clean-invisible-characters-vlookup` |
-| 43 | ⬜ | Data Validation in Google Sheets: Dropdowns, Rules, Protected Ranges | `data-validation-google-sheets` |
-| 44 | ⬜ | Conditional Formatting Recipes for Spotting Bad Data Instantly | `conditional-formatting-bad-data` |
+| 42 | ✅ | TRIM, CLEAN, and the Invisible Characters Breaking Your VLOOKUPs | `trim-clean-invisible-characters-vlookup` |
+| 43 | ✅ | Data Validation in Google Sheets: Dropdowns, Rules, Protected Ranges | `data-validation-google-sheets` |
+| 44 | ✅ | Conditional Formatting Recipes for Spotting Bad Data Instantly | `conditional-formatting-bad-data` |
 | 45 | ⬜ | Why Your VLOOKUP Returns #N/A (Usually a Data Quality Problem) | `vlookup-na-error-data-quality` |
 
 ### Priority 4 — Data Cleaning Cluster 🟢→🟡 (4/13 done)
