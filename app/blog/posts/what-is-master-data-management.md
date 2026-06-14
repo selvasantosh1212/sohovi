@@ -136,6 +136,3 @@ A single source of truth is the one system or record that is considered authorit
 
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
 [INTERNAL LINK: What Is Data Quality? A Complete Beginner's Guide]
-
----
-**Meta description:** Master data management (MDM) creates a single authoritative source for key business data like customers, products, and suppliers. Here's what it is and when you need it.

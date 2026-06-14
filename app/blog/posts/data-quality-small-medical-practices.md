@@ -117,6 +117,3 @@ Annually for a full duplicate audit and contact verification check. Quarterly ve
 
 [INTERNAL LINK: Data Quality in Healthcare: Why Accuracy Can Save Lives]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Small medical practices face serious data quality risks with limited IT resources. Here's a practical approach to patient record accuracy that doesn't require enterprise EHR features.

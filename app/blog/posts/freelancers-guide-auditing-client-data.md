@@ -141,6 +141,3 @@ Spreadsheet tools (Excel, Google Sheets) for manual checks. Sohovi for CSV profi
 
 [INTERNAL LINK: Inherited a Client's Messy Spreadsheet? Here's How to Audit It in 30 Minutes]
 [INTERNAL LINK: Data Quality for Freelancers: How to Deliver Clean Data Every Time]
-
----
-**Meta description:** The data you receive from a client defines how complex your project will be. Here's how to assess it before you commit to scope, timeline, or price.

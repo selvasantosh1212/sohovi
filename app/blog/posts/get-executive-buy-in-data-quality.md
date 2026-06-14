@@ -165,6 +165,3 @@ If you need concrete numbers to anchor your business case, Sohovi is free to try
 
 [INTERNAL LINK: How to Calculate the ROI of a Data Quality Investment]
 [INTERNAL LINK: The Business Case for Data Quality: A Guide for Non-Technical Executives]
-
----
-**Meta description:** Frame data quality as a business problem, not a tech issue. Learn how to build a compelling ROI-backed case that gets leadership approval and budget.

@@ -150,6 +150,3 @@ If you want to build that habit starting with your most important dataset, Sohov
 
 [INTERNAL LINK: How Bad Data Leads to Bad Business Decisions]
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
-
----
-**Meta description:** Data-backed decisions feel rigorous — but bad data makes wrong decisions feel certain. See how poor data quality leads to failed forecasts, bad expansions, and misallocated budgets.

@@ -90,6 +90,3 @@ Yes. The most important manufacturing data quality practices — BOM review befo
 
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
 [INTERNAL LINK: How to Fix the Most Common Data Quality Problems]
-
----
-**Meta description:** Manufacturing data quality problems cause production errors, inventory waste, and compliance failures. Here's where accuracy matters most and how to improve it.

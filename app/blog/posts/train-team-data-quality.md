@@ -150,6 +150,3 @@ If you want concrete quality metrics to anchor your training program, Sohovi is 
 
 [INTERNAL LINK: How to Write a Data Quality Policy in 5 Steps]
 [INTERNAL LINK: How to Build a Data Quality Culture at Your Company]
-
----
-**Meta description:** Data quality is a team habit, not just a tool setting. Here's how to build the training, norms, and accountability structures that make data quality stick.

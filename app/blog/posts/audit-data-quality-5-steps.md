@@ -161,6 +161,3 @@ Sohovi makes Step 2 instant — upload your CSV and get a complete quality profi
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: How to Prioritize Data Quality Issues When Resources Are Limited]
-
----
-**Meta description:** A data quality audit doesn't have to take weeks. Here are 5 clear steps for auditing your most important dataset and producing findings you can actually act on.

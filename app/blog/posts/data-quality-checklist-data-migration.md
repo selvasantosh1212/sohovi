@@ -163,5 +163,3 @@ Don't go live. Roll back if you can, or put a hold on cutover. Identify the caus
 ---
 
 If you're approaching a migration and want to know exactly what's wrong with your source data before you start, Sohovi can profile your CSV exports in minutes — showing you null rates, format inconsistencies, and duplicates before they become migration blockers. Upload your first file free at sohovi.com — no code, no setup required.
-
-**Meta description:** Build a reusable data quality checklist for any data migration. Covers pre-migration profiling, field mapping validation, post-migration reconciliation, and business sign-off.

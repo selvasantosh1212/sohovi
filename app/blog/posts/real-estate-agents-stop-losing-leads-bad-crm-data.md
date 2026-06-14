@@ -112,6 +112,3 @@ Note it in the record ("unverified phone — bounced"). Update the lead stage to
 
 [INTERNAL LINK: Duplicate Leads Are Costing Real Estate Teams $75K Per Year — Here's How to Find Them]
 [INTERNAL LINK: Data Quality for Sales Teams: Keeping Your CRM Data Reliable]
-
----
-**Meta description:** Bad CRM data costs real estate agents deals — duplicate leads, wrong contact info, missed follow-ups. Here's how to clean your database and keep it clean.

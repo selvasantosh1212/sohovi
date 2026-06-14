@@ -100,6 +100,3 @@ Consistency asks: is the same information represented the same way across record
 
 [INTERNAL LINK: How to Standardize Date Formats Across Your Dataset]
 [INTERNAL LINK: What Is Data Standardization?]
-
----
-**Meta description:** Data conformity measures whether data values follow agreed-upon formats, standards, and naming conventions. Here's what it means and how to measure it.

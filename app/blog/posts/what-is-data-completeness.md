@@ -125,6 +125,3 @@ If you want to see your completeness rates per column in under a minute, Sohovi 
 
 [INTERNAL LINK: How to Handle Missing Values in a CSV File]
 [INTERNAL LINK: What Is a Good Data Completeness Rate? Industry Benchmarks Explained]
-
----
-**Meta description:** Data completeness measures what percentage of required fields have a value. Here's a full definition, how to measure it, what a good score looks like, and how to improve it.

@@ -129,6 +129,3 @@ Document your findings, the changes made, and the client's sign-off on material 
 
 [INTERNAL LINK: The Bookkeeper's Guide to Auditing a Messy Client Dataset Before You Start]
 [INTERNAL LINK: Data Quality for Accountants: Why Financial Data Accuracy Starts with Clean Records]
-
----
-**Meta description:** Financial data errors caught before tax filing are fixable. Found afterward, they trigger amendments, audits, and client relationship damage. Here's the pre-season audit to run.

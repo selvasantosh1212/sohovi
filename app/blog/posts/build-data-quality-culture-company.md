@@ -138,5 +138,3 @@ Build quality standards into onboarding and documentation. New hires should unde
 ---
 
 Ready to start making data quality visible at your organization? Sohovi lets any team member profile their CSV data instantly — no technical skills needed. Seeing your first quality report is often what makes the abstract concrete. Try it free — upload your first file at sohovi.com.
-
-**Meta description:** Building a data quality culture doesn't require a data team. It requires changing how people think about and handle data. Here's how to make quality everyone's habit.

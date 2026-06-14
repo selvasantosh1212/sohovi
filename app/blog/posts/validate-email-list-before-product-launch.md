@@ -123,6 +123,3 @@ Sohovi can profile your launch list CSV in under a minute — completeness, dupl
 
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
 [INTERNAL LINK: How to Prepare Your Customer Data Before Black Friday / Cyber Monday]
-
----
-**Meta description:** Product launches live and die by their email campaign reach. Here's how to validate your list before launch day to maximize delivery, protect deliverability, and reach every possible buyer.

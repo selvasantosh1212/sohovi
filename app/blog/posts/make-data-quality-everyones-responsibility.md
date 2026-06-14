@@ -132,5 +132,3 @@ Track quality metrics over time. If null rates, duplicate rates, and format vali
 ---
 
 If you want to make data quality visible to every team in your organization, Sohovi gives non-technical staff an easy way to check the quality of their own data — no SQL, no engineering required. Start with your most important dataset and upload it free at sohovi.com.
-
-**Meta description:** Data quality can't live only in the data team. Here's how to make every employee — from sales reps to executives — a stakeholder in data accuracy.

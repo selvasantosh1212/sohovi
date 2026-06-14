@@ -129,5 +129,3 @@ Team growth creates quality problems through inconsistent practices — differen
 ---
 
 Growing companies that invest in data quality early spend less time cleaning up later. If you want to understand where your data stands right now, Sohovi can profile any CSV in minutes — showing you the quality issues to prioritize. Try it free — no engineering, no setup required.
-
-**Meta description:** Growing companies face a predictable set of data quality problems. Here's what they are, why they happen, and how to solve them before they slow you down.

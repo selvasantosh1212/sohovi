@@ -95,6 +95,3 @@ Cross-system divergence — where the same entity exists in multiple systems wit
 
 [INTERNAL LINK: What Is Data Consistency? Why It's the Dimension That Breaks Reports]
 [INTERNAL LINK: Data Quality vs. Data Governance: What's the Difference?]
-
----
-**Meta description:** Data integrity in data quality means relationships between data are correct and consistent. Here's the definition, examples, and how it differs from database integrity.

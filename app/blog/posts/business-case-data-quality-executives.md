@@ -141,6 +141,3 @@ If you're ready to see what your most important dataset actually looks like, Soh
 
 [INTERNAL LINK: How to Calculate the ROI of a Data Quality Investment]
 [INTERNAL LINK: How to Get Executive Buy-In for a Data Quality Project]
-
----
-**Meta description:** Data quality is a business performance issue, not just an IT problem. This plain-English guide helps non-technical executives understand the stakes and act.

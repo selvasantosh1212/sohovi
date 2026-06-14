@@ -191,6 +191,3 @@ If you're ready to run your first data quality audit, Sohovi makes the statistic
 
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Running a data quality audit for the first time? This step-by-step guide walks you through the entire process — from choosing your dataset to acting on the findings.

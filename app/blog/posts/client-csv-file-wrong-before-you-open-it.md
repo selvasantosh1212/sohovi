@@ -106,6 +106,3 @@ Unexpected PII. Freelancers regularly receive files containing Social Security n
 
 [INTERNAL LINK: Inherited a Client's Messy Spreadsheet? Here's How to Audit It in 30 Minutes]
 [INTERNAL LINK: Freelancer's Guide to Auditing a Client's Data Before Starting a Project]
-
----
-**Meta description:** Most client CSV files have data quality problems before you touch them. Here's why it happens, what to expect, and how to catch the issues before they become your problem.

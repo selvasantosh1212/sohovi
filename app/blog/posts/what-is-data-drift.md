@@ -108,6 +108,3 @@ If you're measuring quality metrics over time, look for gradual downward trends.
 
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
 [INTERNAL LINK: How to Track Data Quality Trends Over Time]
-
----
-**Meta description:** Data drift is the gradual degradation of data quality over time as business conditions change and data processes fall out of sync. Here's what causes it and how to catch it.

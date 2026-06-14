@@ -138,6 +138,3 @@ If your organization wants to run a quick quality check on your donor export bef
 
 [INTERNAL LINK: Data Quality for Nonprofits: Making the Most of Donor and Grant Data]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Nonprofits with accurate donor records raise more money — better targeting, better retention, fewer wasted communications. Here's how to clean your database without enterprise tools.

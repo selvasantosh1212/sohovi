@@ -159,6 +159,3 @@ If you're not sure which data quality issues are most severe in your most import
 
 [INTERNAL LINK: How to Fix the Most Common Data Quality Problems]
 [INTERNAL LINK: How to Calculate the ROI of a Data Quality Investment]
-
----
-**Meta description:** Not every data quality problem is worth fixing immediately. Here's a practical framework for prioritizing which issues to tackle first when time and budget are tight.

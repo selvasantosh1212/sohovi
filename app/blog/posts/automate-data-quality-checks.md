@@ -148,6 +148,3 @@ If you want to add a fast, consistent data quality check to your CSV import work
 
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
-
----
-**Meta description:** Manual data quality checks get skipped. Automated ones don't. Here's how to automate your most important data quality checks without writing code.

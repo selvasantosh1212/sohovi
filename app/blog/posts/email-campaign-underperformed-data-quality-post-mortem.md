@@ -115,6 +115,3 @@ For a straightforward campaign: 30–60 minutes. For a significant revenue miss 
 
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
-
----
-**Meta description:** When an email campaign underperforms, data quality is often the culprit. Here's a systematic post-mortem to find the root cause and prevent recurrence.

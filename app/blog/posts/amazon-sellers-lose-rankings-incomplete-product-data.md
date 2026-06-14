@@ -112,6 +112,3 @@ Quarterly for active sellers. After any Amazon category or policy update that af
 
 [INTERNAL LINK: Why Your Shopify Product Data Is Costing You Sales (And How to Fix It)]
 [INTERNAL LINK: Data Quality for E-commerce: Keeping Product and Customer Data Clean]
-
----
-**Meta description:** Amazon's A9 algorithm ranks listings based on data completeness, accuracy, and relevance. Incomplete product data silently suppresses your rankings. Here's what to fix.

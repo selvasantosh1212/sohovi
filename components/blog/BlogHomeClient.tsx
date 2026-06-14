@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import type { BlogPost } from "@/types/app.types";
-import { formatDate } from "@/lib/blog-utils";
+import { formatDate, slugifyCategory } from "@/lib/blog-utils";
 
 export function BlogHomeClient({
   posts,
@@ -116,7 +116,7 @@ export function BlogHomeClient({
               ) : (
                 <a
                   key={cat}
-                  href={`/blog/category/${encodeURIComponent(cat)}`}
+                  href={`/blog/category/${slugifyCategory(cat)}`}
                   className={`bh-chip${activeCategory === cat ? " is-active" : ""}`}
                   onClick={(e) => { e.preventDefault(); setActiveCategory(cat); }}
                   aria-pressed={activeCategory === cat}

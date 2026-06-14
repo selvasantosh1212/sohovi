@@ -110,6 +110,3 @@ When it meets the requirements of the downstream use. For a CRM import: all requ
 
 [INTERNAL LINK: How to Handle Missing Values in a CSV File]
 [INTERNAL LINK: How to Standardize Date Formats Across Your Dataset]
-
----
-**Meta description:** Data wrangling is the process of cleaning, transforming, and preparing raw data for analysis. Here's what it means, what it involves, and how to do it without coding.

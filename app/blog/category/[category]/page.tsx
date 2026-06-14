@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPostsByCategory, getAllCategories } from "@/app/actions/blog";
-import { formatDate } from "@/lib/blog-utils";
+import { formatDate, slugifyCategory } from "@/lib/blog-utils";
 
 export const revalidate = 3600;
 
@@ -12,22 +12,38 @@ type Props = {
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
-  return categories.map((c) => ({ category: encodeURIComponent(c) }));
+  return categories.map((c) => ({ category: slugifyCategory(c) }));
+}
+
+/** Resolve a category slug to its real category name, redirecting legacy URLs. */
+async function resolveCategory(categorySlug: string): Promise<string> {
+  const categories = await getAllCategories();
+  const match = categories.find((c) => slugifyCategory(c) === categorySlug);
+  if (match) return match;
+
+  // Legacy `/blog/category/${encodeURIComponent(fullName)}` URLs
+  const decoded = decodeURIComponent(categorySlug);
+  const legacyMatch = categories.find((c) => c === decoded);
+  if (legacyMatch) {
+    permanentRedirect(`/blog/category/${slugifyCategory(legacyMatch)}`);
+  }
+
+  notFound();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const name = decodeURIComponent(category);
+  const name = await resolveCategory(category);
   return {
     title: `${name} — Sohovi Blog`,
     description: `Browse all Sohovi blog posts in the ${name} category.`,
-    alternates: { canonical: `https://sohovi.com/blog/category/${category}` },
+    alternates: { canonical: `https://sohovi.com/blog/category/${slugifyCategory(name)}` },
   };
 }
 
 export default async function CategoryArchivePage({ params }: Props) {
   const { category } = await params;
-  const name = decodeURIComponent(category);
+  const name = await resolveCategory(category);
   const posts = await getPostsByCategory(name);
 
   if (posts.length === 0) notFound();

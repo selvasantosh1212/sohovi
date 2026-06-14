@@ -124,6 +124,3 @@ Buildium, AppFolio, Yardi Breeze, and Rent Manager all have robust data manageme
 
 [INTERNAL LINK: Data Quality for Real Estate: Maintaining Accurate Property and Client Listings]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Property managers with messy tenant databases miss maintenance requests, send notices to wrong addresses, and have unreliable occupancy records. Here's a weekend fix.

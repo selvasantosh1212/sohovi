@@ -113,6 +113,3 @@ For dynamic data (customer contact information), quarterly verification is a rea
 
 [INTERNAL LINK: What Is Data Validity? How Business Rules Define Good Data]
 [INTERNAL LINK: What Is Data Completeness? Definition, Examples, and How to Measure It]
-
----
-**Meta description:** Data accuracy measures whether your data correctly reflects the real-world entities it describes. Here's what it means, how to measure it, and why it's harder to fix than other dimensions.

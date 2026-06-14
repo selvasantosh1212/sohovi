@@ -190,6 +190,3 @@ If you're ready to start with a concrete audit of your most important dataset, S
 
 [INTERNAL LINK: The Hidden Costs of Poor Data Quality]
 [INTERNAL LINK: How to Get Executive Buy-In for a Data Quality Project]
-
----
-**Meta description:** Justify your data quality budget with real numbers. This step-by-step ROI framework shows what bad data costs your business — and what fixing it is worth.

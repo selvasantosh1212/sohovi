@@ -112,6 +112,3 @@ If you're managing more than ~300 active candidates across multiple searches, a 
 
 [INTERNAL LINK: Data Quality for Freelancers: How to Deliver Clean Data Every Time]
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
-
----
-**Meta description:** Candidate spreadsheets accumulate duplicates, stale data, and format inconsistencies fast. Here's how freelance recruiters can clean them up before a new search.

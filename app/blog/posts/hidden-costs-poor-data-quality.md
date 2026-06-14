@@ -132,6 +132,3 @@ If you're ready to see exactly where your data quality problems are hiding, Soho
 
 [INTERNAL LINK: How Bad Data Is Costing Your Business Money]
 [INTERNAL LINK: How to Calculate the ROI of a Data Quality Investment]
-
----
-**Meta description:** Bad data costs more than wrong reports. Discover the hidden financial damage hiding inside wasted labor, failed campaigns, customer loss, and faulty decisions.

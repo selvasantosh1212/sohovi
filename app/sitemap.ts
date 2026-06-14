@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPublishedSlugs, getAllCategories } from "@/app/actions/blog";
+import { slugifyCategory } from "@/lib/blog-utils";
 
 export const revalidate = 3600;
 
@@ -35,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date("2026-05-31"),
     })),
     ...categories.map((c) => ({
-      url: `${BASE}/blog/category/${encodeURIComponent(c)}`,
+      url: `${BASE}/blog/category/${slugifyCategory(c)}`,
       priority: 0.6,
       changeFrequency: "weekly" as const,
     })),

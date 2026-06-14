@@ -10,7 +10,7 @@ import { KeyTakeaways } from "@/components/blog/KeyTakeaways";
 import { BlogFAQ } from "@/components/blog/BlogFAQ";
 import { BlogPostAuthor } from "@/components/blog/BlogPostAuthor";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
-import { extractToc, formatDate } from "@/lib/blog-utils";
+import { extractToc, formatDate, slugifyCategory } from "@/lib/blog-utils";
 import { injectInlineSohoviMentions } from "@/lib/blog-cta";
 import { injectInternalLinks, cleanInternalLinkPlaceholders } from "@/lib/blog-internal-links";
 import { resolveDiagram } from "@/lib/blog/diagram-map";
@@ -79,7 +79,7 @@ function buildJsonLd(post: Awaited<ReturnType<typeof getPostBySlug>>, slug: stri
         { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
         { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
         ...(post.category
-          ? [{ "@type": "ListItem", position: 3, name: post.category, item: `${SITE_URL}/blog/category/${post.category.toLowerCase().replace(/\s+/g, "-")}` }]
+          ? [{ "@type": "ListItem", position: 3, name: post.category, item: `${SITE_URL}/blog/category/${slugifyCategory(post.category)}` }]
           : []),
         { "@type": "ListItem", position: post.category ? 4 : 3, name: post.title, item: canonicalUrl },
       ],
@@ -181,7 +181,7 @@ export default async function BlogPostPage({
           {/* Category chip */}
           {post.category && (
             <Link
-              href={`/blog?category=${encodeURIComponent(post.category)}`}
+              href={`/blog/category/${slugifyCategory(post.category)}`}
               className="chip--accent"
               style={{ textDecoration: "none" }}
             >

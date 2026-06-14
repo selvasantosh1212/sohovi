@@ -143,6 +143,3 @@ If you want to audit your exported product CSV for completeness, duplicates, and
 
 [INTERNAL LINK: How to Audit a Vendor-Supplied Data File Before Using It]
 [INTERNAL LINK: Data Quality for E-commerce: Keeping Product and Customer Data Clean]
-
----
-**Meta description:** Incomplete product titles, missing descriptions, wrong categories, and inconsistent images all hurt Shopify sales. Here's how to audit your product catalog and fix what matters most.

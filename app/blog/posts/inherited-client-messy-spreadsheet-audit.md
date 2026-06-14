@@ -156,6 +156,3 @@ Use plain language and concrete numbers: "14% of records are missing an email ad
 
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Step-by-step guide for freelancers who just received a messy client spreadsheet. How to assess what you have, find the biggest problems, and know where to start.

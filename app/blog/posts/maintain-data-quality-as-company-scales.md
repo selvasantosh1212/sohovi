@@ -145,5 +145,3 @@ Governance theater: creating the structures (stewards, councils, policies) witho
 ---
 
 If you want to check the current state of your data quality before scaling your processes, Sohovi profiles any CSV in minutes — giving you the baseline metrics that any quality program needs to start from. Try it free at sohovi.com — no engineering required.
-
-**Meta description:** The data quality practices that work at 20 people don't scale to 200. Here's how to build quality systems that grow with your company without requiring a proportional increase in headcount.

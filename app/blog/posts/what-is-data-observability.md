@@ -111,6 +111,3 @@ When data failures start causing business problems that take too long to detect.
 
 [INTERNAL LINK: What Is Data Drift? Why Your Data Gets Worse Over Time]
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
-
----
-**Meta description:** Data observability is the ability to understand the health of your data across your systems in real time. Here's what it means, why it matters, and how it differs from data quality.

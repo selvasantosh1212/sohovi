@@ -100,6 +100,3 @@ Direct costs: higher return rates (returns are expensive — typically 25–30% 
 
 [INTERNAL LINK: Data Quality for E-Commerce: Keeping Product and Customer Data Clean]
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
-
----
-**Meta description:** Inaccurate product data costs retail businesses in returns, lost rankings, and inventory errors. Here's how to keep your product catalog clean across every channel.

@@ -222,6 +222,3 @@ If you want to start with a concrete quality baseline for your most important da
 
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
 [INTERNAL LINK: Data Quality vs. Data Governance: What's the Difference?]
-
----
-**Meta description:** A data quality policy sets the standard for what good data looks like at your company. Here's how to write one in 5 practical steps — no legal team required.

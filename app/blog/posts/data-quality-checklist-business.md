@@ -181,6 +181,3 @@ If you're ready to run your first data quality check, Sohovi is free to try. Upl
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: What Is Data Validation? A Complete Guide]
-
----
-**Meta description:** A data quality checklist stops bad data before it causes damage. Here's a practical, step-by-step guide to building one that works for any team size.

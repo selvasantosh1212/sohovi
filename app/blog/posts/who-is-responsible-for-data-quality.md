@@ -155,5 +155,3 @@ Early-stage companies often have informal ownership — whoever created the syst
 ---
 
 If you want to start tracking the quality of your team's data, Sohovi gives non-technical data owners and stewards an instant quality view — upload your data file and get a report on completeness, duplicates, and anomalies. Try it free — no technical setup required.
-
-**Meta description:** Data quality ownership is often unclear — which is why problems persist. This guide maps out who is responsible for data quality across roles, from data entry to the C-suite.

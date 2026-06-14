@@ -9,6 +9,10 @@ export function slugifyHeading(text: string): string {
     .replace(/-+/g, '-');
 }
 
+export function slugifyCategory(category: string): string {
+  return slugifyHeading(category);
+}
+
 export function extractToc(markdown: string): TocItem[] {
   const items: TocItem[] = [];
   const lines = markdown.split('\n');

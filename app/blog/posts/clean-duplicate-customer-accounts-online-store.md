@@ -111,6 +111,3 @@ Merge the points from both accounts onto the primary. Most customers will apprec
 
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
 [INTERNAL LINK: What Is Data Uniqueness? How to Spot and Score Duplicate Records]
-
----
-**Meta description:** Duplicate customer accounts inflate your customer count, split purchase history, and cause double email sends. Here's how to find and merge them.

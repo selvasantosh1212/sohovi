@@ -159,6 +159,3 @@ If you want to understand the data quality of your most important dataset before
 
 [INTERNAL LINK: How to Calculate the ROI of a Data Quality Investment]
 [INTERNAL LINK: What Is Data Accuracy in Data Quality?]
-
----
-**Meta description:** Bad data creates false confidence in wrong conclusions. See how incomplete, duplicate, and inconsistent data silently corrupts your most important business decisions.

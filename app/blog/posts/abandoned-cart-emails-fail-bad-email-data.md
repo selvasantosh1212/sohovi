@@ -99,6 +99,3 @@ Target delivery rates above 95%. Below 90% indicates significant bounce or filte
 
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
-
----
-**Meta description:** Low abandoned cart recovery rates are often blamed on email copy or timing. But email data quality — invalid addresses, deliverability issues — is frequently the real cause.

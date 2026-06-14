@@ -120,6 +120,3 @@ That's one of its primary uses. When a report breaks or shows unexpected numbers
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: What Is a Data Dictionary? (And Does Your Business Need One?)]
-
----
-**Meta description:** Data lineage tracks where your data came from, how it was transformed, and where it went. Here's what it means and why it matters for data quality and compliance.

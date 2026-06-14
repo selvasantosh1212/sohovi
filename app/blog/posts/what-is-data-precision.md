@@ -98,6 +98,3 @@ Only if the source data actually has that detail. Storing "2.0000000" doesn't ad
 
 [INTERNAL LINK: What Is Data Accuracy in Data Quality? A Plain-English Business Guide]
 [INTERNAL LINK: Data Accuracy vs. Data Precision: What's the Difference and Why It Matters]
-
----
-**Meta description:** Data precision measures the level of detail and granularity in your data values. Here's what it means, how it differs from accuracy, and when imprecision causes real problems.

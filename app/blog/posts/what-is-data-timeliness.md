@@ -105,6 +105,3 @@ Timeliness is one quality dimension among several. A dataset can score well on c
 
 [INTERNAL LINK: What Is Data Currency? (In Data Quality Terms)]
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
-
----
-**Meta description:** Data timeliness measures whether data is available when it's needed for decisions. Here's the definition, how to measure it, and why stale data is worse than missing data.

@@ -112,6 +112,3 @@ Yes, and they should be reviewed regularly. Business requirements change, new da
 
 [INTERNAL LINK: How to Create Custom Data Validation Rules for Your Business]
 [INTERNAL LINK: What Is Data Validation? A Complete Guide]
-
----
-**Meta description:** A data quality rule is a condition your data must meet to be considered acceptable. Here's what they are, how they work, and examples for common data fields.

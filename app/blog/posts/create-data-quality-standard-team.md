@@ -161,5 +161,3 @@ They exist in a document but aren't enforced in the systems. A standard that liv
 ---
 
 If you want to measure whether your current data meets your standards, Sohovi can profile any CSV in minutes — showing null rates, format violations, and duplicate counts against the rules that matter. Try it free at sohovi.com — no code required.
-
-**Meta description:** A data quality standard tells your team what good data looks like — specifically. Here's how to write one that's practical, measurable, and actually gets followed.

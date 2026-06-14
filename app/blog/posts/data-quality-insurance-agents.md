@@ -119,6 +119,3 @@ Audit them before relying on them. Former-agent records often have outdated cont
 
 [INTERNAL LINK: Data Quality for Financial Services: Avoiding Costly Errors]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Insurance agents who manage client records in spreadsheets or basic CRMs face specific data quality challenges. Here's how to maintain accurate records without IT support.

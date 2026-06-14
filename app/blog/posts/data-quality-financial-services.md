@@ -104,6 +104,3 @@ Clean, consistent data makes anomalies visible. Duplicate transactions, unusual 
 
 [INTERNAL LINK: How to Fix the Most Common Data Quality Problems]
 [INTERNAL LINK: Data Quality for Accountants: Why Financial Data Accuracy Starts with Clean Records]
-
----
-**Meta description:** In financial services, data errors aren't just inconvenient — they're costly and often regulatory. Here's where quality problems hit hardest and how to fix them.

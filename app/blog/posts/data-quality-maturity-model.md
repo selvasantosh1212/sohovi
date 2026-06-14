@@ -145,5 +145,3 @@ Start with a data quality audit on your three most important datasets. Measure n
 ---
 
 Not sure where your data quality maturity sits? Upload your most important data file to Sohovi and get an instant quality report — null rates, duplicates, format issues, all in minutes. The first assessment is free, with no engineering required.
-
-**Meta description:** A data quality maturity model shows where your organization stands and what to do next. This guide covers the five levels and the path from reactive firefighting to proactive quality management.

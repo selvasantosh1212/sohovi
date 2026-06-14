@@ -123,6 +123,3 @@ No. DAMA, ISO 8000, and various proprietary frameworks define slightly different
 
 [INTERNAL LINK: The 10 Dimensions of Data Quality Explained]
 [INTERNAL LINK: What Is a Data Quality Score and How Is It Calculated?]
-
----
-**Meta description:** A data quality dimension is a specific measurable aspect of data quality. Learn what the most important dimensions are, how they're measured, and which ones your business needs.

@@ -135,6 +135,3 @@ Sohovi makes the monthly check fast — upload your CSV and get an instant quali
 
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
 [INTERNAL LINK: What Is a Data Quality Score and How Is It Calculated?]
-
----
-**Meta description:** A single data quality audit tells you where you are. Trend tracking tells you where you're going. Here's how to track data quality over time without a data team.

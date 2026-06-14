@@ -96,6 +96,3 @@ If you're ready to run a fast quality check on your next client data file, Sohov
 
 [INTERNAL LINK: How to Audit a Vendor-Supplied Data File Before Using It]
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
-
----
-**Meta description:** Agencies manage data for dozens of clients simultaneously. Here's how to build the processes that protect client data quality — and your agency's reputation.

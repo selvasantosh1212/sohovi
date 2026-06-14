@@ -125,6 +125,3 @@ Enterprise tools include Collibra, Alation, Informatica, and IBM Watson Knowledg
 
 [INTERNAL LINK: What Is a Data Dictionary? (And Does Your Business Need One?)]
 [INTERNAL LINK: What Is a Data Catalog? (And Does Your Business Actually Need One?)]
-
----
-**Meta description:** Metadata is data about your data — field names, definitions, ownership, and lineage. Managing it well is what makes your data discoverable, trustworthy, and compliant.

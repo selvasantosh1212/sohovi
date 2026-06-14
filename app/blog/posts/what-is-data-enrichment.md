@@ -101,6 +101,3 @@ For sales and marketing teams, enrichment enables better segmentation, routing, 
 
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
 [INTERNAL LINK: What Is Data Completeness? Definition, Examples, and How to Measure It]
-
----
-**Meta description:** Data enrichment adds missing or supplementary information to existing records from external sources. Here's what it means, how it works, and when it's worth doing.

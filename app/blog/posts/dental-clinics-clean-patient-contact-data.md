@@ -121,6 +121,3 @@ For practices with more than 500 patients in a recall campaign, yes. A verificat
 
 [INTERNAL LINK: Data Quality for Small Medical Practices: Patient Records Without Enterprise Software]
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
-
----
-**Meta description:** Dental practices lose recall appointments when patient contact data is stale or incomplete. Here's a practical afternoon audit to identify and fix the most impactful data problems.

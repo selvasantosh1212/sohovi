@@ -97,6 +97,3 @@ Accuracy asks: was this value ever correct? Currency asks: is this value still c
 
 [INTERNAL LINK: What Is Data Timeliness? Why Fresh Data Beats Complete Data]
 [INTERNAL LINK: How to Track Data Quality Trends Over Time]
-
----
-**Meta description:** Data currency measures how up-to-date your data is — whether it reflects the current state of the world. Here's what it means and how it differs from data timeliness.

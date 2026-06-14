@@ -132,6 +132,3 @@ Poor data quality is a common finding in payer audits, OIG investigations, and C
 
 [INTERNAL LINK: What Is PII? A Plain-English Guide for Small Business Owners]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Inaccurate patient data causes medication errors, missed diagnoses, and billing fraud. Learn how healthcare organizations can improve data quality without enterprise IT.

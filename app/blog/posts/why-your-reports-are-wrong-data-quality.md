@@ -148,5 +148,3 @@ For an analyst with SQL access and a clear view of the data pipeline, most simpl
 ---
 
 If you want to profile source tables before building reports on them — and catch quality issues before they corrupt your analytics — Sohovi can profile any CSV export in minutes. Try it free at sohovi.com — no code, no engineering required.
-
-**Meta description:** When a report shows the wrong number, the cause is almost always in the data — not the query. Here's how to trace report errors back to their source and fix them permanently.

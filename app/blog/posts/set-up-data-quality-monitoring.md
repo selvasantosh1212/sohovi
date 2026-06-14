@@ -153,6 +153,3 @@ If you're ready to make your first monitoring check, Sohovi is free to try. Uplo
 
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
 [INTERNAL LINK: How to Set Data Quality Thresholds That Actually Make Sense]
-
----
-**Meta description:** You don't need a data engineering team to monitor data quality. Here's a practical guide to setting up effective monitoring using tools your team already has.

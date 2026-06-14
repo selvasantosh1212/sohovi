@@ -136,6 +136,3 @@ Be honest with the client. Present the findings clearly and let them decide on s
 
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Data quality audits are a high-value freelance service with almost no competition. Here's how to position it, what to include, how to price it, and how to find clients.

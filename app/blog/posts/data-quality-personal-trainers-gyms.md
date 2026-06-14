@@ -98,6 +98,3 @@ Show your records transparently — dates, times, session notes if available. If
 
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
 [INTERNAL LINK: Data Quality Without a Data Scientist: A Practical Guide]
-
----
-**Meta description:** Fitness businesses with messy client records lose money on payment errors, double billing, and missed renewals. Here's how to keep client and membership data clean.

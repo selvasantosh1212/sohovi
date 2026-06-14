@@ -146,6 +146,3 @@ When you can pick up a project mid-stream (after a break, after switching to ano
 
 [INTERNAL LINK: Data Quality for Freelancers: How to Deliver Clean Data Every Time]
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
-
----
-**Meta description:** Repeatable processes beat heroic one-off efforts. Here's how solo analysts can build a data quality workflow that works the same way every time, for every client.

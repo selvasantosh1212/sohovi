@@ -116,6 +116,3 @@ Yes. Unused tags are wasted opportunity. Research what other sellers use for sim
 
 [INTERNAL LINK: Why Your Shopify Product Data Is Costing You Sales (And How to Fix It)]
 [INTERNAL LINK: Data Quality for E-commerce: Keeping Product and Customer Data Clean]
-
----
-**Meta description:** Your Etsy listings succeed or fail based on the quality of their tags, titles, categories, and descriptions. Here's how to audit and improve your listing data quality.

@@ -134,6 +134,3 @@ Data integration is the broader goal of making data from multiple systems work t
 
 [INTERNAL LINK: What Is Data Wrangling?]
 [INTERNAL LINK: How to Validate Data Quality Before Loading Into a Data Warehouse]
-
----
-**Meta description:** ETL stands for Extract, Transform, Load — the process of moving data from one system to another while cleaning and reshaping it. Here's how it works in plain English.

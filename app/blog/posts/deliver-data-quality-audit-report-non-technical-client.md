@@ -140,6 +140,3 @@ Writing the report: 1–2 hours (after the audit is complete). Delivery call: 30
 
 [INTERNAL LINK: How to Offer Data Quality Audits as a Freelance Service (And What to Charge)]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Data quality findings mean nothing if the client doesn't understand them. Here's how to translate technical audit results into clear, actionable reports for non-technical clients.

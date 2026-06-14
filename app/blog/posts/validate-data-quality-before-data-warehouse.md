@@ -179,5 +179,3 @@ Simple validation (null checks, type checks, row counts) adds negligible latency
 ---
 
 If you want to understand what's in your source data before it enters your warehouse, Sohovi can profile CSV exports instantly — surfacing null rates, format issues, and outliers without any pipeline setup. Try it free at sohovi.com — no code required.
-
-**Meta description:** Pre-load data validation prevents bad data from polluting your warehouse. This guide covers the checks to run before every load — and how to automate them.

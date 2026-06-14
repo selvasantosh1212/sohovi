@@ -102,6 +102,3 @@ Any unexpected pattern that suggests a data quality problem: a sudden increase i
 
 [INTERNAL LINK: How to Track Data Quality Trends Over Time]
 [INTERNAL LINK: How to Find Outliers in Your Data Without Writing Code]
-
----
-**Meta description:** Data anomaly detection identifies unexpected patterns, outliers, and irregularities in datasets automatically. Here's what it means and how it catches problems your rules might miss.

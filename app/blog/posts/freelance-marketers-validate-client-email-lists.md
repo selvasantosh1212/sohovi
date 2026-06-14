@@ -133,6 +133,3 @@ Tell the client the truth: the list has degraded to the point where sending to i
 
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
-
----
-**Meta description:** Before running a campaign on a client's email list, you need to validate it. Here's a practical process for freelance marketers to check list quality and protect deliverability.

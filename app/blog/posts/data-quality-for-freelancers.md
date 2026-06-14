@@ -141,6 +141,3 @@ Spreadsheet formulas (COUNTBLANK, COUNTIF, TRIM, PROPER, TEXT) handle most commo
 
 [INTERNAL LINK: Inherited a Client's Messy Spreadsheet? Here's How to Audit It in 30 Minutes]
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
-
----
-**Meta description:** Freelancers who work with client data need a repeatable data quality process. Here's how to build one that protects you, impresses clients, and prevents expensive mistakes.

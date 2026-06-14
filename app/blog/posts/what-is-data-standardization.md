@@ -106,6 +106,3 @@ The canonical form is the single, agreed-upon representation of a value — the 
 
 [INTERNAL LINK: How to Standardize Date Formats Across Your Dataset]
 [INTERNAL LINK: How to Clean and Standardize Phone Number Formats]
-
----
-**Meta description:** Data standardization is the process of converting data into a consistent format across a dataset. Here's what it means, why it matters, and how to do it.

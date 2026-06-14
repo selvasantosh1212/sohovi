@@ -102,6 +102,3 @@ If you want to run a quick quality check on a client's transaction file, Sohovi 
 
 [INTERNAL LINK: Data Quality for Financial Services: Avoiding Costly Errors]
 [INTERNAL LINK: The Bookkeeper's Guide to Auditing a Messy Client Dataset Before You Start]
-
----
-**Meta description:** Financial statements are only as accurate as the data they're built on. Here's how accountants and bookkeepers can catch data quality problems before they reach the client.

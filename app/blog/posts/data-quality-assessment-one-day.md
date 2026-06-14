@@ -171,6 +171,3 @@ Sohovi makes Hours 2 and 3 of the morning session instant — upload your CSV an
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: How to Prioritize Data Quality Issues When Resources Are Limited]
-
----
-**Meta description:** You don't need weeks to assess your data quality. Here's a structured one-day approach that produces actionable findings on your most important dataset.

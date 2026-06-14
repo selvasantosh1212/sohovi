@@ -111,6 +111,3 @@ Sohovi is free to use for your pre-BFCM customer list audit. Upload your custome
 
 [INTERNAL LINK: How to Clean Up Duplicate Customer Accounts in Your Online Store]
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
-
----
-**Meta description:** Your Black Friday campaigns reach exactly as many customers as your data quality allows. Here's the pre-BFCM data preparation checklist that maximizes reach and protects deliverability.

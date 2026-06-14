@@ -103,6 +103,3 @@ Highly variable, but even modest improvements compound. Reducing duplicate rate 
 
 [INTERNAL LINK: How Real Estate Agents Can Stop Losing Leads to Bad CRM Data]
 [INTERNAL LINK: Data Quality for Sales Teams: Keeping Your CRM Data Reliable]
-
----
-**Meta description:** Auto dealerships spend thousands on leads but lose deals to duplicate contacts, wrong phone numbers, and incomplete follow-up records. Here's the data quality fix.

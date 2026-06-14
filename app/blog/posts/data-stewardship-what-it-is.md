@@ -132,5 +132,3 @@ Yes — in fact, small businesses often benefit disproportionately because they 
 ---
 
 If you want to give your data stewards a fast, code-free way to measure data quality, Sohovi lets anyone upload a CSV and get an instant quality report — null rates, format issues, duplicates — in minutes. Try it free — no technical setup needed.
-
-**Meta description:** Data stewardship assigns human accountability for data quality within a domain. This guide explains what data stewards do, why the role matters, and how to set it up.

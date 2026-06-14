@@ -107,6 +107,3 @@ Profile it first — understand the full scope of the problems before changing a
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: Data Quality vs. Data Cleansing: What's the Difference?]
-
----
-**Meta description:** Data cleansing is the process of detecting and correcting inaccurate, incomplete, or inconsistent data in a dataset. Here's what it means, how it works, and when to do it.

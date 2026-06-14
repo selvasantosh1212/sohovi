@@ -131,6 +131,3 @@ For vendors you import from frequently (more than once a month), yes. For quarte
 
 [INTERNAL LINK: How to Audit a Vendor-Supplied Data File Before Using It]
 [INTERNAL LINK: Why Your Shopify Product Data Is Costing You Sales (And How to Fix It)]
-
----
-**Meta description:** Uploading an unvalidated vendor product file introduces bad data directly into your store. Here's how to check vendor files before importing to prevent product page errors.

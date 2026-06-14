@@ -126,6 +126,3 @@ Search before creating. Train intake staff to search by both name and address be
 
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
 [INTERNAL LINK: Data Quality Without a Data Scientist: A Practical Guide]
-
----
-**Meta description:** HVAC and plumbing companies lose repeat business when customer records are incomplete or outdated. Here's how to improve your service history data and customer database.

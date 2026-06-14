@@ -143,5 +143,3 @@ Deep learning models are generally more sensitive to data quality because they l
 ---
 
 If you want to assess the quality of a dataset before using it for ML training, Sohovi can profile any CSV in minutes — showing null rates, value distributions, outliers, and format issues that could bias your model. Try it free — no code, no setup required.
-
-**Meta description:** Machine learning models are only as good as the data they're trained on. This guide explains exactly how data quality problems degrade ML performance — and how to fix them.

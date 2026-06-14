@@ -161,6 +161,3 @@ If you're ready to apply custom validation rules to your most important CSV, Soh
 
 [INTERNAL LINK: What Is Data Validation? A Complete Guide]
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
-
----
-**Meta description:** Custom data validation rules define what good data looks like for your specific business. Here's how to create rules that actually catch the problems that matter.

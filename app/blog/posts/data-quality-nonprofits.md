@@ -91,6 +91,3 @@ Start with the donor database deduplication audit. Export the full contact list,
 
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
 [INTERNAL LINK: Data Quality for Non-Technical Users]
-
----
-**Meta description:** Nonprofits can't afford to waste fundraising budget on bad data. Here's how to keep donor records clean and maximize every development dollar you spend.

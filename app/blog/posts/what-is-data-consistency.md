@@ -115,6 +115,3 @@ Because people and processes change, systems accumulate entries from multiple so
 
 [INTERNAL LINK: What Is Data Standardization?]
 [INTERNAL LINK: How to Standardize Date Formats Across Your Dataset]
-
----
-**Meta description:** Data consistency measures whether the same information is represented the same way across your dataset and systems. Here's what it means, what causes inconsistency, and how to fix it.

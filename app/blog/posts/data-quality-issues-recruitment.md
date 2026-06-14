@@ -101,6 +101,3 @@ Every import should include: deduplication check against existing records, email
 
 [INTERNAL LINK: Data Quality in HR: Keeping Employee and Applicant Records Accurate]
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
-
----
-**Meta description:** Duplicate candidates, incomplete records, and wrong disposition codes make recruiting metrics unreliable. Here's how to clean up your ATS data and keep it clean.

@@ -111,6 +111,3 @@ Common causes: multiple import sources (a new contact is imported from a list th
 
 [INTERNAL LINK: How to Find Duplicate Records in a CSV File]
 [INTERNAL LINK: What Is Data Deduplication and Why It Matters]
-
----
-**Meta description:** Data uniqueness measures whether records that should be distinct are actually distinct. Here's what it means, how to measure it, and why duplicates are the costliest data quality failure.

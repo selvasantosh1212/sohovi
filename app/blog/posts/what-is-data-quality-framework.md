@@ -110,6 +110,3 @@ Tie the framework to business outcomes. If poor data quality is causing failed c
 
 [INTERNAL LINK: How to Create a Data Quality Framework for Your Organization]
 [INTERNAL LINK: What Is a Data Quality Score and How Is It Calculated?]
-
----
-**Meta description:** A data quality framework defines how you measure, assess, and improve data quality in your organization. Here's what frameworks exist and how to pick the right one.

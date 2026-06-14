@@ -106,6 +106,3 @@ The rescue may have provided a record. Verify the accuracy of all information at
 
 [INTERNAL LINK: Data Quality for Small Medical Practices: Patient Records Without Enterprise Software]
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
-
----
-**Meta description:** Veterinary clinics with outdated patient records miss preventive care opportunities and lose clients to poor communication. Here's how to maintain clean records.

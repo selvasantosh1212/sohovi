@@ -122,6 +122,3 @@ Cross-field validation checks relationships between multiple fields in the same 
 
 [INTERNAL LINK: What Is Data Accuracy in Data Quality? A Plain-English Business Guide]
 [INTERNAL LINK: How to Create Custom Data Validation Rules for Your Business]
-
----
-**Meta description:** Data validity measures whether data values conform to defined business rules and format requirements. Here's what it means, how it differs from accuracy, and how to measure it.

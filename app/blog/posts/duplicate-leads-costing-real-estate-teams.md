@@ -116,6 +116,3 @@ Keep all three email addresses on the primary record (most CRMs support multiple
 
 [INTERNAL LINK: How Real Estate Agents Can Stop Losing Leads to Bad CRM Data]
 [INTERNAL LINK: Data Quality for Sales Teams: Keeping Your CRM Data Reliable]
-
----
-**Meta description:** Duplicate leads in real estate CRMs cause double-contact, team conflict, and missed opportunities. Here's how to find them, resolve them, and prevent them from coming back.

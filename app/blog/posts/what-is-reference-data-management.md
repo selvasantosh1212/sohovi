@@ -115,6 +115,3 @@ Reporting becomes unreliable — grouping by any reference field produces fragme
 
 [INTERNAL LINK: What Is Master Data Management (MDM)? A Plain-English Guide]
 [INTERNAL LINK: Data Quality for Data Governance: What's the Difference?]
-
----
-**Meta description:** Reference data is the set of allowed values for your data fields — country codes, status options, product categories. Here's how to manage it and why it matters.

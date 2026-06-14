@@ -150,6 +150,3 @@ Sohovi shows you your actual completeness, uniqueness, and validity rates for ev
 
 [INTERNAL LINK: How to Set Up Data Quality Monitoring Without an Engineer]
 [INTERNAL LINK: What Is a Data Quality Score and How Is It Calculated?]
-
----
-**Meta description:** Data quality thresholds define what 'good enough' means for each field. Here's how to set thresholds that are realistic, business-aligned, and actually enforceable.

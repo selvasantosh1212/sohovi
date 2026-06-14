@@ -103,6 +103,3 @@ Quarterly for mission-critical datasets (customer records, financial data). Annu
 
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
-
----
-**Meta description:** A data audit is a systematic review of a dataset to assess its quality, accuracy, and compliance. Here's what it means, what it covers, and how to run one.

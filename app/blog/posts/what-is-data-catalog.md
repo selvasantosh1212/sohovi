@@ -130,6 +130,3 @@ Inventory what you have. List every data source your team uses regularly — spr
 
 [INTERNAL LINK: What Is a Data Dictionary? (And Does Your Business Need One?)]
 [INTERNAL LINK: Data Stewardship: What It Is and Why Your Business Needs It]
-
----
-**Meta description:** A data catalog is a searchable inventory of your organization's data assets. Here's what it is, how it differs from a data dictionary, and whether your team actually needs one.

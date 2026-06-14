@@ -121,6 +121,3 @@ Your LOS is the authoritative record for all loan data. Don't maintain parallel 
 
 [INTERNAL LINK: Data Quality for Financial Services: Avoiding Costly Errors]
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
-
----
-**Meta description:** Loan application data errors cause delays, conditions, and denials. Here's how mortgage brokers can validate client data before submission to avoid preventable failures.

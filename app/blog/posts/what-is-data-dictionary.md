@@ -129,6 +129,3 @@ If you want to quickly identify which fields in your data have the most inconsis
 
 [INTERNAL LINK: What Is a Data Catalog? (And Does Your Business Actually Need One?)]
 [INTERNAL LINK: Data Stewardship: What It Is and Why Your Business Needs It]
-
----
-**Meta description:** A data dictionary documents what your data means — field names, definitions, formats, and owners. Here's what it is, why it matters, and when you actually need one.

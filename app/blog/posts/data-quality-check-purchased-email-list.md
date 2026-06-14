@@ -129,6 +129,3 @@ Sohovi can do the format validation and basic analysis step quickly — upload t
 
 [INTERNAL LINK: Email Bounce Rate Over 2%? Here's Exactly What to Do Next]
 [INTERNAL LINK: How to Validate Email Addresses in Bulk Without Coding]
-
----
-**Meta description:** Purchased email lists have notoriously bad quality. Before using one, run these checks to avoid deliverability damage, legal exposure, and wasted spend.

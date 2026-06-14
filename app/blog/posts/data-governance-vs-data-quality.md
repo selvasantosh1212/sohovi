@@ -126,5 +126,3 @@ For small teams (under 20 people, one or two systems), informal governance — e
 ---
 
 If you're not sure where your data quality stands today, Sohovi can give you a clear picture in minutes. Upload any CSV and get a quality report covering completeness, duplicates, and format issues — the starting point for any quality or governance program. No code or setup required.
-
-**Meta description:** Data governance and data quality are related but different. This guide explains what each one means, where they overlap, and which one your business needs to focus on first.

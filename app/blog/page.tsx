@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { getPublishedPosts, getPublishedPostCount } from "@/app/actions/blog";
+import { permanentRedirect } from "next/navigation";
+import { getPublishedPosts, getPublishedPostCount, getAllCategories } from "@/app/actions/blog";
 import { BlogHomeClient } from "@/components/blog/BlogHomeClient";
+import { slugifyCategory } from "@/lib/blog-utils";
 
 export const revalidate = 3600;
 
@@ -28,11 +30,22 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; category?: string }>;
 };
 
 export default async function BlogListPage({ searchParams }: Props) {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, category } = await searchParams;
+
+  // Legacy `/blog?category=...` links -> permanent redirect to /blog/category/<slug>
+  if (category) {
+    const categories = await getAllCategories();
+    const decoded = decodeURIComponent(category);
+    const match = categories.find(
+      (c) => c === decoded || slugifyCategory(c) === slugifyCategory(decoded)
+    );
+    permanentRedirect(match ? `/blog/category/${slugifyCategory(match)}` : "/blog");
+  }
+
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
   const [posts, total] = await Promise.all([
     getPublishedPosts(PAGE_SIZE, (page - 1) * PAGE_SIZE),

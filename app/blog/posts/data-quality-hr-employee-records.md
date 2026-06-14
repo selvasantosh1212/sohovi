@@ -102,6 +102,3 @@ Workforce analytics — headcount planning, attrition analysis, productivity met
 
 [INTERNAL LINK: How to Audit Your Data Quality in 5 Steps]
 [INTERNAL LINK: Common Data Quality Issues in Recruitment and How to Fix Them]
-
----
-**Meta description:** Inaccurate HR data causes payroll errors, compliance failures, and bad hiring decisions. Here's how HR teams can maintain clean employee and applicant records.

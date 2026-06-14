@@ -112,6 +112,3 @@ Completeness on your 3 key variables and a duplicate check on the primary entity
 
 [INTERNAL LINK: Freelancer's Guide to Auditing a Client's Data Before Starting a Project]
 [INTERNAL LINK: How to Deliver a Data Quality Audit Report to a Non-Technical Client]
-
----
-**Meta description:** Independent consultants are hired for their judgment. When your deliverables include data, that judgment has to extend to data quality. Here's how to maintain professional standards.

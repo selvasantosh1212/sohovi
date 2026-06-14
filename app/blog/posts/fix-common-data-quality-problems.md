@@ -189,6 +189,3 @@ If you want to see the full picture of what's wrong with your most important dat
 
 [INTERNAL LINK: How to Run Your First Data Quality Audit (Step-by-Step)]
 [INTERNAL LINK: How to Build a Data Quality Checklist for Your Business]
-
----
-**Meta description:** Duplicate records, missing values, wrong formats, inconsistent fields — here's exactly how to fix the most common data quality problems your business faces.

@@ -146,5 +146,3 @@ Automate notifications tied to DLQ growth and validation failure spikes. When a 
 ---
 
 If you want to validate the historical and batch side of your pipeline data, Sohovi profiles CSV exports and data samples instantly — surfacing distribution anomalies, null rates, and format issues before they enter your system. Try it free — no code, no setup required.
-
-**Meta description:** Real-time pipelines can't wait for batch validation. Learn how to catch data quality problems in streaming systems before they corrupt downstream analytics and decisions.

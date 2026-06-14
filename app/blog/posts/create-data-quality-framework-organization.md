@@ -169,5 +169,3 @@ Translate to business impact. "Our customer email list has an 88% validity rate"
 ---
 
 If you're starting to build a data quality framework and want to understand where your data stands today, Sohovi can profile any CSV in minutes — giving you the null rates, format validity scores, and duplicate counts that are the inputs to any quality standard. Try it free — no engineering required.
-
-**Meta description:** A data quality framework gives your organization a repeatable system for measuring, managing, and improving data quality. Here's how to build one that actually works.
