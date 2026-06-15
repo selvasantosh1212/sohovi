@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Users2,
   GraduationCap,
+  CreditCard,
 } from "lucide-react";
 import { SidebarContextHelp } from "@/components/layout/SidebarContextHelp";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const navItems = [
       { label: "Search", href: "/dashboard/search", icon: Search },
       { label: "Team", href: "/dashboard/team", icon: Users2 },
       { label: "Learn", href: "/dashboard/learn", icon: GraduationCap },
+      { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
     ],
   },
   {

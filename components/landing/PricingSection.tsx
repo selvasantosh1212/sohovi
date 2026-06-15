@@ -52,7 +52,7 @@ const plans: Plan[] = [
     annualSavings: "Save $72",
     period: "per month",
     description: "For freelancers and small teams who need more power.",
-    cta: "Start Free Trial",
+    cta: "Upgrade to Pro",
     ctaHref: "",
     planKey: "pro",
     primary: true,
@@ -118,10 +118,20 @@ export function PricingSection() {
         return;
       }
 
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (!res.headers.get("content-type")?.includes("application/json")) {
+        console.error("[checkout] unexpected non-JSON response:", res.status);
+        return;
       }
+
+      const data = await res.json();
+      if (!res.ok || typeof data.url !== "string" || !data.url) {
+        console.error("[checkout] failed:", res.status, data);
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error("[checkout] error:", error);
     } finally {
       setLoadingPlan(null);
     }

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, FlaskConical } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
+import { PlanGate } from "@/components/shared/PlanGate";
 import { SandboxClient } from "./SandboxClient";
 
 export async function generateMetadata({
@@ -41,11 +42,17 @@ export default async function SandboxPage({
         </p>
       </div>
 
-      <SandboxClient
-        assetId={assetId}
-        assetName={asset.name}
-        columnSchema={asset.column_schema ?? []}
-      />
+      <PlanGate
+        minPlan="business"
+        feature="Rule Sandbox"
+        description="The rule testing sandbox is available on the Business plan. Upgrade to test rules instantly against your uploaded data."
+      >
+        <SandboxClient
+          assetId={assetId}
+          assetName={asset.name}
+          columnSchema={asset.column_schema ?? []}
+        />
+      </PlanGate>
     </div>
   );
 }

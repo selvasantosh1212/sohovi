@@ -3,6 +3,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
+import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
 import type { AssetRun, DQScore, ProfilingSummary } from "@/types/app.types";
 import type { BehaviorFlag, DQRunResult } from "@/types/dq.types";
 import type { ColumnProfile } from "@/types/profiling.types";
@@ -272,12 +273,20 @@ export async function saveProfilingSnapshot(input: {
 export async function getRuns(assetId: string): Promise<AssetRun[]> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("asset_runs")
     .select("*")
     .eq("asset_id", assetId)
     .eq("clerk_user_id", userId)
     .order("run_at", { ascending: false });
+
+  const historyDays = PLAN_LIMITS[await getUserPlan()].historyDays;
+  if (historyDays !== Infinity) {
+    const cutoff = new Date(Date.now() - historyDays * 24 * 60 * 60 * 1000).toISOString();
+    query = query.gte("run_at", cutoff);
+  }
+
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return (data ?? []) as AssetRun[];
 }

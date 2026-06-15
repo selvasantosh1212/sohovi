@@ -44,10 +44,19 @@ export async function POST(request: NextRequest) {
     return_url: `${baseUrl}/dashboard?payment=success`,
     cancel_url: `${baseUrl}/#pricing`,
     metadata: { clerk_user_id: userId },
+    allowed_payment_method_types: ["credit", "debit"],
+    ...(plan === "business" ? { subscription_data: { trial_period_days: 7 } } : {}),
     ...(email ? { customer: { email, name: user?.fullName ?? undefined } } : {}),
   };
 
-  const session = await getDodo().checkoutSessions.create(params);
-
-  return Response.json({ url: session.checkout_url });
+  try {
+    const session = await getDodo().checkoutSessions.create(params);
+    return Response.json({ url: session.checkout_url });
+  } catch (error) {
+    console.error("[checkout] dodo error:", error);
+    return Response.json(
+      { error: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
 }

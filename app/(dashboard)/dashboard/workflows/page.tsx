@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus, Settings2, Clock } from "lucide-react";
 import { getWorkflows } from "@/app/actions/workflows";
+import { PlanGate } from "@/components/shared/PlanGate";
 
 export const metadata = { title: "Workflows" };
 
@@ -25,6 +26,11 @@ export default async function WorkflowsPage() {
         </Link>
       </div>
 
+      <PlanGate
+        minPlan="pro"
+        feature="Workflows & Automation"
+        description="Reusable workflows and automation are available on the Pro plan. Upgrade to save column-mapping configurations for repeat runs."
+      >
       {workflows.length === 0 ? (
         <div className="rounded-[16px] border border-dashed border-[#EEF0F3] bg-[#F8FAFC] p-12 text-center space-y-2">
           <p className="text-slate-500 font-medium">No workflows yet</p>
@@ -85,6 +91,7 @@ export default async function WorkflowsPage() {
           ))}
         </div>
       )}
+      </PlanGate>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { getAsset } from "@/app/actions/assets";
 import { getRules } from "@/app/actions/rules";
 import { DimensionGroupAccordion } from "@/components/rules/DimensionGroupAccordion";
 import { RuleSuggestionsPanel } from "@/components/rules/RuleSuggestionsPanel";
+import { PlanGate } from "@/components/shared/PlanGate";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
 import { RunDQButton } from "@/components/rules/RunDQButton";
 import { DataPreviewTable } from "@/components/rules/DataPreviewTable";
@@ -123,10 +124,16 @@ export default async function RulesPage({
               <Wand2 className="w-4 h-4 text-violet-500" />
               <h2 className="text-sm font-semibold text-slate-700">AI Rule Identifier</h2>
             </div>
-            <RuleSuggestionsPanel
-              assetId={assetId}
-              existingRuleKeys={existingRuleKeys}
-            />
+            <PlanGate
+              minPlan="pro"
+              feature="AI Rule Suggestions"
+              description="AI-powered rule suggestions are available on the Pro plan. Upgrade to get suggested rules based on your column profiles."
+            >
+              <RuleSuggestionsPanel
+                assetId={assetId}
+                existingRuleKeys={existingRuleKeys}
+              />
+            </PlanGate>
           </div>
         </div>
       </div>

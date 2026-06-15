@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Download, FileText, Table } from "lucide-react";
 import { toast } from "sonner";
 import { ScoreBar, ScoreBadge } from "@/components/shared/ScoreBadge";
+import { PlanGate } from "@/components/shared/PlanGate";
 import type { DataAsset, AssetRun } from "@/types/app.types";
 
 interface AssetWithRuns {
@@ -223,23 +225,36 @@ export function ReportsClient({ assetRuns }: Props) {
     <div className="space-y-6">
       {/* Export buttons */}
       <div className="flex items-center gap-3 flex-wrap">
-        <button
-          onClick={handleExportPDF}
-          disabled={exporting || selected.size === 0}
-          className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ background: "#1A1A2E" }}
+        <PlanGate
+          minPlan="pro"
+          feature="PDF/Excel export"
+          fallback={
+            <Link
+              href="/dashboard/billing"
+              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-500 hover:text-slate-700 underline"
+            >
+              Upgrade to Pro to export PDF/Excel reports
+            </Link>
+          }
         >
-          <FileText className="w-4 h-4" />
-          {exporting ? "Exporting…" : "Export PDF"}
-        </button>
-        <button
-          onClick={handleExportExcel}
-          disabled={exporting || selected.size === 0}
-          className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
-        >
-          <Table className="w-4 h-4" />
-          {exporting ? "Exporting…" : "Export Excel"}
-        </button>
+          <button
+            onClick={handleExportPDF}
+            disabled={exporting || selected.size === 0}
+            className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+            style={{ background: "#1A1A2E" }}
+          >
+            <FileText className="w-4 h-4" />
+            {exporting ? "Exporting…" : "Export PDF"}
+          </button>
+          <button
+            onClick={handleExportExcel}
+            disabled={exporting || selected.size === 0}
+            className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
+          >
+            <Table className="w-4 h-4" />
+            {exporting ? "Exporting…" : "Export Excel"}
+          </button>
+        </PlanGate>
         <span className="text-sm text-slate-500">
           {selected.size} / {assetRuns.length} asset{assetRuns.length !== 1 ? "s" : ""} selected
         </span>

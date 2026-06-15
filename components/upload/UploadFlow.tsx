@@ -8,6 +8,7 @@ import { FileDropZone } from "./FileDropZone";
 import { UploadProgress } from "./UploadProgress";
 import { ColumnComparisonTable } from "./ColumnComparisonTable";
 import { PIIDetectionBanner } from "./PIIDetectionBanner";
+import { PlanGate } from "@/components/shared/PlanGate";
 import { HeaderRowSelector } from "./HeaderRowSelector";
 import { useFileWorker } from "@/hooks/useFileWorker";
 import { useProfileWorker } from "@/hooks/useProfileWorker";
@@ -176,7 +177,9 @@ export function UploadFlow({ assetId, assetName, previousSchema }: UploadFlowPro
             sampleMode={fileData.sampleMode}
           />
 
-          <PIIDetectionBanner />
+          <PlanGate minPlan="pro" feature="PII detection" fallback={null}>
+            <PIIDetectionBanner />
+          </PlanGate>
 
           <ColumnComparisonTable
             currentHeaders={fileData.headers}

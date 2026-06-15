@@ -5,14 +5,24 @@ import { getDodo, planFromProductId } from "@/lib/dodo/client";
 // Must not parse body — we need raw bytes for signature verification
 export const dynamic = "force-dynamic";
 
-async function setClerkPlan(userId: string, plan: "free" | "pro" | "business") {
+async function patchClerkMetadata(userId: string, metadata: Record<string, unknown>) {
+  const getRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+    headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
+  });
+  if (!getRes.ok) {
+    const text = await getRes.text();
+    throw new Error(`Clerk GET failed (${getRes.status}): ${text}`);
+  }
+  const user = await getRes.json();
+  const merged = { ...(user.public_metadata ?? {}), ...metadata };
+
   const res = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ public_metadata: { plan } }),
+    body: JSON.stringify({ public_metadata: merged }),
   });
   if (!res.ok) {
     const text = await res.text();
@@ -46,7 +56,7 @@ export async function POST(request: NextRequest) {
     type === "subscription.plan_changed" ||
     type === "subscription.renewed"
   ) {
-    const sub = (event as { data: { product_id: string; metadata: Record<string, string> } }).data;
+    const sub = (event as { data: { product_id: string; customer: { customer_id: string }; metadata: Record<string, string> } }).data;
     const userId = sub.metadata?.clerk_user_id;
     if (!userId) {
       console.warn("Dodo webhook: missing clerk_user_id in metadata", { type });
@@ -57,7 +67,7 @@ export async function POST(request: NextRequest) {
       console.warn("Dodo webhook: unknown product_id", sub.product_id);
       return Response.json({ received: true });
     }
-    await setClerkPlan(userId, plan);
+    await patchClerkMetadata(userId, { plan, dodo_customer_id: sub.customer.customer_id });
   }
 
   if (
@@ -68,7 +78,7 @@ export async function POST(request: NextRequest) {
     const sub = (event as { data: { metadata: Record<string, string> } }).data;
     const userId = sub.metadata?.clerk_user_id;
     if (userId) {
-      await setClerkPlan(userId, "free");
+      await patchClerkMetadata(userId, { plan: "free" });
     }
   }
 

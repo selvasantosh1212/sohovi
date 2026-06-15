@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Wrench } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
+import { PlanGate } from "@/components/shared/PlanGate";
 import { RemediationClient } from "./RemediationClient";
 
 export async function generateMetadata({
@@ -41,11 +42,17 @@ export default async function RemediationPage({
         </p>
       </div>
 
-      <RemediationClient
-        assetId={assetId}
-        assetName={asset.name}
-        fileName={asset.upstream_file_name ?? undefined}
-      />
+      <PlanGate
+        minPlan="business"
+        feature="Remediation"
+        description="Remediation and cleaned-file export are available on the Business plan. Upgrade to review failed records and export a cleaned file."
+      >
+        <RemediationClient
+          assetId={assetId}
+          assetName={asset.name}
+          fileName={asset.upstream_file_name ?? undefined}
+        />
+      </PlanGate>
     </div>
   );
 }

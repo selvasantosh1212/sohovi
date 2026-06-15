@@ -3,6 +3,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
+import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
 import type { DQRule } from "@/types/app.types";
 
 export async function getRules(assetId: string): Promise<DQRule[]> {
@@ -32,6 +33,19 @@ export interface RuleInput {
 export async function createRule(input: RuleInput): Promise<DQRule> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
+
+  const plan = await getUserPlan();
+  const ruleLimit = PLAN_LIMITS[plan].maxRulesPerAsset;
+  if (ruleLimit !== Infinity) {
+    const { count } = await supabase
+      .from("dq_rules")
+      .select("id", { count: "exact", head: true })
+      .eq("asset_id", input.asset_id)
+      .eq("clerk_user_id", userId);
+    if ((count ?? 0) >= ruleLimit) {
+      throw new Error(`Your plan is limited to ${ruleLimit} rules per asset. Upgrade to add more.`);
+    }
+  }
 
   // Prevent multiple rule types for the same column + dimension combination
   let dupQuery = supabase
