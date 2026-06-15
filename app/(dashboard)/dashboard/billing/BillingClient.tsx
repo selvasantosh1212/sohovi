@@ -132,7 +132,7 @@ export function BillingClient({ plan }: Props) {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-[15px] font-semibold text-slate-800">Upgrade your plan</h2>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium" style={{ color: isAnnual ? "#8A8A90" : "#0A0A0A" }}>Monthly</span>
+              <span className="text-xs font-medium" style={{ color: isAnnual ? "#5B5B63" : "#0A0A0A" }}>Monthly</span>
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
                 className="relative w-10 h-5 rounded-full transition-colors duration-200"
@@ -145,7 +145,7 @@ export function BillingClient({ plan }: Props) {
                   style={{ left: isAnnual ? "calc(100% - 1.125rem)" : "0.125rem" }}
                 />
               </button>
-              <span className="text-xs font-medium" style={{ color: isAnnual ? "#0A0A0A" : "#8A8A90" }}>Annual</span>
+              <span className="text-xs font-medium" style={{ color: isAnnual ? "#0A0A0A" : "#5B5B63" }}>Annual</span>
             </div>
           </div>
 

@@ -54,8 +54,8 @@ export default function AboutPage() {
         <PublicNav />
         <main className="flex-1">
           <section className="mx-auto max-w-2xl px-6 py-24">
-            <nav className="flex items-center gap-2 text-sm mb-12" style={{ color: "#8A8A90" }}>
-              <Link href="/" style={{ color: "#8A8A90", textDecoration: "none" }}>Home</Link>
+            <nav className="flex items-center gap-2 text-sm mb-12" style={{ color: "#5B5B63" }}>
+              <Link href="/" style={{ color: "#5B5B63", textDecoration: "none" }}>Home</Link>
               <span aria-hidden="true">/</span>
               <span style={{ color: "#0A0A0A" }}>About</span>
             </nav>

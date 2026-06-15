@@ -81,7 +81,7 @@ const plans: Plan[] = [
     cta: "Start 7-Day Free Trial",
     ctaHref: "",
     planKey: "business",
-    trialNote: "7-day free trial · no credit card required",
+    trialNote: "Experience Business plan to run Data Quality checks",
     primary: false,
     features: [
       "Everything in Pro",
@@ -141,7 +141,7 @@ export function PricingSection() {
     <section id="pricing" className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-12 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             Pricing
           </p>
           <h2
@@ -150,13 +150,13 @@ export function PricingSection() {
           >
             Simple, transparent pricing.
           </h2>
-          <p className="text-lg" style={{ color: "#8A8A90" }}>
+          <p className="text-lg" style={{ color: "#5B5B63" }}>
             Start free. Scale when you need to. No hidden fees.
           </p>
 
           {/* Toggle */}
           <div className="flex items-center gap-3 pt-2">
-            <span className="text-sm font-medium" style={{ color: isAnnual ? "#8A8A90" : "#0A0A0A" }}>Monthly</span>
+            <span className="text-sm font-medium" style={{ color: isAnnual ? "#5B5B63" : "#0A0A0A" }}>Monthly</span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
               className="relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none"
@@ -169,7 +169,7 @@ export function PricingSection() {
                 style={{ left: isAnnual ? "calc(100% - 1.375rem)" : "0.125rem" }}
               />
             </button>
-            <span className="text-sm font-medium" style={{ color: isAnnual ? "#0A0A0A" : "#8A8A90" }}>Annual</span>
+            <span className="text-sm font-medium" style={{ color: isAnnual ? "#0A0A0A" : "#5B5B63" }}>Annual</span>
             {isAnnual && (
               <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#FFE439", color: "#0A0A0A" }}>
                 Save 20%
@@ -210,21 +210,21 @@ export function PricingSection() {
                     <span className="text-4xl font-bold tracking-tight" style={{ color: isPrimary ? "#fff" : "#0A0A0A" }}>
                       {price}
                     </span>
-                    <span className="mb-1 text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.45)" : "#8A8A90" }}>/{plan.period}</span>
+                    <span className="mb-1 text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.45)" : "#5B5B63" }}>/{plan.period}</span>
                   </div>
                   {showAnnualNote && (
                     <p className="text-sm font-medium" style={{ color: isPrimary ? "#FFE439" : "#5B5B63" }}>
                       {plan.annualTotal} billed annually — {plan.annualSavings}
                     </p>
                   )}
-                  <p className="text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.5)" : "#8A8A90" }}>{plan.description}</p>
+                  <p className="text-sm" style={{ color: isPrimary ? "rgba(255,255,255,0.5)" : "#5B5B63" }}>{plan.description}</p>
                 </div>
 
                 {plan.planKey === "free" ? (
                   <Link
                     href="/sign-up"
-                    className={`w-full block text-center font-semibold py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"}`}
-                    style={{ background: "#F4F4F5", color: "#0A0A0A", border: "1px solid #E9E9EC", borderRadius: "12px" }}
+                    className={`w-full block text-center font-semibold py-2.5 text-sm transition-colors hover:opacity-90 ${plan.trialNote ? "mb-1.5" : "mb-7"}`}
+                    style={{ background: "#0A0A0A", color: "#FFE439", borderRadius: "12px" }}
                   >
                     {plan.cta}
                   </Link>
@@ -232,11 +232,11 @@ export function PricingSection() {
                   <button
                     onClick={() => handlePaidPlan(plan.planKey as "pro" | "business")}
                     disabled={isLoading}
-                    className={`w-full flex items-center justify-center gap-2 font-semibold py-2.5 text-sm transition-colors ${plan.trialNote ? "mb-1.5" : "mb-7"} disabled:opacity-70 disabled:cursor-not-allowed`}
+                    className={`w-full flex items-center justify-center gap-2 font-semibold py-2.5 text-sm transition-colors hover:opacity-90 ${plan.trialNote ? "mb-1.5" : "mb-7"} disabled:opacity-70 disabled:cursor-not-allowed`}
                     style={
                       isPrimary
                         ? { background: "#FFE439", color: "#0A0A0A", borderRadius: "12px" }
-                        : { background: "#F4F4F5", color: "#0A0A0A", border: "1px solid #E9E9EC", borderRadius: "12px" }
+                        : { background: "#0A0A0A", color: "#FFE439", borderRadius: "12px" }
                     }
                   >
                     {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -244,7 +244,7 @@ export function PricingSection() {
                   </button>
                 )}
                 {plan.trialNote && (
-                  <p className="text-center text-[11px] mb-5" style={{ color: isPrimary ? "rgba(255,255,255,0.4)" : "#8A8A90" }}>{plan.trialNote}</p>
+                  <p className="text-center text-[11px] font-bold mb-5" style={{ color: isPrimary ? "rgba(255,255,255,0.4)" : "#5B5B63" }}>{plan.trialNote}</p>
                 )}
 
                 <ul className="space-y-3">
@@ -260,7 +260,7 @@ export function PricingSection() {
           })}
         </div>
 
-        <p className="text-sm mt-10" style={{ color: "#8A8A90", opacity: 0.8 }}>
+        <p className="text-sm mt-10" style={{ color: "#5B5B63", opacity: 0.8 }}>
           All plans include 100% client-side processing — your data never leaves your browser.
         </p>
       </div>

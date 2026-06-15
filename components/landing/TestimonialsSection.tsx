@@ -81,7 +81,7 @@ export function TestimonialsSection() {
     <section className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             Customer Stories
           </p>
           <h2
@@ -90,7 +90,7 @@ export function TestimonialsSection() {
           >
             Teams that ship cleaner data with Sohovi.
           </h2>
-          <p className="text-lg" style={{ color: "#8A8A90" }}>
+          <p className="text-lg" style={{ color: "#5B5B63" }}>
             From freelance consultants to 50-person data teams.
           </p>
         </div>
@@ -131,7 +131,7 @@ export function TestimonialsSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-sm" style={{ color: "#0A0A0A" }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: "#8A8A90" }}>{t.role} · {t.company}</div>
+                  <div className="text-xs" style={{ color: "#5B5B63" }}>{t.role} · {t.company}</div>
                 </div>
               </div>
             </div>
@@ -149,7 +149,7 @@ export function TestimonialsSection() {
           >
             <ChevronLeft className="w-4 h-4" style={{ color: "#5B5B63" }} />
           </button>
-          <span className="text-sm font-medium" style={{ color: "#8A8A90" }}>
+          <span className="text-sm font-medium" style={{ color: "#5B5B63" }}>
             0{page + 1} / 0{pageCount}
           </span>
           <button

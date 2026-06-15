@@ -40,7 +40,7 @@ export function HowItWorks() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             How It Works
           </p>
           <h2
@@ -49,7 +49,7 @@ export function HowItWorks() {
           >
             From file to insight in four steps.
           </h2>
-          <p className="text-lg leading-relaxed" style={{ color: "#8A8A90" }}>
+          <p className="text-lg leading-relaxed" style={{ color: "#5B5B63" }}>
             No integration setup. No account configuration. Just your file and your answers.
           </p>
         </div>
@@ -66,8 +66,8 @@ export function HowItWorks() {
               >
                 {/* Step number + time */}
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold tracking-widest" style={{ color: "#8A8A90", opacity: 0.6 }}>{step.number}</span>
-                  <span className="text-[12px] font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(10,10,10,0.05)", color: "#8A8A90" }}>
+                  <span className="text-[11px] font-bold tracking-widest" style={{ color: "#5B5B63", opacity: 0.6 }}>{step.number}</span>
+                  <span className="text-[12px] font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(10,10,10,0.05)", color: "#5B5B63" }}>
                     {step.time}
                   </span>
                 </div>

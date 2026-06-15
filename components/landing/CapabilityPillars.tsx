@@ -199,7 +199,7 @@ export function CapabilityPillars() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Section header */}
         <div className="max-w-2xl mb-20 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             Platform Capabilities
           </p>
           <h2

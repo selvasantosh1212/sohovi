@@ -58,7 +58,7 @@ export default function Image() {
         <div
           style={{
             fontSize: 26,
-            color: "#8A8A90",
+            color: "#5B5B63",
             lineHeight: 1.4,
             maxWidth: 740,
           }}
@@ -71,7 +71,7 @@ export default function Image() {
             bottom: 84,
             right: 118,
             fontSize: 18,
-            color: "#8A8A90",
+            color: "#5B5B63",
           }}
         >
           sohovi.com

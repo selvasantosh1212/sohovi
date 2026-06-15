@@ -53,7 +53,7 @@ function ScoreArc({ score }: { score: number }) {
       <text x={cx} y={cy + 2} textAnchor="middle" dominantBaseline="middle"
         fill="#0A0A0A" fontWeight="700" fontSize="22">{score}</text>
       <text x={cx} y={cy + 16} textAnchor="middle" dominantBaseline="middle"
-        fill="#8A8A90" fontSize="9">/100</text>
+        fill="#5B5B63" fontSize="9">/100</text>
     </svg>
   );
 }
@@ -63,7 +63,7 @@ function DimensionBars({ animate }: { animate: boolean }) {
     <div className="flex flex-col gap-[5px]">
       {dimensions.map(({ label, score }, i) => (
         <div key={label} className="flex items-center gap-2">
-          <span className="text-[10px] w-[76px] shrink-0" style={{ color: "#8A8A90" }}>{label}</span>
+          <span className="text-[10px] w-[76px] shrink-0" style={{ color: "#5B5B63" }}>{label}</span>
           <div className="flex-1 h-[4px] rounded-full overflow-hidden" style={{ background: "#E9E9EC" }}>
             <div
               className="h-full rounded-full transition-all"
@@ -125,7 +125,7 @@ function HeroDashboard() {
         <div className="flex items-start justify-between mb-3">
           <div>
             <div className="font-mono font-bold text-[15px]" style={{ color: "#0A0A0A" }}>customer_data.csv</div>
-            <div className="font-mono text-[10px] mt-0.5" style={{ color: "#8A8A90" }}>128,447 rows · 23 columns · Profiled 3s ago</div>
+            <div className="font-mono text-[10px] mt-0.5" style={{ color: "#5B5B63" }}>128,447 rows · 23 columns · Profiled 3s ago</div>
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold" style={{ background: "var(--mint)", color: "#0A0A0A" }}>
             DQ Score 87
@@ -137,19 +137,19 @@ function HeroDashboard() {
           {/* Col 1: Score gauge */}
           <div className="rounded-[16px] p-3 flex flex-col items-center justify-center gap-1" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
             <ScoreArc score={87} />
-            <div className="text-[9px] uppercase tracking-widest font-semibold" style={{ color: "#8A8A90" }}>Overall Health</div>
+            <div className="text-[9px] uppercase tracking-widest font-semibold" style={{ color: "#5B5B63" }}>Overall Health</div>
           </div>
 
           {/* Col 2: Dimension bars */}
           <div className="rounded-[16px] p-3" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
-            <div className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: "#8A8A90" }}>Dimensions</div>
+            <div className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: "#5B5B63" }}>Dimensions</div>
             <DimensionBars animate={animate} />
           </div>
 
           {/* Col 3: Sparkline + alert + upload */}
           <div className="flex flex-col gap-2">
             <div className="rounded-[14px] p-2.5" style={{ background: "#fff", border: "1px solid #E9E9EC" }}>
-              <div className="text-[9px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "#8A8A90" }}>8-week trend</div>
+              <div className="text-[9px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "#5B5B63" }}>8-week trend</div>
               <Sparkline />
             </div>
             <div className="rounded-[14px] p-2.5" style={{ background: "rgba(45,127,249,0.08)", border: "1px solid rgba(45,127,249,0.2)" }}>
@@ -238,14 +238,14 @@ export function Hero() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#2A2A2E"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#0A0A0A"; }}
           >
-            Run Data Profiling & DQ checks for free →
+            Run Data Profiling & Data Quality checks for free →
           </Link>
         </div>
 
         {/* Reassurance chips */}
         <div className="flex flex-wrap justify-center gap-2 mt-5">
           {["No credit card", "Free forever for solo", "Data stays in your browser"].map((t) => (
-            <span key={t} className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ color: "#8A8A90", background: "rgba(10,10,10,0.04)" }}>
+            <span key={t} className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ color: "#5B5B63", background: "rgba(10,10,10,0.04)" }}>
               {t}
             </span>
           ))}

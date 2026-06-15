@@ -35,7 +35,7 @@ export function ProblemSection() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             The Problem
           </p>
           <h2
@@ -44,7 +44,7 @@ export function ProblemSection() {
           >
             Most data quality tools weren&apos;t built for your team.
           </h2>
-          <p className="text-lg leading-relaxed" style={{ color: "#8A8A90" }}>
+          <p className="text-lg leading-relaxed" style={{ color: "#5B5B63" }}>
             The traditional approach to data quality is slow, expensive, and assumes you have a dedicated IT department. It also requires your data to travel to external servers before you&apos;ve run a single check.
           </p>
         </div>
@@ -65,7 +65,7 @@ export function ProblemSection() {
                   }}
                 >
                   <div className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "#F4F4F5", border: "1px solid #DBDBDF" }}>
-                    <Icon className="w-5 h-5" style={{ color: "#8A8A90" }} />
+                    <Icon className="w-5 h-5" style={{ color: "#5B5B63" }} />
                   </div>
                   <div className="space-y-1.5">
                     <h3 className="font-semibold" style={{ color: "#0A0A0A" }}>{pain.title}</h3>
@@ -74,7 +74,7 @@ export function ProblemSection() {
                 </div>
               );
             })}
-            <p className="text-center text-sm pt-2" style={{ color: "#8A8A90", opacity: 0.8 }}>There&apos;s a different way.</p>
+            <p className="text-center text-sm pt-2" style={{ color: "#5B5B63", opacity: 0.8 }}>There&apos;s a different way.</p>
           </div>
 
           {/* Sohovi contrast */}

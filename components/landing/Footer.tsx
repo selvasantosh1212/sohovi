@@ -53,9 +53,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "#8A8A90" }}
+                    style={{ color: "#5B5B63" }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
                   >
                     {link.label}
                   </Link>
@@ -82,9 +82,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "#8A8A90" }}
+                    style={{ color: "#5B5B63" }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
                   >
                     {link.label}
                   </Link>
@@ -111,9 +111,9 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm transition-colors"
-                    style={{ color: "#8A8A90" }}
+                    style={{ color: "#5B5B63" }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
                   >
                     {link.label}
                   </Link>
@@ -127,10 +127,10 @@ export function Footer() {
           className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
           style={{ borderTop: "1px solid #E9E9EC" }}
         >
-          <p className="text-sm" style={{ color: "#8A8A90" }}>
+          <p className="text-sm" style={{ color: "#5B5B63" }}>
             © {new Date().getFullYear()} Sohovi. All rights reserved.
           </p>
-          <p className="text-xs text-center" style={{ color: "#8A8A90", opacity: 0.8 }}>
+          <p className="text-xs text-center" style={{ color: "#5B5B63", opacity: 0.8 }}>
             Built privacy-first. Your data never leaves your browser. GDPR-friendly by design.
           </p>
           <div className="flex items-center gap-3">
@@ -139,9 +139,9 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1px solid #E9E9EC", color: "#8A8A90" }}
+              style={{ border: "1px solid #E9E9EC", color: "#5B5B63" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
               aria-label="Website"
             >
               <Globe className="w-3.5 h-3.5" />
@@ -149,9 +149,9 @@ export function Footer() {
             <a
               href="mailto:hello@sohovi.com"
               className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1px solid #E9E9EC", color: "#8A8A90" }}
+              style={{ border: "1px solid #E9E9EC", color: "#5B5B63" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A8A90"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#5B5B63"; }}
               aria-label="Email"
             >
               <Mail className="w-3.5 h-3.5" />

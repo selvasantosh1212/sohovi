@@ -49,7 +49,7 @@ export function FAQSection() {
     <section id="faq" className="py-24" style={{ background: "#FFFFFF" }}>
       <div className="mx-auto max-w-2xl px-6">
         <div className="mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             FAQ
           </p>
           <h2
@@ -58,7 +58,7 @@ export function FAQSection() {
           >
             Questions we hear most often.
           </h2>
-          <p style={{ color: "#8A8A90" }}>
+          <p style={{ color: "#5B5B63" }}>
             Still have questions?{" "}
             <a href="mailto:hello@sohovi.com" className="underline hover:no-underline transition-all" style={{ color: "#0A0A0A" }}>
               Email us.
@@ -79,7 +79,7 @@ export function FAQSection() {
                   <span className="font-medium" style={{ color: "#0A0A0A" }}>{faq.q}</span>
                   <ChevronDown
                     className="w-5 h-5 shrink-0 transition-transform duration-200"
-                    style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", color: "#8A8A90" }}
+                    style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", color: "#5B5B63" }}
                   />
                 </button>
                 <div

@@ -20,7 +20,7 @@ export function BrandStrip() {
     >
       <p
         className="text-center text-[11px] font-bold uppercase tracking-[0.18em] mb-5"
-        style={{ color: "#8A8A90" }}
+        style={{ color: "#5B5B63" }}
       >
         Built for data-sensitive teams in
       </p>

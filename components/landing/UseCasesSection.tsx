@@ -42,7 +42,7 @@ export function UseCasesSection() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="max-w-2xl mb-16 space-y-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#8A8A90" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: "#5B5B63" }}>
             Use Cases
           </p>
           <h2
@@ -51,7 +51,7 @@ export function UseCasesSection() {
           >
             Built for every data team.
           </h2>
-          <p className="text-lg leading-relaxed" style={{ color: "#8A8A90" }}>
+          <p className="text-lg leading-relaxed" style={{ color: "#5B5B63" }}>
             From marketing to finance, here&apos;s how teams use Sohovi to improve data quality, catch
             errors before they spread, and deliver cleaner data — without writing a single line of code.
           </p>

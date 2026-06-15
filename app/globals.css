@@ -70,7 +70,7 @@
   --paper: #FFFFFF;
   --ink: #0A0A0A;
   --ink-soft: #5B5B63;
-  --ink-mute: #8A8A90;
+  --ink-mute: #5B5B63;
   --hair: #E9E9EC;
   --hair-strong: #DBDBDF;
   --terracotta: #2D7FF9;
@@ -263,7 +263,7 @@
 }
 @keyframes heroStrikeText {
   0%, 6%    { color: #0A0A0A; }
-  20%, 70%  { color: #8A8A90; }
+  20%, 70%  { color: #5B5B63; }
   86%, 100% { color: #0A0A0A; }
 }
 
