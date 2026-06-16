@@ -93,7 +93,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-6" aria-label="Main navigation">
+      <nav className="flex-1 overflow-y-auto sidebar-scroll py-4 px-2 space-y-6" aria-label="Main navigation">
         {navItems.map((group) => (
           <div key={group.group}>
             {!collapsed && (

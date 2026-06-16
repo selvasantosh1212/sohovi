@@ -5,7 +5,6 @@ import { CheckCircle2, Loader2, ExternalLink } from "lucide-react";
 import {
   generateCodeVerifier,
   buildAuthUrl,
-  exchangeCodeForToken,
   openOAuthPopup,
 } from "@/lib/connectors/pkce";
 import type { ConnectorCommand } from "@/types/connectors.types";
@@ -61,17 +60,22 @@ export function GoogleSheetsForm({ onConnect }: GoogleSheetsFormProps) {
 
       const code = await openOAuthPopup(authUrl, state);
 
-      const accessToken = await exchangeCodeForToken({
-        tokenUrl: "https://oauth2.googleapis.com/token",
-        clientId: GOOGLE_CLIENT_ID,
-        code,
-        codeVerifier,
-        redirectUri: typeof window !== "undefined"
+      const currentRedirectUri =
+        typeof window !== "undefined"
           ? `${window.location.origin}/dashboard/connect/callback`
-          : REDIRECT_URI,
-      });
+          : REDIRECT_URI;
 
-      setToken(accessToken);
+      const tokenRes = await fetch("/api/google/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, code_verifier: codeVerifier, redirect_uri: currentRedirectUri }),
+      });
+      const tokenJson = await tokenRes.json();
+      if (!tokenRes.ok || !tokenJson.access_token) {
+        throw new Error(tokenJson.error ?? "Token exchange failed");
+      }
+
+      setToken(tokenJson.access_token);
     } catch (err) {
       setAuthError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
