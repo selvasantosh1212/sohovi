@@ -222,7 +222,7 @@ export function Hero() {
               />
             </svg>
           </span>
-          <br />to measure your data quality.
+          <br />to measure data quality.
         </h1>
 
         <p className="mx-auto mt-7 leading-[1.55]" style={{ fontSize: "18px", color: "#5B5B63", maxWidth: "620px", textWrap: "pretty" } as React.CSSProperties}>
