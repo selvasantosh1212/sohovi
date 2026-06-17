@@ -6,16 +6,19 @@ export const revalidate = 3600;
 
 const BASE = "https://sohovi.com";
 
-const TOOL_SLUGS = [
-  "remove-duplicates",
-  "csv-to-json",
-  "json-to-csv",
-  "csv-columns",
-  "csv-to-markdown",
-  "csv-to-sql",
-  "csv-merger",
-  "test-data-generator",
-  "formula-explainer",
+const TOOL_SLUGS: { slug: string; lastModified: string }[] = [
+  { slug: "pii-audit", lastModified: "2026-06-17" },
+  { slug: "compare", lastModified: "2026-06-17" },
+  { slug: "de-identify", lastModified: "2026-06-17" },
+  { slug: "remove-duplicates", lastModified: "2026-06-17" },
+  { slug: "csv-to-json", lastModified: "2026-05-31" },
+  { slug: "json-to-csv", lastModified: "2026-05-31" },
+  { slug: "csv-columns", lastModified: "2026-05-31" },
+  { slug: "csv-to-markdown", lastModified: "2026-05-31" },
+  { slug: "csv-to-sql", lastModified: "2026-05-31" },
+  { slug: "csv-merger", lastModified: "2026-05-31" },
+  { slug: "test-data-generator", lastModified: "2026-05-31" },
+  { slug: "formula-explainer", lastModified: "2026-05-31" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -29,11 +32,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/about`, priority: 0.6, changeFrequency: "monthly" },
     { url: `${BASE}/blog`, priority: 0.8, changeFrequency: "weekly" },
     { url: `${BASE}/tools`, priority: 0.9, changeFrequency: "monthly" },
-    ...TOOL_SLUGS.map((s) => ({
-      url: `${BASE}/tools/${s}`,
+    ...TOOL_SLUGS.map(({ slug, lastModified }) => ({
+      url: `${BASE}/tools/${slug}`,
       priority: 0.9,
       changeFrequency: "monthly" as const,
-      lastModified: new Date("2026-05-31"),
+      lastModified: new Date(lastModified),
     })),
     ...categories.map((c) => ({
       url: `${BASE}/blog/category/${slugifyCategory(c)}`,

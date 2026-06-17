@@ -6,15 +6,15 @@ import { ToolsGrid } from "./ToolsGrid";
 export const metadata: Metadata = {
   title: "Free CSV & Data Tools — No Signup Required",
   description:
-    "9 free browser-based tools for CSV conversion, deduplication, SQL generation, and more. Your data never leaves your browser. No signup, no limits.",
+    "12 free browser-based tools for CSV conversion, deduplication, SQL generation, PII auditing, and more. Your data never leaves your browser. No signup, no limits.",
   openGraph: {
     title: "Free CSV & Data Tools — No Signup, No Limits | Sohovi",
     description:
       "Convert CSV to JSON, merge files, remove duplicates, generate SQL, and more — all free, in-browser, no signup.",
   },
   alternates: { canonical: "https://sohovi.com/tools" },
-  keywords: ["free csv tools", "csv to json converter", "remove duplicate rows csv", "online data tools", "browser based csv tools", "csv to sql", "json to csv", "csv column picker"],
-  twitter: { card: "summary_large_image", title: "Free CSV & Data Tools — No Signup Required | Sohovi", description: "9 free browser-based tools for CSV, JSON, SQL, Markdown, and more. In-browser, no signup, no limits." },
+  keywords: ["free csv tools", "csv to json converter", "remove duplicate rows csv", "online data tools", "browser based csv tools", "csv to sql", "json to csv", "csv column picker", "pii scanner online", "check spreadsheet for personal data", "compare two csv files", "de-identify dataset"],
+  twitter: { card: "summary_large_image", title: "Free CSV & Data Tools — No Signup Required | Sohovi", description: "12 free browser-based tools for CSV, JSON, SQL, PII auditing, de-identification, and more. In-browser, no signup, no limits." },
 };
 
 const appListSchema = {
@@ -23,15 +23,18 @@ const appListSchema = {
   name: "Free CSV and Data Tools by Sohovi",
   description: "Browser-based free tools for CSV conversion, deduplication, SQL generation, and data wrangling.",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Duplicate Row Remover", url: "https://sohovi.com/tools/remove-duplicates" },
-    { "@type": "ListItem", position: 2, name: "CSV to JSON Converter", url: "https://sohovi.com/tools/csv-to-json" },
-    { "@type": "ListItem", position: 3, name: "JSON to CSV Converter", url: "https://sohovi.com/tools/json-to-csv" },
-    { "@type": "ListItem", position: 4, name: "CSV Column Picker", url: "https://sohovi.com/tools/csv-columns" },
-    { "@type": "ListItem", position: 5, name: "CSV to Markdown Table", url: "https://sohovi.com/tools/csv-to-markdown" },
-    { "@type": "ListItem", position: 6, name: "CSV to SQL Generator", url: "https://sohovi.com/tools/csv-to-sql" },
-    { "@type": "ListItem", position: 7, name: "CSV Merger", url: "https://sohovi.com/tools/csv-merger" },
-    { "@type": "ListItem", position: 8, name: "Test Data Generator", url: "https://sohovi.com/tools/test-data-generator" },
-    { "@type": "ListItem", position: 9, name: "Excel Formula Explainer", url: "https://sohovi.com/tools/formula-explainer" },
+    { "@type": "ListItem", position: 1, name: "Pre-Send PII Audit", url: "https://sohovi.com/tools/pii-audit" },
+    { "@type": "ListItem", position: 2, name: "Two-File Reconciler", url: "https://sohovi.com/tools/compare" },
+    { "@type": "ListItem", position: 3, name: "Research Data De-Identifier", url: "https://sohovi.com/tools/de-identify" },
+    { "@type": "ListItem", position: 4, name: "Duplicate Row Remover", url: "https://sohovi.com/tools/remove-duplicates" },
+    { "@type": "ListItem", position: 5, name: "CSV to JSON Converter", url: "https://sohovi.com/tools/csv-to-json" },
+    { "@type": "ListItem", position: 6, name: "JSON to CSV Converter", url: "https://sohovi.com/tools/json-to-csv" },
+    { "@type": "ListItem", position: 7, name: "CSV Column Picker", url: "https://sohovi.com/tools/csv-columns" },
+    { "@type": "ListItem", position: 8, name: "CSV to Markdown Table", url: "https://sohovi.com/tools/csv-to-markdown" },
+    { "@type": "ListItem", position: 9, name: "CSV to SQL Generator", url: "https://sohovi.com/tools/csv-to-sql" },
+    { "@type": "ListItem", position: 10, name: "CSV Merger", url: "https://sohovi.com/tools/csv-merger" },
+    { "@type": "ListItem", position: 11, name: "Test Data Generator", url: "https://sohovi.com/tools/test-data-generator" },
+    { "@type": "ListItem", position: 12, name: "Excel Formula Explainer", url: "https://sohovi.com/tools/formula-explainer" },
   ],
 };
 
@@ -57,7 +60,7 @@ export default function ToolsHubPage() {
             Free CSV &amp; Data Tools
           </h1>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
-            9 browser-based utilities for converting, cleaning, and wrangling data.
+            12 browser-based utilities for converting, cleaning, auditing, and wrangling data.
             <strong style={{ color: "var(--ink)" }}> Your files never leave your device.</strong> No signup. No limits.
           </p>
         </div>
@@ -78,6 +81,9 @@ export default function ToolsHubPage() {
           </h2>
           <ul className="grid gap-3">
             {[
+              { href: "/blog/how-to-check-spreadsheet-for-pii", label: "How to check a spreadsheet for PII before sending it" },
+              { href: "/blog/how-to-compare-two-csv-files", label: "How to compare two CSV files and spot every change" },
+              { href: "/blog/how-to-de-identify-research-data", label: "How to de-identify research data: masking, generalization, and k-anonymity" },
               { href: "/blog/what-is-data-uniqueness", label: "What is data uniqueness? (and how to find duplicates)" },
               { href: "/blog/what-is-data-cleansing", label: "What is data cleansing?" },
               { href: "/blog/what-is-data-validation", label: "What is data validation?" },

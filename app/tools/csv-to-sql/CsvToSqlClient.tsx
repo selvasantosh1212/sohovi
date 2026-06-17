@@ -266,6 +266,14 @@ export function CsvToSqlClient() {
 
               <SoftCTA text="Before you run the INSERT — profile this data for nulls, type issues, and duplicates with Sohovi →" />
 
+              <button
+                onClick={() => { setHeaders([]); setRows([]); setSql(null); setError(null); }}
+                className="text-[13px] underline underline-offset-2"
+                style={{ color: "var(--ink-mute)" }}
+              >
+                Convert another file
+              </button>
+
               <HardCTA
                 headline={`${rows.length.toLocaleString()} rows ready to import — check quality before it hits your database`}
                 body="Bad data imported is bad data stored. Sohovi profiles your source CSV for null rates, type consistency, duplicates, and format issues — before you run the INSERT."

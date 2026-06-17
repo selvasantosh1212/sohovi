@@ -100,6 +100,7 @@ const relatedTools = [
 
 export function CsvToJsonClient() {
   const [mode, setMode] = useState<OutputMode>("objects");
+  const [parsed, setParsed] = useState<{ headers: string[]; rows: string[][] } | null>(null);
   const [json, setJson] = useState<string | null>(null);
   const [meta, setMeta] = useState<{ rows: number; cols: number; fileName: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -113,6 +114,7 @@ export function CsvToJsonClient() {
     try {
       const text = await file.text();
       const { headers, rows } = parseCSVText(text);
+      setParsed({ headers, rows });
       const output = convertToJSON(headers, rows, mode);
       setJson(output);
       setMeta({ rows: rows.length, cols: headers.length, fileName: file.name });
@@ -125,11 +127,8 @@ export function CsvToJsonClient() {
 
   function handleModeChange(m: OutputMode) {
     setMode(m);
-    if (json && meta) {
-      // re-parse by re-reading — just update mode label for display
-      // actual conversion would need re-parse; keep current for simplicity
-      setJson(null);
-      setMeta(null);
+    if (parsed && meta) {
+      setJson(convertToJSON(parsed.headers, parsed.rows, m));
     }
   }
 
@@ -229,7 +228,7 @@ export function CsvToJsonClient() {
 
           <SoftCTA text="Converting data is step one — is the source actually clean? Sohovi profiles CSV quality automatically →" />
 
-          <button onClick={() => { setJson(null); setMeta(null); }} className="text-[13px] underline underline-offset-2" style={{ color: "var(--ink-mute)" }}>
+          <button onClick={() => { setJson(null); setMeta(null); setParsed(null); }} className="text-[13px] underline underline-offset-2" style={{ color: "var(--ink-mute)" }}>
             Convert another file
           </button>
 

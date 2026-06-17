@@ -7,7 +7,8 @@ import { SoftCTA } from "@/components/tools/SoftCTA";
 import { ToolFAQ, type FAQItem } from "@/components/tools/ToolFAQ";
 import { RelatedTools } from "@/components/tools/RelatedTools";
 import { UseCases, type UseCase } from "@/components/tools/UseCases";
-import { CheckSquare, Square, Download, AlertCircle, Loader2 } from "lucide-react";
+import { CheckSquare, Square, Download, AlertCircle, Loader2, Lock, Sparkles } from "lucide-react";
+import { normalizePhone, looksLikePhone } from "@/lib/tools/phone-format";
 
 interface ParsedCSV {
   headers: string[];
@@ -84,6 +85,56 @@ function dedupeRows(parsed: ParsedCSV, selectedCols: Set<string>): DedupeResult 
   };
 }
 
+interface NormChange {
+  col: string;
+  type: "whitespace" | "email_case" | "phone";
+  before: string;
+  after: string;
+}
+
+interface NormPreview {
+  changes: NormChange[];
+  normalizedRows: string[][];
+}
+
+function buildNormPreview(headers: string[], rows: string[][]): NormPreview {
+  const emailIdx = headers.map((h, i) => (/email/i.test(h) ? i : -1)).filter((i) => i !== -1);
+  const phoneIdx = headers.map((h, i) => (looksLikePhone((rows[0]?.[i] ?? "")) || /phone|mobile|tel/i.test(h) ? i : -1)).filter((i) => i !== -1);
+
+  const changes: NormChange[] = [];
+  const normalizedRows = rows.map((row) =>
+    row.map((cell, i) => {
+      let v = cell;
+
+      // Whitespace
+      const trimmed = v.trim().replace(/\s+/g, " ");
+      if (trimmed !== v) {
+        changes.push({ col: headers[i], type: "whitespace", before: v, after: trimmed });
+        v = trimmed;
+      }
+
+      // Email lowercasing
+      if (emailIdx.includes(i) && v !== v.toLowerCase()) {
+        changes.push({ col: headers[i], type: "email_case", before: v, after: v.toLowerCase() });
+        v = v.toLowerCase();
+      }
+
+      // Phone formatting
+      if (phoneIdx.includes(i) && looksLikePhone(v)) {
+        const formatted = normalizePhone(v);
+        if (formatted !== v) {
+          changes.push({ col: headers[i], type: "phone", before: v, after: formatted });
+          v = formatted;
+        }
+      }
+
+      return v;
+    })
+  );
+
+  return { changes, normalizedRows };
+}
+
 function rowsToCSV(headers: string[], rows: string[][]): string {
   const esc = (v: string) => v.includes(",") || v.includes('"') || v.includes("\n") ? `"${v.replace(/"/g, '""')}"` : v;
   return [headers.map(esc).join(","), ...rows.map((r) => r.map(esc).join(","))].join("\n");
@@ -154,9 +205,9 @@ const USE_CASES: UseCase[] = [
 ];
 
 const relatedTools = [
+  { name: "Two-File Reconciler", href: "/tools/compare", description: "Compare two files and see what changed" },
+  { name: "PII Audit", href: "/tools/pii-audit", description: "Check a file for personal data before sharing" },
   { name: "CSV Column Picker", href: "/tools/csv-columns", description: "Select, drop, and rename CSV columns" },
-  { name: "CSV Merger", href: "/tools/csv-merger", description: "Combine multiple CSV files into one" },
-  { name: "CSV to JSON Converter", href: "/tools/csv-to-json", description: "Convert CSV to a JSON array" },
 ];
 
 export function RemoveDuplicatesClient() {
@@ -166,12 +217,14 @@ export function RemoveDuplicatesClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRemoved, setShowRemoved] = useState(false);
+  const [normPreview, setNormPreview] = useState<NormPreview | null>(null);
   const fileRef = useRef<string>("");
 
   async function handleFile(file: File) {
     setLoading(true);
     setError(null);
     setResult(null);
+    setNormPreview(null);
     setSelectedCols(new Set());
     try {
       const text = await file.text();
@@ -201,6 +254,7 @@ export function RemoveDuplicatesClient() {
       try {
         const r = dedupeRows(parsed, selectedCols);
         setResult(r);
+        setNormPreview(buildNormPreview(r.headers, r.uniqueRows));
       } catch (e) {
         setError(e instanceof Error ? e.message : "Deduplication failed");
       } finally {
@@ -432,13 +486,87 @@ export function RemoveDuplicatesClient() {
               Download {result.uniqueCount.toLocaleString()} unique rows (.csv)
             </button>
             <button
-              onClick={() => { setParsed(null); setResult(null); setSelectedCols(new Set()); }}
+              onClick={() => { setParsed(null); setResult(null); setSelectedCols(new Set()); setNormPreview(null); }}
               className="px-5 py-3 rounded-xl text-[14px] border transition-all"
               style={{ borderColor: "var(--hair-strong)", color: "var(--ink-soft)" }}
             >
               Start over
             </button>
           </div>
+
+          {/* Normalization preview */}
+          {normPreview && (
+            <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--hair-strong)" }}>
+              <div className="px-5 py-4 flex items-center gap-3" style={{ background: "rgba(199,189,230,0.12)", borderBottom: "1px solid var(--hair)" }}>
+                <Sparkles className="w-4 h-4 shrink-0" style={{ color: "#8B5CF6" }} />
+                <div>
+                  <p className="text-[14px] font-semibold" style={{ color: "var(--ink)" }}>
+                    Normalization preview — free
+                  </p>
+                  <p className="text-[12px] mt-0.5" style={{ color: "var(--ink-mute)" }}>
+                    {normPreview.changes.length === 0
+                      ? "No normalization changes detected — your data looks clean."
+                      : `${normPreview.changes.length} cell${normPreview.changes.length !== 1 ? "s" : ""} would change: whitespace trim, email lowercasing, phone formatting.`}
+                  </p>
+                </div>
+              </div>
+
+              {normPreview.changes.length > 0 && (
+                <>
+                  <div className="divide-y" style={{ borderColor: "var(--hair)" }}>
+                    {normPreview.changes.slice(0, 6).map((c, i) => (
+                      <div key={i} className="px-5 py-3 flex items-center gap-3 text-[12px]">
+                        <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium" style={{ background: "rgba(139,92,246,0.1)", color: "#7C3AED" }}>
+                          {c.col}
+                        </span>
+                        <span style={{ color: "#E07150" }} className="line-through truncate max-w-[120px]">{c.before}</span>
+                        <span style={{ color: "var(--ink-mute)" }}>→</span>
+                        <span style={{ color: "#00A88E" }} className="truncate max-w-[120px]">{c.after}</span>
+                        <span className="ml-auto shrink-0 text-[11px]" style={{ color: "var(--ink-mute)" }}>
+                          {c.type === "whitespace" ? "whitespace" : c.type === "email_case" ? "email case" : "phone format"}
+                        </span>
+                      </div>
+                    ))}
+                    {normPreview.changes.length > 6 && (
+                      <div className="px-5 py-2 text-[12px]" style={{ color: "var(--ink-mute)" }}>
+                        +{normPreview.changes.length - 6} more changes — download normalized copy to see all.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="px-5 py-4 flex flex-wrap items-center gap-3" style={{ background: "var(--cream)", borderTop: "1px solid var(--hair)" }}>
+                    <button
+                      onClick={() => {
+                        if (!normPreview || !result) return;
+                        const csv = rowsToCSV(result.headers, normPreview.normalizedRows);
+                        downloadCSV(csv, `${fileRef.current}-normalized.csv`);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-[13px] transition-all"
+                      style={{ background: "#8B5CF6", color: "white" }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#7C3AED"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#8B5CF6"; }}
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download normalized copy
+                    </button>
+                    <p className="text-[12px]" style={{ color: "var(--ink-mute)" }}>
+                      Applies whitespace trim, email lowercasing, and E.164 phone formatting.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Paid upsell */}
+              <div className="px-5 py-4 flex items-start gap-3" style={{ background: "var(--paper)", borderTop: "1px solid var(--hair)" }}>
+                <Lock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--ink-mute)" }} />
+                <p className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
+                  <strong style={{ color: "var(--ink)" }}>Sohovi Business</strong> — fuzzy duplicate
+                  detection (catch "Bob Smith" vs "Robert Smith"), merge with survivorship rules, and
+                  bulk normalized-file export with a full change log.
+                </p>
+              </div>
+            </div>
+          )}
 
           <HardCTA
             headline={`${result.removedCount.toLocaleString()} duplicates found — catch them automatically next time`}

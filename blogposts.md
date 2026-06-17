@@ -466,6 +466,52 @@ Cross-referenced against the 122-topic roadmap. ✅ = published, ⬜ = not yet w
 
 ---
 
+### New-Tool Support Posts — Tools 1–3 (12 posts, all ⬜)
+
+These posts support the three new free tools added in June 2026: PII Audit (`/tools/pii-audit`), Two-File Reconciler (`/tools/compare`), and the enhanced Duplicate Row Remover (`/tools/remove-duplicates`). Each post links DOWN to the relevant tool page.
+
+**Note on 4 existing pending posts:** When writing #82, #84, #85, and #87, add an internal link DOWN to `/tools/pii-audit` — those posts are natural hand-offs to the new PII Audit tool.
+
+#### Tool 1 — Pre-Send PII Audit (links to `/tools/pii-audit`)
+
+| # | Status | Topic | Suggested Slug | Category | Intent |
+|---|--------|-------|----------------|----------|--------|
+| T1-1 | ⬜ | How to Check a CSV File for Personal Data Before Sending It | `check-csv-for-personal-data-before-sending` | Practical How-To Guides | mofu |
+| T1-2 | ⬜ | What Counts as PII in a Spreadsheet? A Non-Legal Guide | `what-counts-as-pii-in-a-spreadsheet` | Data Quality Glossary | tofu |
+| T1-3 | ⬜ | How to Scan a File for API Keys and Secrets Before Sharing | `scan-file-for-api-keys-before-sharing` | Practical How-To Guides | mofu |
+| T1-4 | ⬜ | GDPR: What Personal Data in Spreadsheets Are You Required to Protect? | `gdpr-personal-data-in-spreadsheets` | Data Governance & Culture | informational |
+
+#### Tool 2 — Two-File Reconciler (links to `/tools/compare`)
+
+| # | Status | Topic | Suggested Slug | Category | Intent |
+|---|--------|-------|----------------|----------|--------|
+| T2-1 | ⬜ | How to Compare Two CSV Files for Differences Online (Free) | `compare-two-csv-files-for-differences-online` | Practical How-To Guides | mofu |
+| T2-2 | ⬜ | How to Find Rows in One CSV But Not Another (Without VLOOKUP) | `find-rows-in-one-csv-but-not-another` | Practical How-To Guides | mofu |
+| T2-3 | ⬜ | Spreadsheet Reconciliation: How to Match Records Between Two Files | `reconcile-two-spreadsheets-match-records` | Practical How-To Guides | mofu |
+| T2-4 | ⬜ | How to Reconcile a Bank Statement to a Ledger Spreadsheet | `reconcile-bank-statement-to-ledger-spreadsheet` | Industry Use Cases | mofu |
+
+#### Tool 4 — Research Data De-Identifier (links to `/tools/de-identify`)
+
+| # | Status | Topic | Suggested Slug | Category | Intent |
+|---|--------|-------|----------------|----------|--------|
+| T4-1 | ⬜ | How to De-Identify a Dataset for Publication (Step-by-Step) | `how-to-de-identify-dataset-for-publication` | Practical How-To Guides | mofu |
+| T4-2 | ⬜ | What Is k-Anonymity? A Plain-English Guide for Researchers | `what-is-k-anonymity-explained` | Data Quality Glossary | tofu |
+| T4-3 | ⬜ | How to Anonymize Survey Data Before Sharing with Your Team | `anonymize-survey-data-before-sharing` | Practical How-To Guides | mofu |
+| T4-4 | ⬜ | De-Identifying Health Data: HIPAA Safe Harbor Checklist | `de-identify-health-data-hipaa-safe-harbor` | Data Governance & Culture | informational |
+
+All four link DOWN to `/tools/de-identify`.
+
+#### Tool 3 — Dedupe & Contact Cleaner (links to `/tools/remove-duplicates`)
+
+| # | Status | Topic | Suggested Slug | Category | Intent |
+|---|--------|-------|----------------|----------|--------|
+| T3-1 | ⬜ | How to Deduplicate a Contact List Before CRM Import | `deduplicate-contact-list-before-crm-import` | Practical How-To Guides | mofu |
+| T3-2 | ⬜ | How to Format Phone Numbers in a Spreadsheet (E.164 Guide) | `format-phone-numbers-in-spreadsheet-e164` | Practical How-To Guides | mofu |
+| T3-3 | ⬜ | How to Clean Your Email List Before Mailchimp Import | `clean-email-list-before-mailchimp-import` | Marketing Agencies & Email Marketers | mofu |
+| T3-4 | ⬜ | What Is Fuzzy Deduplication? Catching 'Bob Smith' vs 'Robert Smith' | `what-is-fuzzy-deduplication` | Data Quality Glossary | informational |
+
+---
+
 ## 3. How to Write a Sohovi Blog Post
 
 Every post published on the Sohovi blog must follow this guide. This is the single source of truth for writers, contractors, and contributors.
@@ -506,6 +552,9 @@ Every post related to one of the 9 free tools must embed or link to it:
 
 | Tool | URL |
 |------|-----|
+| Pre-Send PII Audit | `/tools/pii-audit` |
+| Two-File Reconciler | `/tools/compare` |
+| Research Data De-Identifier | `/tools/de-identify` |
 | Duplicate Row Remover | `/tools/remove-duplicates` |
 | CSV Merger | `/tools/csv-merger` |
 | CSV Column Picker | `/tools/csv-columns` |

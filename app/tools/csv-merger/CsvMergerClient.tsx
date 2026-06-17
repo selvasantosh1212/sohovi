@@ -114,9 +114,19 @@ export function CsvMergerClient() {
         return;
       }
     }
-    setFiles((prev) => [...prev, ...parsed].slice(0, 10));
+    setFiles((prev) => {
+      const remaining = 10 - prev.length;
+      if (parsed.length > remaining) {
+        const dropped = parsed.length - remaining;
+        setError(
+          `Maximum 10 files. ${dropped} file${dropped !== 1 ? "s" : ""} not added — remove existing files to make room.`
+        );
+      } else {
+        setError(null);
+      }
+      return [...prev, ...parsed].slice(0, 10);
+    });
     setResult(null);
-    setError(null);
   }
 
   function removeFile(i: number) {

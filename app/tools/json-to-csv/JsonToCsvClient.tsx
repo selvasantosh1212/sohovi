@@ -224,6 +224,14 @@ export function JsonToCsvClient() {
 
           <SoftCTA text="This JSON came from an API or system — is the source data reliable? Sohovi monitors data quality at origin →" />
 
+          <button
+            onClick={() => { setResult(null); setInput(""); }}
+            className="text-[13px] underline underline-offset-2"
+            style={{ color: "var(--ink-mute)" }}
+          >
+            Convert another file
+          </button>
+
           <HardCTA
             headline={`${result.rows.toLocaleString()} rows ready — is the data actually reliable?`}
             body="Converting JSON to CSV is step one. Sohovi is step two: automatically profiling, scoring, and alerting on the quality of your data on every run."

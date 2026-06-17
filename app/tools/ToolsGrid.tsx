@@ -11,9 +11,36 @@ import {
   Columns,
   Calculator,
   FileJson,
+  ShieldAlert,
+  GitCompare,
+  ShieldOff,
 } from "lucide-react";
 
 const tools = [
+  {
+    icon: ShieldAlert,
+    name: "Pre-Send PII Audit",
+    slug: "pii-audit",
+    tagline: "Check any file for emails, SSNs, API keys, and personal data before you send it.",
+    color: "#E07150",
+    colorBg: "rgba(224,113,80,0.08)",
+  },
+  {
+    icon: GitCompare,
+    name: "Two-File Reconciler",
+    slug: "compare",
+    tagline: "Drop two spreadsheets, see exactly what changed — added, removed, and modified rows.",
+    color: "#00C9A7",
+    colorBg: "rgba(0,201,167,0.08)",
+  },
+  {
+    icon: ShieldOff,
+    name: "Research Data De-Identifier",
+    slug: "de-identify",
+    tagline: "Mask, generalize, and pseudonymize a dataset. Check k-anonymity. Export a methods log.",
+    color: "#8B5CF6",
+    colorBg: "rgba(139,92,246,0.08)",
+  },
   {
     icon: Trash2,
     name: "Duplicate Row Remover",
