@@ -189,16 +189,23 @@ export function ColumnProfileCard({ profile }: ColumnProfileCardProps) {
           </div>
         )}
 
-      {/* Outliers — clickable */}
+      {/* Outliers */}
       {profile.outlier_count > 0 && (
-        <button
-          type="button"
-          onClick={() => setOutlierOpen(true)}
-          className="flex items-center gap-1.5 text-xs text-amber-600 font-medium hover:text-amber-700 hover:underline text-left w-fit"
-        >
-          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-          {profile.outlier_count.toLocaleString()} outlier{profile.outlier_count !== 1 ? "s" : ""} detected (±3σ) — click to view
-        </button>
+        profile.outlier_values.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setOutlierOpen(true)}
+            className="flex items-center gap-1.5 text-xs text-amber-600 font-medium hover:text-amber-700 hover:underline text-left w-fit"
+          >
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            {profile.outlier_count.toLocaleString()} outlier{profile.outlier_count !== 1 ? "s" : ""} detected (±3σ) — click to view
+          </button>
+        ) : (
+          <span className="flex items-center gap-1.5 text-xs text-amber-600 font-medium">
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            {profile.outlier_count.toLocaleString()} outlier{profile.outlier_count !== 1 ? "s" : ""} detected (±3σ)
+          </span>
+        )
       )}
 
       {/* Value distribution — always visible for categorical columns */}
@@ -327,7 +334,7 @@ export function ColumnProfileCard({ profile }: ColumnProfileCardProps) {
       )}
 
       {/* Outlier popup */}
-      {profile.outlier_count > 0 && (
+      {profile.outlier_count > 0 && profile.outlier_values.length > 0 && (
         <OutlierDialog
           open={outlierOpen}
           onClose={() => setOutlierOpen(false)}

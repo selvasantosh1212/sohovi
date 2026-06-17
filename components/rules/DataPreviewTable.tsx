@@ -303,7 +303,7 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
                             isActive
                               ? "text-[#1E3A5F] bg-[#00C9A7]/20 ring-2 ring-inset ring-[#00C9A7]/50"
                               : hasRules
-                                ? "bg-amber-50 text-amber-800 border-b-2 border-amber-400 hover:bg-amber-100"
+                                ? "bg-[#00C9A7]/10 text-[#1E3A5F] border-b-2 border-[#00C9A7] hover:bg-[#00C9A7]/20"
                                 : "text-slate-600 hover:text-[#1E3A5F] hover:bg-slate-100"
                           }`}
                         >
@@ -313,7 +313,7 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
                               <CheckCircle2 className="w-3.5 h-3.5 text-[#00C9A7] shrink-0" />
                             )}
                             {!isActive && hasRules && (
-                              <span className="inline-flex items-center justify-center min-w-[1rem] h-4 rounded-full bg-amber-200 text-amber-800 text-[9px] font-bold px-1 shrink-0">
+                              <span className="inline-flex items-center justify-center min-w-[1rem] h-4 rounded-full bg-[#00C9A7]/30 text-[#1E3A5F] text-[9px] font-bold px-1 shrink-0">
                                 {colRuleCounts[h]}
                               </span>
                             )}

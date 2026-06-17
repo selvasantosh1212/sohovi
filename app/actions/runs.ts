@@ -291,6 +291,20 @@ export async function getRuns(assetId: string): Promise<AssetRun[]> {
   return (data ?? []) as AssetRun[];
 }
 
+// ---- Load profiling summaries for a historical run -----------------------
+
+export async function getProfilingForRun(runId: string): Promise<ProfilingSummary[]> {
+  const userId = await getScopeId();
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from("profiling_summaries")
+    .select("*")
+    .eq("run_id", runId)
+    .eq("clerk_user_id", userId)
+    .order("column_name", { ascending: true });
+  return (data ?? []) as ProfilingSummary[];
+}
+
 // ---- Load a single run with its DQ scores --------------------------------
 
 export interface RunWithScores {

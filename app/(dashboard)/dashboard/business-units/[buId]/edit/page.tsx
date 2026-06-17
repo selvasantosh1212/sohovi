@@ -11,6 +11,8 @@ export default async function EditBUPage({ params }: { params: Promise<{ buId: s
   const bu = await getBusinessUnit(buId);
   if (!bu) notFound();
 
+  const updateBU = updateBusinessUnit.bind(null, buId);
+
   return (
     <div className="max-w-2xl space-y-6">
       <div>
@@ -22,7 +24,7 @@ export default async function EditBUPage({ params }: { params: Promise<{ buId: s
       </div>
       <BUForm
         existing={bu}
-        onSubmit={(values) => updateBusinessUnit(buId, values)}
+        onSubmit={updateBU}
       />
     </div>
   );

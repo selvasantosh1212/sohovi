@@ -5,6 +5,49 @@ import { AlertTriangle } from "lucide-react";
 import type { DQRule } from "@/types/app.types";
 import { deleteRule, toggleRule, updateRule } from "@/app/actions/rules";
 
+function formatRuleParam(ruleType: string, params: Record<string, unknown>): string {
+  switch (ruleType) {
+    case "freshness_check":
+    case "recent_update":
+    case "not_stale":
+      return params.max_age_days ? `≤ ${params.max_age_days} days` : "";
+    case "enum_validation": {
+      const vals = params.allowed_values;
+      if (Array.isArray(vals)) return (vals as string[]).slice(0, 5).join(" · ");
+      return "";
+    }
+    case "regex_match":
+      return params.pattern ? `regex: ${params.pattern}` : "";
+    case "format_check":
+    case "datatype_enforcement":
+      return String(params.template ?? params.expected_type ?? "");
+    case "datatype_check":
+      return String(params.expected_type ?? "");
+    case "range_check":
+      return params.min !== undefined && params.max !== undefined
+        ? `${params.min} – ${params.max}`
+        : params.min !== undefined ? `≥ ${params.min}` : params.max !== undefined ? `≤ ${params.max}` : "";
+    case "case_consistency":
+      return String(params.case ?? "").toUpperCase();
+    case "cross_column_match":
+    case "no_orphan_values":
+    case "referential_integrity":
+    case "sequence_validation":
+    case "cross_field_comparison":
+      return params.col_b ? `vs ${params.col_b}` : "";
+    case "decimal_places":
+    case "rounding_check":
+      return params.max_decimals !== undefined
+        ? `≤ ${params.max_decimals} dp`
+        : params.decimals !== undefined ? `${params.decimals} dp` : "";
+    case "conditional_not_null":
+      return params.if_column && params.if_value
+        ? `if ${params.if_column} = ${params.if_value}` : "";
+    default:
+      return "";
+  }
+}
+
 const DIMENSION_COLORS: Record<string, string> = {
   completeness: "bg-blue-100 text-blue-700",
   validity:     "bg-purple-100 text-purple-700",
@@ -167,11 +210,15 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                           <span className="text-xs text-slate-400">
                             threshold {Math.round(rule.threshold * 100)}%
                           </span>
-                          {Object.keys(rule.parameters ?? {}).length > 0 && (
-                            <span className="text-xs text-slate-400 font-mono truncate max-w-[200px]">
-                              {JSON.stringify(rule.parameters)}
-                            </span>
-                          )}
+                          {(() => {
+                            const label = formatRuleParam(
+                              rule.rule_type,
+                              (rule.parameters ?? {}) as Record<string, unknown>
+                            );
+                            return label ? (
+                              <span className="text-xs text-slate-400 truncate max-w-[200px]">{label}</span>
+                            ) : null;
+                          })()}
                         </div>
 
                         {/* Orphaned rule actions — shown inline below rule info */}

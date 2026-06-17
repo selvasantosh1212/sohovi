@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Database, FileText } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
-import { getRunWithScores } from "@/app/actions/runs";
+import { getRunWithScores, getProfilingForRun } from "@/app/actions/runs";
 import { ScoreGauge } from "@/components/scoring/ScoreGauge";
 import { ScoreBadge } from "@/components/shared/ScoreBadge";
 import { BehaviorScoreCard } from "@/components/runs/BehaviorScoreCard";
+import { ColumnProfileCard } from "@/components/profiling/ColumnProfileCard";
+import { summaryToProfile } from "@/lib/profiling/profiling-adapter";
 import type { BehaviorFlag } from "@/types/dq.types";
 
 export async function generateMetadata({
@@ -36,9 +38,10 @@ export default async function RunDetailPage({
   params: Promise<{ assetId: string; runId: string }>;
 }) {
   const { assetId, runId } = await params;
-  const [asset, runData] = await Promise.all([
+  const [asset, runData, profilingSummaries] = await Promise.all([
     getAsset(assetId),
     getRunWithScores(runId),
+    getProfilingForRun(runId),
   ]);
 
   if (!asset || !runData) notFound();
@@ -147,6 +150,20 @@ export default async function RunDetailPage({
           </div>
         </div>
       )}
+
+      {/* Data Profile — shapes, patterns, outliers from stored profiling_summaries */}
+      <div>
+        <h2 className="text-sm font-semibold text-slate-700 mb-3">Data Profile</h2>
+        {profilingSummaries.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {profilingSummaries.map((s) => (
+              <ColumnProfileCard key={s.column_name} profile={summaryToProfile(s)} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-400">No profiling snapshot available for this run.</p>
+        )}
+      </div>
 
       {/* Per-column breakdown */}
       <div>

@@ -9,6 +9,7 @@ import { PlanGate } from "@/components/shared/PlanGate";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
 import { RunDQButton } from "@/components/rules/RunDQButton";
 import { DataPreviewTable } from "@/components/rules/DataPreviewTable";
+import { QuickSetupCard } from "@/components/rules/QuickSetupCard";
 import type { DQRule } from "@/types/app.types";
 
 export async function generateMetadata({
@@ -44,6 +45,7 @@ export default async function RulesPage({
   );
   const orphanedRuleIds = orphanedRules.map((r: DQRule) => r.id);
   const orphanedColumns = [...new Set(orphanedRules.map((r: DQRule) => r.column_name as string))];
+  const hasFewRules = rules.filter((r: DQRule) => r.is_active).length < 3;
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -64,6 +66,13 @@ export default async function RulesPage({
           </p>
         </div>
       </div>
+
+      {/* Smart Start card — shown when profiling data exists and rules are sparse */}
+      <QuickSetupCard
+        assetId={assetId}
+        existingRuleKeys={existingRuleKeys}
+        hasFewRules={hasFewRules}
+      />
 
       {/* Data preview table */}
       <DataPreviewTable

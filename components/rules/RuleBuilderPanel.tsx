@@ -86,6 +86,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
   const [ruleType, setRuleType] = useState("not_null");
   const [columnName, setColumnName] = useState(initialColumn ?? columnNames[0] ?? "");
   const [threshold, setThreshold] = useState("95");
+  const [thresholdMode, setThresholdMode] = useState<"strict" | "standard" | "lenient" | "custom">("standard");
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -480,20 +481,54 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
 
       {/* Threshold */}
       <div className="space-y-1.5">
-        <label className="text-xs font-medium text-slate-600">
-          Threshold (%)
-        </label>
-        <input
-          type="number"
-          min={0}
-          max={100}
-          step={1}
-          className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          value={threshold}
-          onChange={(e) => setThreshold(e.target.value)}
-        />
+        <label className="text-xs font-medium text-slate-600">Threshold</label>
+        <div className="flex gap-1.5 flex-wrap">
+          {(
+            [
+              { key: "strict",   value: "99", label: "Strict",   hint: "IDs & keys" },
+              { key: "standard", value: "95", label: "Standard", hint: "most rules" },
+              { key: "lenient",  value: "80", label: "Lenient",  hint: "optional fields" },
+              { key: "custom",   value: null, label: "Custom",   hint: "" },
+            ] as const
+          ).map(({ key, value, label, hint }) => {
+            const isSelected = thresholdMode === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                title={hint}
+                onClick={() => {
+                  setThresholdMode(key);
+                  if (value) setThreshold(value);
+                }}
+                className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                  isSelected
+                    ? "border-[#1E3A5F] bg-[#1E3A5F] text-white"
+                    : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                }`}
+              >
+                {label}{value ? ` ${value}%` : ""}
+              </button>
+            );
+          })}
+        </div>
+        {thresholdMode === "custom" && (
+          <input
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            value={threshold}
+            onChange={(e) => setThreshold(e.target.value)}
+            placeholder="e.g. 90"
+          />
+        )}
         <p className="text-[11px] text-slate-400">
-          Rule passes if score ≥ this threshold. Recommended: 95% for critical fields.
+          {thresholdMode === "strict"   && "Zero-tolerance — use for IDs, keys, and mandatory fields."}
+          {thresholdMode === "standard" && "Recommended for most rules. Allows up to 5% exceptions."}
+          {thresholdMode === "lenient"  && "Use for optional or enrichment fields with incomplete data."}
+          {thresholdMode === "custom"   && `Rule passes if score ≥ ${threshold}%.`}
         </p>
       </div>
 
