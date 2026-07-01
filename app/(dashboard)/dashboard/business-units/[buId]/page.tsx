@@ -18,7 +18,7 @@ export default async function BUDetailPage({ params }: { params: Promise<{ buId:
   if (!bu) notFound();
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       {/* Breadcrumb + header */}
       <div>
         <Link href="/dashboard/business-units" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4">

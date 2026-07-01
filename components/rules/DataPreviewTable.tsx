@@ -1,45 +1,34 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import {
-  ChevronDown, ChevronUp, Table2, Plus, Wand2,
-  ChevronLeft, ChevronRight, CheckCircle2, X, BarChart2,
+  ChevronDown, ChevronUp, Table2, Plus,
+  ChevronLeft, ChevronRight, CheckCircle2, X, BarChart2, Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { useFileStore } from "@/store/fileStore";
 import { useProfilingStore } from "@/store/profilingStore";
+import { useRuleBuilderUIStore } from "@/store/ruleBuilderUIStore";
 import { suggestRules } from "@/lib/ml/rule-suggester";
-import { createRule } from "@/app/actions/rules";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle,
 } from "@/components/ui/sheet";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
-import type { SuggestedRule } from "@/types/dq.types";
+import { RuleSuggestionsPanel } from "@/components/rules/RuleSuggestionsPanel";
+import { PlanGate } from "@/components/shared/PlanGate";
+import type { DQRule } from "@/types/app.types";
 
 const PREVIEW_ROWS = 10;
-const COL_WINDOW = 6;
-
-const DIM_COLORS: Record<string, string> = {
-  completeness: "bg-blue-100 text-blue-700",
-  validity:     "bg-purple-100 text-purple-700",
-  accuracy:     "bg-green-100 text-green-700",
-  uniqueness:   "bg-yellow-100 text-yellow-700",
-  consistency:  "bg-orange-100 text-orange-700",
-  integrity:    "bg-red-100 text-red-700",
-  timeliness:   "bg-teal-100 text-teal-700",
-  currency:     "bg-cyan-100 text-cyan-700",
-  conformity:   "bg-indigo-100 text-indigo-700",
-  precision:    "bg-pink-100 text-pink-700",
-};
 
 interface Props {
   assetId: string;
   columnNames: string[];
+  rules: DQRule[];
   /** Serializable string array — converted to Set internally for O(1) lookups */
   existingRuleKeys?: string[];
 }
 
-export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Props) {
+export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys }: Props) {
   const existingKeys = new Set(existingRuleKeys);
 
   // Columns that already have at least one DQ rule → highlighted amber
@@ -54,19 +43,34 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
   const fileData = useFileStore((s) => s.data);
   const profiles = useProfilingStore((s) => s.profiles);
 
+  // Selected column lives in a shared store so the "Add Custom Rule" and
+  // "AI Rule Identifier" panels elsewhere on the page pick it up automatically —
+  // this is the single source of truth instead of a separate copy of those
+  // panels living inside this table.
+  const activeCol = useRuleBuilderUIStore((s) => s.selectedColumn);
+  const setActiveCol = useRuleBuilderUIStore((s) => s.setSelectedColumn);
+
   const [open, setOpen] = useState(true);
   const [colOffset, setColOffset] = useState(0);
-  const [activeCol, setActiveCol] = useState<string | null>(null);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [sheetCol, setSheetCol] = useState<string | null>(null);
-  const [acceptedKeys, setAcceptedKeys] = useState<Set<string>>(new Set());
-  const [, startTransition] = useTransition();
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Wider screens can show more columns at once before paging is needed
+  const [colWindow, setColWindow] = useState(6);
+  useEffect(() => {
+    function updateColWindow() {
+      const w = window.innerWidth;
+      setColWindow(w >= 1536 ? 10 : w >= 1280 ? 8 : 6);
+    }
+    updateColWindow();
+    window.addEventListener("resize", updateColWindow);
+    return () => window.removeEventListener("resize", updateColWindow);
+  }, []);
 
   // No data at all — show empty state
   if (!profiles && !fileData) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-400">
+      <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-center text-xs text-slate-400">
         Upload a file on the Upload tab to preview data here.
       </div>
     );
@@ -96,24 +100,18 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
     totalRows = ft;
   }
 
-  const showSlider = headers.length > COL_WINDOW;
-  const maxOffset = Math.max(0, headers.length - COL_WINDOW);
+  const showSlider = headers.length > colWindow;
+  const maxOffset = Math.max(0, headers.length - colWindow);
+  const effectiveColOffset = Math.min(colOffset, maxOffset);
   const visibleIndices: number[] = showSlider
-    ? Array.from({ length: COL_WINDOW }, (_, i) => colOffset + i).filter((i) => i < headers.length)
+    ? Array.from({ length: colWindow }, (_, i) => effectiveColOffset + i).filter((i) => i < headers.length)
     : headers.map((_, i) => i);
 
   // Profile for the active column (if profiling has been run)
   const activeProfile = profiles?.find((p) => p.column_name === activeCol);
 
-  // ML suggestions for active column, filtered against already-added rules
-  const colSuggestions: SuggestedRule[] = activeCol && profiles
-    ? suggestRules(profiles)
-        .filter((s) => s.column_name === activeCol)
-        .filter((s) => !existingKeys.has(`${s.column_name}|${s.dimension}|${s.rule_type}`))
-        .filter((s) => !acceptedKeys.has(`${s.column_name}|${s.dimension}|${s.rule_type}`))
-    : [];
-
-  // Suggestion count badges for all headers (shows before clicking)
+  // Suggestion count badges for all headers (shows before clicking) — cheap,
+  // local-only computation reused for both the header badges and the action strip.
   const colSuggestionCounts: Record<string, number> = {};
   if (profiles) {
     const allSuggestions = suggestRules(profiles);
@@ -121,7 +119,6 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
       colSuggestionCounts[h] = allSuggestions
         .filter((s) => s.column_name === h)
         .filter((s) => !existingKeys.has(`${s.column_name}|${s.dimension}|${s.rule_type}`))
-        .filter((s) => !acceptedKeys.has(`${s.column_name}|${s.dimension}|${s.rule_type}`))
         .length;
     }
   }
@@ -138,335 +135,258 @@ export function DataPreviewTable({ assetId, columnNames, existingRuleKeys }: Pro
     setShowSuggestions(false);
   }
 
-  function openRuleSheet(col: string) {
-    setSheetCol(col);
-    setSheetOpen(true);
-  }
-
-  function handleAcceptSuggestion(s: SuggestedRule) {
-    const key = `${s.column_name}|${s.dimension}|${s.rule_type}`;
-    startTransition(async () => {
-      try {
-        await createRule({
-          asset_id: assetId,
-          column_name: s.column_name,
-          dimension: s.dimension,
-          rule_type: s.rule_type,
-          parameters: s.parameters,
-          threshold: s.threshold,
-          is_suggested: true,
-        });
-        setAcceptedKeys((prev) => new Set([...prev, key]));
-      } catch {
-        // silently ignore — user can retry
-      }
-    });
-  }
-
   return (
-    <>
-      <div className="rounded-xl border border-slate-200 bg-white">
-        {/* ── Card header (collapsible) ──────────────────────────────── */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="w-full flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors rounded-xl"
-        >
-          <div className="flex items-center gap-2">
-            <Table2 className="w-4 h-4 text-slate-400" />
-            <span className="text-sm font-semibold text-slate-700">Data Preview</span>
-            <span className="text-xs text-slate-400">
-              · {totalRows.toLocaleString()} rows · {headers.length} col{headers.length !== 1 ? "s" : ""}
-            </span>
-          </div>
-          <span className="flex items-center justify-center w-7 h-7 rounded-md border border-slate-200 bg-slate-50 text-slate-500">
-            {open
-              ? <ChevronUp className="w-4 h-4" />
-              : <ChevronDown className="w-4 h-4" />
-            }
+    <div className="rounded-lg border-2 border-slate-300 bg-white">
+      {/* ── Card header (collapsible) ──────────────────────────────── */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors rounded-lg"
+      >
+        <div className="flex items-center gap-2">
+          <Table2 className="w-4 h-4 text-slate-400" />
+          <span className="text-sm font-semibold text-slate-700">Data Preview</span>
+          <span className="text-xs text-slate-400">
+            · {totalRows.toLocaleString()} rows · {headers.length} col{headers.length !== 1 ? "s" : ""}
           </span>
-        </button>
+        </div>
+        <span className="flex items-center justify-center w-7 h-7 rounded-md border border-slate-200 bg-slate-50 text-slate-500">
+          {open
+            ? <ChevronUp className="w-4 h-4" />
+            : <ChevronDown className="w-4 h-4" />
+          }
+        </span>
+      </button>
 
-        {open && (
-          <div className="px-5 pb-5 space-y-3">
+      {open && (
+        <div className="px-5 pb-5 space-y-3">
 
-            {/* ── Column navigation (wide datasets only) ─────────────── */}
-            {showSlider && (
-              <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+          {/* ── Column navigation (wide datasets only) ─────────────── */}
+          {showSlider && (
+            <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+              <button
+                type="button"
+                onClick={() => { setColOffset(Math.max(0, effectiveColOffset - 1)); clearActiveCol(); }}
+                disabled={effectiveColOffset === 0}
+                className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Previous columns"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Prev
+              </button>
+
+              <span className="text-xs text-slate-500 font-medium select-none">
+                Columns {effectiveColOffset + 1}–{Math.min(effectiveColOffset + colWindow, headers.length)}{" "}
+                <span className="text-slate-400">of {headers.length}</span>
+              </span>
+
+              <button
+                type="button"
+                onClick={() => { setColOffset(Math.min(maxOffset, effectiveColOffset + 1)); clearActiveCol(); }}
+                disabled={effectiveColOffset >= maxOffset}
+                className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Next columns"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* ── Column action strip ─────────────────────────────────── */}
+          {activeCol ? (
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 gap-2 min-h-[40px]">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xs font-semibold text-primary truncate">{activeCol}</span>
+                {activeProfile?.inferred_type && (
+                  <span className="shrink-0 text-[11px] text-slate-500 bg-white border border-slate-200 rounded px-1.5 py-0.5">
+                    {activeProfile.inferred_type}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={() => { setColOffset((v) => Math.max(0, v - 1)); setActiveCol(null); }}
-                  disabled={colOffset === 0}
-                  className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Previous columns"
+                  onClick={() => setSheetOpen(true)}
+                  className="flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  <ChevronLeft className="w-4 h-4" />
-                  Prev
+                  <Plus className="w-3 h-3" />
+                  Add Rule
                 </button>
-
-                <span className="text-xs text-slate-500 font-medium select-none">
-                  Columns {colOffset + 1}–{Math.min(colOffset + COL_WINDOW, headers.length)}{" "}
-                  <span className="text-slate-400">of {headers.length}</span>
-                </span>
-
                 <button
                   type="button"
-                  onClick={() => { setColOffset((v) => Math.min(maxOffset, v + 1)); setActiveCol(null); }}
-                  disabled={colOffset >= maxOffset}
-                  className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-100 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Next columns"
+                  onClick={() => setShowSuggestions((v) => !v)}
+                  className={`flex items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors ${
+                    showSuggestions
+                      ? "bg-violet-50 border-violet-300 text-violet-700"
+                      : "border-slate-200 text-slate-600 hover:bg-slate-100"
+                  }`}
                 >
-                  Next
-                  <ChevronRight className="w-4 h-4" />
+                  <Wand2 className="w-3 h-3 text-violet-500" />
+                  AI Suggestions{colSuggestionCounts[activeCol] > 0 ? ` (${colSuggestionCounts[activeCol]})` : ""}
+                </button>
+                {profiles && (
+                  <Link
+                    href={`/dashboard/assets/${assetId}/profile`}
+                    className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-[11px] font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  >
+                    <BarChart2 className="w-3 h-3" />
+                    View Profile
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={clearActiveCol}
+                  className="rounded-md p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                  aria-label="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
-            )}
+            </div>
+          ) : (
+            <p className="text-[11px] text-slate-400 px-1 select-none">
+              Click a column header to select it, then add a rule or view AI suggestions for it.
+            </p>
+          )}
 
-            {/* ── Column action strip ─────────────────────────────────── */}
-            {activeCol ? (
-              <div className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 gap-2 min-h-[40px]">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xs font-semibold text-[#1E3A5F] truncate">{activeCol}</span>
-                  {activeProfile?.inferred_type && (
-                    <span className="shrink-0 text-[11px] text-slate-500 bg-white border border-slate-200 rounded px-1.5 py-0.5">
-                      {activeProfile.inferred_type}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => openRuleSheet(activeCol)}
-                    className="flex items-center gap-1 rounded-md bg-[#1E3A5F] px-2.5 py-1.5 text-[11px] font-medium text-white hover:bg-[#1E3A5F]/90 transition-colors"
-                  >
-                    <Plus className="w-3 h-3" />
-                    Add Rule
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowSuggestions((v) => !v)}
-                    className={`flex items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors ${
-                      showSuggestions
-                        ? "bg-violet-50 border-violet-300 text-violet-700"
-                        : "border-slate-200 text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    <Wand2 className="w-3 h-3 text-violet-500" />
-                    {profiles
-                      ? `AI Rule Identifier${colSuggestions.length > 0 ? ` (${colSuggestions.length})` : ""}`
-                      : "AI Rule Identifier"}
-                  </button>
-                  {profiles && (
-                    <Link
-                      href={`/dashboard/assets/${assetId}/profile`}
-                      className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-[11px] font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-                    >
-                      <BarChart2 className="w-3 h-3" />
-                      View Profile
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    onClick={clearActiveCol}
-                    className="rounded-md p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                    aria-label="Dismiss"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-[11px] text-slate-400 px-1 select-none">
-                Click a column header to select it, then add a rule or view AI Rule Identifier suggestions.
-              </p>
-            )}
-
-            {/* ── Data table ─────────────────────────────────────────── */}
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
-              <table className="min-w-full text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    {/* Sticky row-number column */}
-                    <th className="sticky left-0 z-10 bg-slate-50 px-3 py-2 text-left font-semibold text-slate-400 w-10">
-                      #
-                    </th>
+          {/* ── Data table ─────────────────────────────────────────── */}
+          <div className="overflow-x-auto rounded-md border-2 border-slate-400 shadow-sm">
+            <table className="min-w-full text-xs border-collapse">
+              <thead className="bg-slate-200 border-b-2 border-slate-400">
+                <tr>
+                  {/* Sticky row-number column */}
+                  <th className="sticky left-0 z-10 bg-slate-200 px-3 py-2.5 text-left font-bold uppercase tracking-wide text-[10px] text-slate-600 w-10 border-r-2 border-slate-400">
+                    #
+                  </th>
+                  {visibleIndices.map((colIdx) => {
+                    const h = headers[colIdx];
+                    const isActive = activeCol === h;
+                    const hasRules = columnsWithRules.has(h);
+                    return (
+                      <th
+                        key={colIdx}
+                        onClick={() => activeCol === h ? clearActiveCol() : selectColumn(h)}
+                        title={hasRules ? `${h} — ${colRuleCounts[h]} rule(s) added` : `${h} — click to select`}
+                        className={`px-3 py-2.5 text-left font-bold uppercase tracking-wide text-[10px] truncate max-w-[160px] cursor-pointer select-none transition-colors border-r border-slate-300 ${
+                          isActive
+                            ? "text-white bg-primary ring-2 ring-inset ring-primary"
+                            : hasRules
+                              ? "bg-mint/20 text-primary border-b-4 border-b-mint hover:bg-mint/30"
+                              : "text-slate-700 hover:text-primary hover:bg-slate-300/70"
+                        }`}
+                      >
+                        <span className="flex items-center gap-1.5">
+                          {h}
+                          {isActive && (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-white shrink-0" />
+                          )}
+                          {!isActive && hasRules && (
+                            <span className="inline-flex items-center justify-center min-w-[1rem] h-4 rounded-full bg-green-700 text-white text-[9px] font-bold px-1 shrink-0">
+                              {colRuleCounts[h]}
+                            </span>
+                          )}
+                          {!isActive && !hasRules && colSuggestionCounts[h] > 0 && (
+                            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-violet-600 text-white text-[9px] font-bold shrink-0">
+                              {colSuggestionCounts[h]}
+                            </span>
+                          )}
+                        </span>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+                {previewRows.map((row, rowIdx) => (
+                  <tr key={rowIdx} className="hover:bg-accent/5 transition-colors">
+                    <td className="sticky left-0 z-10 bg-inherit px-3 py-2 font-mono font-semibold text-slate-500 border-r-2 border-slate-300">
+                      {rowIdx + 1}
+                    </td>
                     {visibleIndices.map((colIdx) => {
                       const h = headers[colIdx];
+                      const cell = row[colIdx];
                       const isActive = activeCol === h;
                       const hasRules = columnsWithRules.has(h);
                       return (
-                        <th
+                        <td
                           key={colIdx}
-                          onClick={() => activeCol === h ? clearActiveCol() : selectColumn(h)}
-                          title={hasRules ? `${h} — ${colRuleCounts[h]} rule(s) added` : `${h} — click to select`}
-                          className={`px-3 py-2 text-left font-semibold truncate max-w-[160px] cursor-pointer select-none transition-colors ${
+                          title={cell ?? "null"}
+                          className={`px-3 py-2 font-mono truncate max-w-[160px] transition-colors border-r border-slate-200 ${
                             isActive
-                              ? "text-[#1E3A5F] bg-[#00C9A7]/20 ring-2 ring-inset ring-[#00C9A7]/50"
+                              ? "bg-accent/10 text-slate-800"
                               : hasRules
-                                ? "bg-[#00C9A7]/10 text-[#1E3A5F] border-b-2 border-[#00C9A7] hover:bg-[#00C9A7]/20"
-                                : "text-slate-600 hover:text-[#1E3A5F] hover:bg-slate-100"
+                                ? "bg-amber-50 text-slate-600"
+                                : "text-slate-600"
                           }`}
                         >
-                          <span className="flex items-center gap-1.5">
-                            {h}
-                            {isActive && (
-                              <CheckCircle2 className="w-3.5 h-3.5 text-[#00C9A7] shrink-0" />
-                            )}
-                            {!isActive && hasRules && (
-                              <span className="inline-flex items-center justify-center min-w-[1rem] h-4 rounded-full bg-[#00C9A7]/30 text-[#1E3A5F] text-[9px] font-bold px-1 shrink-0">
-                                {colRuleCounts[h]}
-                              </span>
-                            )}
-                            {!isActive && !hasRules && colSuggestionCounts[h] > 0 && (
-                              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-violet-100 text-violet-700 text-[9px] font-bold shrink-0">
-                                {colSuggestionCounts[h]}
-                              </span>
-                            )}
-                          </span>
-                        </th>
+                          {cell === null || cell === "" ? (
+                            <span className="text-slate-400 italic">null</span>
+                          ) : (
+                            cell
+                          )}
+                        </td>
                       );
                     })}
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
-                  {previewRows.map((row, rowIdx) => (
-                    <tr key={rowIdx} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="sticky left-0 z-10 bg-white px-3 py-2 font-mono text-slate-400">
-                        {rowIdx + 1}
-                      </td>
-                      {visibleIndices.map((colIdx) => {
-                        const h = headers[colIdx];
-                        const cell = row[colIdx];
-                        const isActive = activeCol === h;
-                        const hasRules = columnsWithRules.has(h);
-                        return (
-                          <td
-                            key={colIdx}
-                            title={cell ?? "null"}
-                            className={`px-3 py-2 font-mono truncate max-w-[160px] transition-colors ${
-                              isActive
-                                ? "bg-[#00C9A7]/10 text-slate-700"
-                                : hasRules
-                                  ? "bg-amber-50/50 text-slate-600"
-                                  : "text-slate-600"
-                            }`}
-                          >
-                            {cell === null || cell === "" ? (
-                              <span className="text-slate-300 italic">null</span>
-                            ) : (
-                              cell
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {totalRows > PREVIEW_ROWS && (
-              <p className="text-[11px] text-slate-400 text-right select-none">
-                Showing first {PREVIEW_ROWS} of {totalRows.toLocaleString()} rows
-              </p>
-            )}
-
-            {/* ── AI Rule Identifier panel (expands below table) ──────── */}
-            {showSuggestions && activeCol && (
-              <div className="rounded-lg border border-violet-200 bg-violet-50/40 p-3 space-y-2">
-                <p className="text-xs font-semibold text-violet-800">
-                  AI Rule Identifier for{" "}
-                  <span className="font-mono bg-violet-100 px-1 rounded">{activeCol}</span>
-                </p>
-
-                {!profiles ? (
-                  <p className="text-xs text-slate-500">
-                    Run profiling on this asset to generate AI DQ Rule suggestions.
-                  </p>
-                ) : colSuggestions.length === 0 ? (
-                  <p className="text-xs text-slate-500">
-                    No new suggestions — all detected rules have already been added.
-                  </p>
-                ) : (
-                  <ul className="space-y-2">
-                    {colSuggestions.map((s, idx) => {
-                      const key = `${s.column_name}|${s.dimension}|${s.rule_type}`;
-                      const accepted = acceptedKeys.has(key);
-                      const pct = Math.round(s.confidence * 100);
-                      const confColor =
-                        pct >= 85 ? "text-green-600" :
-                        pct >= 70 ? "text-amber-600" :
-                        "text-slate-500";
-
-                      return (
-                        <li
-                          key={idx}
-                          className="flex items-start justify-between gap-3 rounded-md bg-white border border-violet-100 px-3 py-2.5"
-                        >
-                          <div className="space-y-1 min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="font-mono text-[11px] font-medium text-slate-700">
-                                {s.rule_type.replace(/_/g, " ")}
-                              </span>
-                              <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${DIM_COLORS[s.dimension] ?? "bg-slate-100 text-slate-600"}`}>
-                                {s.dimension}
-                              </span>
-                              <span className={`text-[11px] font-semibold ${confColor}`}>
-                                {pct}% confidence
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed">{s.reason}</p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleAcceptSuggestion(s)}
-                            disabled={accepted}
-                            className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                              accepted
-                                ? "bg-green-50 text-green-600 border border-green-200 cursor-default"
-                                : "bg-[#1E3A5F] text-white hover:bg-[#1E3A5F]/90"
-                            }`}
-                          >
-                            {accepted ? (
-                              <span className="flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3" /> Added
-                              </span>
-                            ) : "Accept"}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </div>
 
-      {/* ── Add Rule slide-in sheet ─────────────────────────────────── */}
-      <Sheet
-        open={sheetOpen}
-        onOpenChange={(isOpen) => { if (!isOpen) { setSheetOpen(false); setSheetCol(null); } }}
-      >
+          {totalRows > PREVIEW_ROWS && (
+            <p className="text-[11px] text-slate-400 text-right select-none">
+              Showing first {PREVIEW_ROWS} of {totalRows.toLocaleString()} rows
+            </p>
+          )}
+
+          {/* ── AI suggestions — expands in place below the table ───── */}
+          {showSuggestions && activeCol && (
+            <div className="rounded-lg border border-violet-200 bg-violet-50/40 p-3">
+              <p className="text-xs font-semibold text-violet-800 mb-2">
+                AI Rule Identifier for{" "}
+                <span className="font-mono bg-violet-100 px-1 rounded">{activeCol}</span>
+              </p>
+              {!profiles ? (
+                <p className="text-xs text-slate-500">
+                  Run profiling on this asset to generate AI DQ Rule suggestions.
+                </p>
+              ) : (
+                <PlanGate
+                  minPlan="pro"
+                  feature="AI Rule Suggestions"
+                  description="AI-powered rule suggestions are available on the Pro plan. Upgrade to get suggested rules based on your column profiles."
+                >
+                  <RuleSuggestionsPanel
+                    assetId={assetId}
+                    existingRuleKeys={existingKeys}
+                    columnNames={columnNames}
+                  />
+                </PlanGate>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Add Rule slide-in sheet — stays anchored to this table ─── */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent side="right" className="overflow-y-auto">
           <SheetHeader>
             <SheetTitle>
-              Add Rule —{" "}
-              <span className="font-mono text-[#1E3A5F]">{sheetCol}</span>
+              Add Rule{activeCol && (
+                <>
+                  {" — "}
+                  <span className="font-mono text-primary">{activeCol}</span>
+                </>
+              )}
             </SheetTitle>
           </SheetHeader>
           <div className="px-4 pb-6">
-            {sheetCol && (
-              <RuleBuilderPanel
-                assetId={assetId}
-                columnNames={columnNames}
-                initialColumn={sheetCol}
-              />
-            )}
+            <RuleBuilderPanel assetId={assetId} columnNames={columnNames} existingRules={rules} />
           </div>
         </SheetContent>
       </Sheet>
-    </>
+    </div>
   );
 }

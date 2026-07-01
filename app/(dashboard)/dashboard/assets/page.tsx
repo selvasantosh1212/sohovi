@@ -11,7 +11,7 @@ export default async function AssetsPage() {
   const [assets, catalogs] = await Promise.all([getAssets(), getCatalogs()]);
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.025em]" style={{ color: "#0A0A0F" }}>Data Assets</h1>
@@ -42,7 +42,7 @@ export default async function AssetsPage() {
           actionHref="/dashboard/assets/new"
         />
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           {assets.map((a) => (
             <AssetCard key={a.id} asset={a} />
           ))}

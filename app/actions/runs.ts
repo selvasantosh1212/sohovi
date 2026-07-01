@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
 import type { AssetRun, DQScore, ProfilingSummary } from "@/types/app.types";
-import type { BehaviorFlag, DQRunResult } from "@/types/dq.types";
+import type { BehaviorFlag, DQRunResult, ScopeCondition } from "@/types/dq.types";
 import type { ColumnProfile } from "@/types/profiling.types";
 import { computeBehavioralScore } from "@/lib/dq-engine/behavioral-scorer";
+import { evaluateAlerts } from "@/app/actions/alerts";
 
 // ---- Save a completed DQ run result to Supabase -------------------------
 
@@ -26,6 +27,7 @@ export interface SaveRunInput {
   workflow_id?: string | null;
   notes?: string | null;
   column_profiles?: ColumnProfile[];
+  scope_conditions?: ScopeCondition[];
 }
 
 export async function saveRunResult(
@@ -52,6 +54,7 @@ export async function saveRunResult(
       status: "completed",
       notes: input.notes ?? null,
       run_at: dqResult.run_at,
+      scope_conditions: input.scope_conditions ?? [],
     })
     .select()
     .single();
@@ -63,6 +66,7 @@ export async function saveRunResult(
     run_id: run.id,
     asset_id: input.asset_id,
     column_name: r.column_name ?? "__dataset__",
+    description: r.description ?? null,
     dimension: r.dimension,
     rule_type: r.rule_type,
     score: r.score,
@@ -189,6 +193,41 @@ export async function saveRunResult(
     .eq("id", input.asset_id)
     .eq("clerk_user_id", userId);
 
+  // 5. Increment run_count on the associated workflow
+  if (input.workflow_id) {
+    const { data: wf } = await supabase
+      .from("workflows")
+      .select("run_count")
+      .eq("id", input.workflow_id)
+      .eq("clerk_user_id", userId)
+      .single();
+    if (wf) {
+      await supabase
+        .from("workflows")
+        .update({ run_count: (wf.run_count ?? 0) + 1, updated_at: new Date().toISOString() })
+        .eq("id", input.workflow_id)
+        .eq("clerk_user_id", userId);
+    }
+    revalidatePath("/dashboard/workflows");
+    revalidatePath(`/dashboard/workflows/${input.workflow_id}`);
+  }
+
+  // Evaluate alert conditions non-fatally — a failure here must not break the run save
+  try {
+    const behaviorFlagsForAlerts =
+      run.behavior_flags && Array.isArray(run.behavior_flags) ? (run.behavior_flags as import("@/types/dq.types").BehaviorFlag[]) : [];
+    await evaluateAlerts(
+      input.asset_id,
+      run.id,
+      dqResult.overall_score,
+      dqResult.rule_results,
+      input.schema_changed,
+      behaviorFlagsForAlerts
+    );
+  } catch (err) {
+    console.error("[evaluateAlerts] failed silently:", err);
+  }
+
   revalidatePath(`/dashboard/assets/${input.asset_id}`);
   revalidatePath(`/dashboard/assets/${input.asset_id}/scoring`);
   revalidatePath("/dashboard");
@@ -268,6 +307,21 @@ export async function saveProfilingSnapshot(input: {
   return { runId: run.id, schemaDiff };
 }
 
+// ---- Load runs for a workflow -------------------------------------------
+
+export async function getWorkflowRuns(workflowId: string): Promise<AssetRun[]> {
+  const userId = await getScopeId();
+  const supabase = createServiceClient();
+  const { data, error } = await supabase
+    .from("asset_runs")
+    .select("*")
+    .eq("workflow_id", workflowId)
+    .eq("clerk_user_id", userId)
+    .order("run_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AssetRun[];
+}
+
 // ---- Load runs for an asset ---------------------------------------------
 
 export async function getRuns(assetId: string): Promise<AssetRun[]> {
@@ -296,11 +350,22 @@ export async function getRuns(assetId: string): Promise<AssetRun[]> {
 export async function getProfilingForRun(runId: string): Promise<ProfilingSummary[]> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
+
+  // Verify the run belongs to the user before returning its profiling data.
+  // profiling_summaries has no clerk_user_id column — ownership is enforced
+  // through asset_runs which does have it.
+  const { data: run } = await supabase
+    .from("asset_runs")
+    .select("id")
+    .eq("id", runId)
+    .eq("clerk_user_id", userId)
+    .single();
+  if (!run) return [];
+
   const { data } = await supabase
     .from("profiling_summaries")
     .select("*")
     .eq("run_id", runId)
-    .eq("clerk_user_id", userId)
     .order("column_name", { ascending: true });
   return (data ?? []) as ProfilingSummary[];
 }

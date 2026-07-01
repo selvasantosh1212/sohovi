@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useDQRunner } from "@/hooks/useDQRunner";
 import { useFileStore } from "@/store/fileStore";
+import { useGlobalScopeFilterStore } from "@/store/globalScopeFilterStore";
 import type { DQRule } from "@/types/app.types";
 import type { RuleConfig } from "@/types/dq.types";
 
@@ -15,22 +16,25 @@ export function RunDQButton({ assetId, rules }: Props) {
   const router = useRouter();
   const { status, progress, error, startRun } = useDQRunner();
   const fileData = useFileStore((s) => s.data);
+  const globalScopeConditions = useGlobalScopeFilterStore((s) => s.conditions);
 
   const activeRules: RuleConfig[] = rules
     .filter((r) => r.is_active)
     .map((r) => ({
       id: r.id,
       column_name: r.column_name,
+      description: r.description ?? null,
       dimension: r.dimension,
       rule_type: r.rule_type,
       parameters: r.parameters,
+      scope_conditions: r.scope_conditions ?? [],
       threshold: r.threshold,
       weight: r.weight,
       is_active: r.is_active,
     }));
 
   async function handleRun() {
-    await startRun(activeRules, assetId);
+    await startRun(activeRules, assetId, globalScopeConditions);
     // Navigate to scoring page after run
     router.push(`/dashboard/assets/${assetId}/scoring`);
   }
@@ -55,7 +59,7 @@ export function RunDQButton({ assetId, rules }: Props) {
         </div>
         <div className="h-1.5 w-32 rounded-full bg-slate-200 overflow-hidden">
           <div
-            className="h-full rounded-full bg-[#00C9A7] transition-all"
+            className="h-full rounded-full bg-mint transition-all"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -69,8 +73,7 @@ export function RunDQButton({ assetId, rules }: Props) {
         type="button"
         disabled={activeRules.length === 0}
         onClick={handleRun}
-        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{ background: "#1E3A5F", color: "#fff" }}
+        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         Run DQ Check
         {activeRules.length > 0 && (

@@ -52,7 +52,8 @@ export function DashboardShell({ children, unreadAlertCount }: Props) {
       {/* Main content */}
       <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
         <TopBar
-          onMenuClick={() => setMobileSidebarOpen(true)}
+          onMenuClick={() => setMobileSidebarOpen((v) => !v)}
+          mobileSidebarOpen={mobileSidebarOpen}
           alertBell={<AlertBell unreadCount={unreadAlertCount} />}
         />
         <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6" tabIndex={-1}>

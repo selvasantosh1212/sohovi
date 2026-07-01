@@ -18,6 +18,7 @@ import type {
   DQRunResponse,
   DQRunResult,
   RuleConfig,
+  ScopeCondition,
 } from "@/types/dq.types";
 import type { ConnectorCommand, ConnectorResponse } from "@/types/connectors.types";
 
@@ -74,10 +75,11 @@ export function parseFile(
 }
 
 /**
- * Profile parsed data using the profiler worker.
- * Returns column profiles and calls onProgress per column.
+ * Profile parsed data using a single profiler worker instance (one column
+ * at a time, in column order). Used directly for small datasets, and as the
+ * per-pool-worker unit of work by profileData() below.
  */
-export function profileData(
+function profileDataSingleWorker(
   headers: string[],
   rows: (string | null)[][],
   onProgress?: (p: ProfileProgress) => void
@@ -110,6 +112,66 @@ export function profileData(
       payload: { headers, rows },
     };
     worker.postMessage(cmd);
+  });
+}
+
+const MAX_PROFILE_POOL_SIZE = 8;
+// Below this many cells, the overhead of spinning up multiple workers and
+// partitioning rows on the main thread isn't worth it — profile inline.
+const POOL_MIN_CELLS = 200_000;
+
+/**
+ * Profile parsed data, spreading columns across a small pool of profiler
+ * workers (one Worker = one OS thread) so wide tables profile in parallel
+ * instead of one column at a time on a single thread. Falls back to a single
+ * worker for small datasets or narrow tables. Returns column profiles in
+ * their original order and calls onProgress once per column completed
+ * (columnIndex is a running 0..totalColumns-1 count across the whole pool,
+ * so callers don't need to know pooling is happening).
+ */
+export function profileData(
+  headers: string[],
+  rows: (string | null)[][],
+  onProgress?: (p: ProfileProgress) => void
+): Promise<ColumnProfile[]> {
+  const hwConcurrency =
+    typeof navigator !== "undefined" && navigator.hardwareConcurrency
+      ? navigator.hardwareConcurrency
+      : 4;
+  const poolSize = Math.max(
+    1,
+    Math.min(hwConcurrency, MAX_PROFILE_POOL_SIZE, headers.length)
+  );
+
+  const totalCells = headers.length * rows.length;
+  if (poolSize <= 1 || totalCells < POOL_MIN_CELLS) {
+    return profileDataSingleWorker(headers, rows, onProgress);
+  }
+
+  // Round-robin column distribution spreads heterogeneous column types
+  // evenly across workers rather than clustering adjacent columns together.
+  const groups: number[][] = Array.from({ length: poolSize }, () => []);
+  headers.forEach((_, i) => groups[i % poolSize].push(i));
+
+  const totalColumns = headers.length;
+  let completed = 0;
+
+  const work = groups
+    .filter((g) => g.length > 0)
+    .map((colIndices) => {
+      const subHeaders = colIndices.map((i) => headers[i]);
+      const subRows = rows.map((row) => colIndices.map((i) => row[i] ?? null));
+      return profileDataSingleWorker(subHeaders, subRows, (p) => {
+        completed += 1;
+        onProgress?.({ columnIndex: completed - 1, totalColumns, columnName: p.columnName });
+      }).then((profiles) =>
+        profiles.map((profile, idx) => ({ profile, originalIndex: colIndices[idx] }))
+      );
+    });
+
+  return Promise.all(work).then((results) => {
+    const flat = results.flat().sort((a, b) => a.originalIndex - b.originalIndex);
+    return flat.map((r) => r.profile);
   });
 }
 
@@ -188,6 +250,7 @@ export function runDQRules(
   rows: (string | null)[][],
   rules: RuleConfig[],
   assetId: string,
+  scopeConditionsGlobal: ScopeCondition[] = [],
   onProgress?: (p: DQRunProgress) => void
 ): Promise<DQRunResult> {
   return new Promise((resolve, reject) => {
@@ -215,7 +278,7 @@ export function runDQRules(
 
     const cmd: DQRunCommand = {
       type: "RUN",
-      payload: { rows, headers, rules, asset_id: assetId },
+      payload: { rows, headers, rules, asset_id: assetId, scope_conditions_global: scopeConditionsGlobal },
     };
     worker.postMessage(cmd);
   });

@@ -1,13 +1,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, Database, FileText } from "lucide-react";
+import { ArrowLeft, Clock, Database, FileText, Filter } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
 import { getRunWithScores, getProfilingForRun } from "@/app/actions/runs";
 import { ScoreGauge } from "@/components/scoring/ScoreGauge";
 import { ScoreBadge } from "@/components/shared/ScoreBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { BehaviorScoreCard } from "@/components/runs/BehaviorScoreCard";
 import { ColumnProfileCard } from "@/components/profiling/ColumnProfileCard";
 import { summaryToProfile } from "@/lib/profiling/profiling-adapter";
+import { Tooltip } from "@/components/ui/tooltip";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 import type { BehaviorFlag } from "@/types/dq.types";
 
 export async function generateMetadata({
@@ -67,7 +70,7 @@ export default async function RunDetailPage({
   const passedScores = scores.filter((s) => s.status === "pass");
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       {/* Header */}
       <div>
         <Link
@@ -97,6 +100,14 @@ export default async function RunDetailPage({
                   <FileText className="w-3 h-3" />
                   {(run.file_size_bytes / 1024).toFixed(1)} KB
                 </span>
+              )}
+              {run.scope_conditions && run.scope_conditions.length > 0 && (
+                <Tooltip content={formatScopeConditions(run.scope_conditions)}>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 cursor-help">
+                    <Filter className="w-2.5 h-2.5" />
+                    Scoped
+                  </span>
+                </Tooltip>
               )}
             </div>
           </div>
@@ -223,42 +234,39 @@ export default async function RunDetailPage({
                   {colScores.map((score) => (
                     <div
                       key={score.id}
-                      className={`flex items-center gap-3 px-4 py-2.5 ${
-                        score.status === "fail" ? "bg-red-50/30" : ""
-                      }`}
+                      className={score.status === "fail" ? "bg-red-50/30" : ""}
                     >
-                      <span
-                        className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium capitalize ${
-                          DIMENSION_BADGE[score.dimension] ?? "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        {score.dimension}
-                      </span>
-                      <span className="flex-1 text-xs text-slate-700 truncate">
-                        {score.rule_type.replace(/_/g, " ")}
-                      </span>
-                      <span className="text-[10px] text-slate-400 truncate max-w-[200px] hidden md:block">
-                        {score.message ?? ""}
-                      </span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {score.failed_records !== null && score.failed_records > 0 && (
-                          <span className="text-[10px] text-red-400">
-                            {score.failed_records.toLocaleString()} failed
-                          </span>
-                        )}
+                      <div className="flex items-center gap-3 px-4 py-2.5">
                         <span
-                          className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                            score.status === "pass"
-                              ? "bg-emerald-50 text-emerald-600"
-                              : "bg-red-50 text-red-600"
+                          className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium capitalize ${
+                            DIMENSION_BADGE[score.dimension] ?? "bg-slate-100 text-slate-600"
                           }`}
                         >
-                          {score.status === "pass" ? "PASS" : "FAIL"}
+                          {score.dimension}
                         </span>
-                        <span className="text-xs font-bold text-slate-700 w-8 text-right">
-                          {Math.round(score.score * 100)}%
+                        <span className="flex-1 text-xs text-slate-700 truncate">
+                          {score.rule_type.replace(/_/g, " ")}
                         </span>
+                        <span className="text-[10px] text-slate-400 truncate max-w-[200px] hidden md:block">
+                          {score.message ?? ""}
+                        </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {score.failed_records !== null && score.failed_records > 0 && (
+                            <span className="text-[10px] text-red-400">
+                              {score.failed_records.toLocaleString()} failed
+                            </span>
+                          )}
+                          <StatusBadge status={score.status} />
+                          <span className="text-xs font-bold text-slate-700 w-8 text-right">
+                            {Math.round(score.score * 100)}%
+                          </span>
+                        </div>
                       </div>
+                      {score.description && (
+                        <p className="text-[11px] text-slate-500 px-4 pb-2 -mt-1.5 leading-snug">
+                          {score.description}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>

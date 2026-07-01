@@ -33,7 +33,7 @@ export default async function BusinessUnitsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.025em]" style={{ color: "#0A0A0F" }}>Business Units</h1>
@@ -58,7 +58,7 @@ export default async function BusinessUnitsPage() {
           actionHref="/dashboard/business-units/new"
         />
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           {buWithCounts.map((bu) => (
             <BUCard key={bu.id} bu={bu} />
           ))}

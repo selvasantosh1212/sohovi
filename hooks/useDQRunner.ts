@@ -12,7 +12,7 @@ import { useCallback, useState } from "react";
 import { runDQRules, type DQRunProgress } from "@/workers/worker-bridge";
 import { useFileStore } from "@/store/fileStore";
 import { useDQStore } from "@/store/dqStore";
-import type { RuleConfig } from "@/types/dq.types";
+import type { RuleConfig, ScopeCondition } from "@/types/dq.types";
 
 type RunStatus = "idle" | "running" | "done" | "error";
 
@@ -25,7 +25,7 @@ export function useDQRunner() {
   const setResult = useDQStore((s) => s.setResult);
 
   const startRun = useCallback(
-    async (rules: RuleConfig[], assetId: string) => {
+    async (rules: RuleConfig[], assetId: string, scopeConditionsGlobal: ScopeCondition[] = []) => {
       if (!fileData) {
         setError("No file data in memory — please upload a file first.");
         setStatus("error");
@@ -47,10 +47,11 @@ export function useDQRunner() {
           fileData.rows,
           rules,
           assetId,
+          scopeConditionsGlobal,
           (p) => setProgress(p)
         );
 
-        setResult(result, assetId);
+        setResult(result, assetId, scopeConditionsGlobal);
         setStatus("done");
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));

@@ -26,7 +26,7 @@ export default async function ScoringPage({
   if (!asset) notFound();
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-6 max-w-7xl 2xl:max-w-[1800px]">
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-4">

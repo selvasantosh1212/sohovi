@@ -22,9 +22,11 @@ export async function getRules(assetId: string): Promise<DQRule[]> {
 export interface RuleInput {
   asset_id: string;
   column_name?: string | null;
+  description?: string | null;
   dimension: string;
   rule_type: string;
   parameters?: Record<string, unknown>;
+  scope_conditions?: import("@/types/dq.types").ScopeCondition[];
   threshold?: number;
   weight?: number;
   is_suggested?: boolean;
@@ -73,6 +75,7 @@ export async function createRule(input: RuleInput): Promise<DQRule> {
       clerk_user_id: userId,
       is_active: true,
       parameters: input.parameters ?? {},
+      scope_conditions: input.scope_conditions ?? [],
       threshold: input.threshold ?? 0.95,
       weight: input.weight ?? 1,
       is_suggested: input.is_suggested ?? false,

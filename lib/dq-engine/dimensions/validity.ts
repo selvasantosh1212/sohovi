@@ -25,7 +25,7 @@ export function evaluate(
     case "datatype_check":
       return datatypeCheck(colValues, rule);
     case "sequence_validation":
-      return sequenceValidation(rows, headers, rule);
+      return sequenceValidation(colValues, rows, headers, rule);
     default:
       return regexMatch(colValues, rule);
   }
@@ -95,22 +95,21 @@ function datatypeCheck(values: (string | null)[], rule: RuleConfig): EvalResult 
 }
 
 function sequenceValidation(
+  colValues: (string | null)[],
   rows: (string | null)[][],
   headers: string[],
   rule: RuleConfig
 ): EvalResult {
-  const colA = String(rule.parameters.column_a ?? "");
-  const colB = String(rule.parameters.column_b ?? "");
-  const idxA = colIndex(headers, colA);
-  const idxB = colIndex(headers, colB);
-  if (idxA === -1 || idxB === -1) {
-    return { score: 1, failedIndices: [], message: `Column '${colA}' or '${colB}' not found` };
+  const refCol = String(rule.parameters.reference_column ?? "");
+  const refIdx = colIndex(headers, refCol);
+  if (refIdx === -1) {
+    return { score: 1, failedIndices: [], message: `Reference column '${refCol}' not found` };
   }
   const failedIndices: number[] = [];
   let comparable = 0;
   for (let i = 0; i < rows.length; i++) {
-    const a = norm(rows[i][idxA]);
-    const b = norm(rows[i][idxB]);
+    const a = norm(colValues[i]);
+    const b = norm(rows[i][refIdx]);
     if (a === null || b === null) continue;
     comparable++;
     const da = Date.parse(a);
@@ -125,6 +124,6 @@ function sequenceValidation(
   return {
     score,
     failedIndices,
-    message: `${failedIndices.length} rows where '${colA}' > '${colB}'`,
+    message: `${failedIndices.length} rows where this column > '${refCol}'`,
   };
 }

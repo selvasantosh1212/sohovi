@@ -10,13 +10,24 @@ interface Props {
   headers: string[];
   rows: (string | null)[][];
   columnFilter?: string | null;
+  initialRuleId?: string | null;
 }
 
 const PAGE_SIZE = 20;
 
-export function FailedRecordsTable({ ruleResults, headers, rows, columnFilter }: Props) {
+export function FailedRecordsTable({ ruleResults, headers, rows, columnFilter, initialRuleId }: Props) {
   const [page, setPage] = useState(0);
-  const [selectedRule, setSelectedRule] = useState<string | null>(null);
+  const [selectedRule, setSelectedRule] = useState<string | null>(initialRuleId ?? null);
+
+  // Adjust state during render (React's recommended alternative to an effect)
+  // when initialRuleId changes while this component stays mounted — e.g. the
+  // user clicks a different rule's badge without the popup unmounting in between.
+  const [prevInitialRuleId, setPrevInitialRuleId] = useState(initialRuleId);
+  if (initialRuleId && initialRuleId !== prevInitialRuleId) {
+    setPrevInitialRuleId(initialRuleId);
+    setSelectedRule(initialRuleId);
+    setPage(0);
+  }
 
   const failedRules = ruleResults.filter(
     (r) =>
@@ -138,6 +149,10 @@ export function FailedRecordsTable({ ruleResults, headers, rows, columnFilter }:
         </button>
       </div>
 
+      {activeRule.description && (
+        <p className="text-sm text-slate-600 leading-snug">{activeRule.description}</p>
+      )}
+
       {/* Friendly summary */}
       {(() => {
         const friendly = getFriendlyMessage(activeRule);
@@ -156,16 +171,16 @@ export function FailedRecordsTable({ ruleResults, headers, rows, columnFilter }:
       </p>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg border border-slate-200">
-        <table className="min-w-full text-xs">
-          <thead className="bg-slate-50 border-b border-slate-200">
+      <div className="overflow-x-auto rounded-md border-2 border-slate-400 shadow-sm">
+        <table className="min-w-full text-xs border-collapse">
+          <thead className="bg-slate-200 border-b-2 border-slate-400">
             <tr>
-              <th className="px-3 py-2 text-left font-semibold text-slate-500 w-12">#</th>
+              <th className="px-3 py-2 text-left font-bold text-slate-600 w-12 border-r-2 border-slate-400">#</th>
               {displayCols.map((col) => (
                 <th
                   key={col.idx}
-                  className={`px-3 py-2 text-left font-semibold truncate max-w-[140px] ${
-                    col.idx === relevantColIdx ? "text-red-600" : "text-slate-500"
+                  className={`px-3 py-2 text-left font-bold truncate max-w-[140px] border-r border-slate-300 ${
+                    col.idx === relevantColIdx ? "text-red-700 bg-red-100" : "text-slate-700"
                   }`}
                 >
                   {col.name}
@@ -173,21 +188,21 @@ export function FailedRecordsTable({ ruleResults, headers, rows, columnFilter }:
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 bg-white">
+          <tbody className="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
             {failedRows.map(({ idx, cells }) => (
-              <tr key={idx} className="hover:bg-red-50/30 transition-colors">
-                <td className="px-3 py-2 text-slate-400 font-mono">{idx + 1}</td>
+              <tr key={idx} className="hover:bg-red-50/50 transition-colors">
+                <td className="px-3 py-2 text-slate-500 font-mono font-semibold border-r-2 border-slate-300">{idx + 1}</td>
                 {displayCols.map((col) => (
                   <td
                     key={col.idx}
-                    className={`px-3 py-2 font-mono truncate max-w-[140px] ${
+                    className={`px-3 py-2 font-mono truncate max-w-[140px] border-r border-slate-200 ${
                       col.idx === relevantColIdx
-                        ? "text-red-600 bg-red-50/40 font-medium"
+                        ? "text-red-700 bg-red-50 font-medium"
                         : "text-slate-600"
                     }`}
                   >
                     {cells[col.idx] ?? (
-                      <span className="text-slate-300 italic">null</span>
+                      <span className="text-slate-400 italic">null</span>
                     )}
                   </td>
                 ))}

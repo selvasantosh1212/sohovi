@@ -12,6 +12,7 @@ import { saveRunResult } from "@/app/actions/runs";
 import type { DQRunResult } from "@/types/dq.types";
 import { useProfilingStore } from "@/store/profilingStore";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Props {
   assetId: string;
@@ -21,10 +22,13 @@ interface Props {
 export function ScoringDashboard({ assetId, fileName }: Props) {
   const router = useRouter();
   const result = useDQStore((s) => s.result);
+  const scopeConditions = useDQStore((s) => s.scopeConditions);
   const fileData = useFileStore((s) => s.data);
   const schemaDiff = useFileStore((s) => s.schemaDiff);
   const columnProfiles = useProfilingStore((s) => s.profiles);
+  const workflowId = useFileStore((s) => s.workflowId);
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
+  const [openRuleId, setOpenRuleId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -60,11 +64,13 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
             asset_id: assetId,
             file_name: fileData.fileName,
             file_size_bytes: fileData.fileSize ?? 0,
-            row_count: fileData.rows.length,
+            row_count: fileData.totalRows,
             column_count: fileData.headers.length,
             schema_changed: schemaDiff !== null,
             schema_diff: schemaDiff ?? null,
+            workflow_id: workflowId ?? null,
             column_profiles: columnProfiles ?? [],
+            scope_conditions: scopeConditions,
           },
           result
         );
@@ -168,6 +174,7 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
           <ScoreTransparencyPanel
             ruleResults={rule_results}
             columnName={displayedColumn}
+            onOpenFailures={(ruleId) => setOpenRuleId(ruleId)}
           />
         </div>
 
@@ -188,6 +195,24 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
           )}
         </div>
       </div>
+
+      {/* Failed records popup — opened by clicking a BREAKING badge */}
+      <Dialog open={openRuleId !== null} onOpenChange={(open) => { if (!open) setOpenRuleId(null); }}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Failed Records</DialogTitle>
+          </DialogHeader>
+          {fileData && (
+            <FailedRecordsTable
+              ruleResults={rule_results}
+              headers={fileData.headers}
+              rows={fileData.rows}
+              columnFilter={displayedColumn}
+              initialRuleId={openRuleId}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

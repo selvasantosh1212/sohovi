@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { Lightbulb, CheckCircle2, X, AlertTriangle, Sparkles } from "lucide-react";
+import { Lightbulb, CheckCircle2, X, AlertTriangle, Sparkles, Maximize2, Minimize2 } from "lucide-react";
 import { createRule } from "@/app/actions/rules";
 import { parseRulesFromDescription } from "@/lib/ml/nl-rule-parser";
 import {
@@ -11,10 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScopeConditionEditor } from "@/components/shared/ScopeConditionEditor";
 import type { DQDimension, DQRule } from "@/types/app.types";
-import type { SuggestedRule } from "@/types/dq.types";
+import type { SuggestedRule, ScopeCondition } from "@/types/dq.types";
 import { useProfilingStore } from "@/store/profilingStore";
+import { useRuleBuilderUIStore } from "@/store/ruleBuilderUIStore";
 import { getRuleExample, type RuleExample } from "@/lib/dq-rule-examples";
+import { COLUMN_PARAMS, THRESHOLD_PRESETS, paramHint } from "@/lib/dq-rule-meta";
 import type { DetectedDateFormat } from "@/types/profiling.types";
 
 const DIMENSIONS: DQDimension[] = [
@@ -35,12 +38,12 @@ const RULE_TYPES: Record<DQDimension, { value: string; label: string; params?: s
     { value: "regex_match",       label: "Regex Match",      params: ["pattern"] },
     { value: "enum_validation",   label: "Enum Validation",  params: ["allowed_values"] },
     { value: "datatype_check",    label: "Datatype Check",   params: ["expected_type"] },
-    { value: "sequence_validation", label: "Sequence Check", params: ["col_b", "operator"] },
+    { value: "sequence_validation", label: "Sequence Check", params: ["reference_column"] },
   ],
   accuracy: [
     { value: "range_check",            label: "Range Check",          params: ["min", "max"] },
     { value: "positive_check",         label: "Positive Check" },
-    { value: "cross_field_comparison", label: "Cross-Field Compare",  params: ["col_b", "operator"] },
+    { value: "cross_field_comparison", label: "Cross-Field Compare",  params: ["reference_column", "operator"] },
   ],
   uniqueness: [
     { value: "unique_column",      label: "Unique Column" },
@@ -49,7 +52,7 @@ const RULE_TYPES: Record<DQDimension, { value: string; label: string; params?: s
   consistency: [
     { value: "format_standardization", label: "Format Standardization" },
     { value: "case_consistency",       label: "Case Consistency",      params: ["case"] },
-    { value: "cross_column_match",     label: "Cross-Column Match",    params: ["col_b", "pattern"] },
+    { value: "cross_column_match",     label: "Cross-Column Match",    params: ["reference_column"] },
   ],
   integrity: [
     { value: "no_orphan_values",    label: "No Orphan Values",    params: ["reference_column"] },
@@ -76,18 +79,29 @@ const RULE_TYPES: Record<DQDimension, { value: string; label: string; params?: s
 interface Props {
   assetId: string;
   columnNames: string[];
-  initialColumn?: string;
   existingRules?: DQRule[];
 }
 
-export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existingRules = [] }: Props) {
+export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: Props) {
+  const selectedColumn = useRuleBuilderUIStore((s) => s.selectedColumn);
   const [activeTab, setActiveTab] = useState<"manual" | "ai">("manual");
   const [dimension, setDimension] = useState<DQDimension>("completeness");
   const [ruleType, setRuleType] = useState("not_null");
-  const [columnName, setColumnName] = useState(initialColumn ?? columnNames[0] ?? "");
+  const [columnName, setColumnName] = useState(selectedColumn ?? columnNames[0] ?? "");
+
+  // Picking a column in the Data Preview table above syncs the form here,
+  // so there's one "add a rule for this column" path instead of two.
+  useEffect(() => {
+    if (selectedColumn && selectedColumn !== columnName) setColumnName(selectedColumn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedColumn]);
   const [threshold, setThreshold] = useState("95");
   const [thresholdMode, setThresholdMode] = useState<"strict" | "standard" | "lenient" | "custom">("standard");
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
+  const [description, setDescription] = useState("");
+  const [scopeOpen, setScopeOpen] = useState(true);
+  const [expanded, setExpanded] = useState(false);
+  const [scopeConditions, setScopeConditions] = useState<ScopeCondition[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [, startTransition] = useTransition();
@@ -97,6 +111,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
   const [aiResults, setAiResults] = useState<SuggestedRule[]>([]);
   const [aiError, setAiError] = useState<string | null>(null);
   const [acceptedRules, setAcceptedRules] = useState<Set<number>>(new Set());
+  const [aiRuleDescriptions, setAiRuleDescriptions] = useState<Record<number, string>>({});
 
   // Profiling store — resolve active column profile for date format detection
   const profiles = useProfilingStore((s) => s.profiles);
@@ -143,6 +158,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
     setParamValues({});
     setError(null);
     setSuccess(false);
+    setExpanded(true);
   }
 
   function handleRuleTypeChange(val: string | null) {
@@ -150,6 +166,12 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
     setParamValues({});
     setError(null);
     setSuccess(false);
+    setExpanded(true);
+  }
+
+  function handleColumnChange(val: string | null) {
+    setColumnName(val ?? "");
+    setExpanded(true);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -186,13 +208,17 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
         await createRule({
           asset_id: assetId,
           column_name: columnName || null,
+          description: description.trim() || null,
           dimension,
           rule_type: ruleType,
           parameters,
+          scope_conditions: scopeConditions,
           threshold: thresholdNum,
         });
         setSuccess(true);
         setParamValues({});
+        setDescription("");
+        setScopeConditions([]);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to create rule.");
       }
@@ -204,6 +230,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
     setAiError(null);
     setAiResults([]);
     setAcceptedRules(new Set());
+    setAiRuleDescriptions({});
     const inferredType = activeProfile?.inferred_type ?? "string";
     const rules = parseRulesFromDescription(aiDescription, columnName, inferredType);
     if (rules.length === 0) {
@@ -223,6 +250,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
           rule_type: rule.rule_type,
           parameters: rule.parameters,
           threshold: rule.threshold,
+          description: aiRuleDescriptions[index]?.trim() || null,
         });
         setAcceptedRules((prev) => new Set([...prev, index]));
       } catch {
@@ -245,7 +273,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
           onClick={() => setActiveTab("manual")}
           className={`flex-1 py-2 transition-colors ${
             activeTab === "manual"
-              ? "bg-[#1E3A5F] text-white"
+              ? "bg-primary text-primary-foreground"
               : "bg-white text-slate-500 hover:text-slate-700"
           }`}
         >
@@ -256,7 +284,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
           onClick={() => setActiveTab("ai")}
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
             activeTab === "ai"
-              ? "bg-[#1E3A5F] text-white"
+              ? "bg-primary text-primary-foreground"
               : "bg-white text-slate-500 hover:text-slate-700"
           }`}
         >
@@ -303,8 +331,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
             type="button"
             onClick={handleAiGenerate}
             disabled={!aiDescription.trim() || !columnName}
-            className="w-full inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ background: "#1E3A5F" }}
+            className="w-full inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             <Sparkles className="w-3.5 h-3.5" /> Generate Rules
           </button>
@@ -333,10 +360,10 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
                         type="button"
                         onClick={() => handleAcceptRule(rule, i)}
                         disabled={accepted}
-                        className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                        className={`shrink-0 rounded-md px-2.5 py-1 text-[10px] font-semibold transition-colors ${
                           accepted
                             ? "bg-emerald-100 text-emerald-700 cursor-default"
-                            : "bg-[#1E3A5F] text-white hover:opacity-90"
+                            : "bg-primary text-primary-foreground hover:opacity-90"
                         }`}
                       >
                         {accepted ? "✓ Added" : "Accept"}
@@ -348,6 +375,17 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
                         <> · Params: {JSON.stringify(rule.parameters)}</>
                       )}
                     </p>
+                    {!accepted && (
+                      <input
+                        type="text"
+                        placeholder="Add a description (optional)…"
+                        value={aiRuleDescriptions[i] ?? ""}
+                        onChange={(e) =>
+                          setAiRuleDescriptions((prev) => ({ ...prev, [i]: e.target.value }))
+                        }
+                        className="flex h-7 w-full rounded-md border border-input bg-transparent px-2 text-[11px] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -356,12 +394,33 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
         </div>
       ) : (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Maximize/minimize toggle — keeps the panel short until the user
+          actually starts configuring a rule, so the submit action stays
+          within reach instead of pushing it below a tall form. */}
+      <div className="flex items-center justify-end -mb-1.5">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
+        >
+          {expanded ? (
+            <>
+              <Minimize2 className="w-3 h-3" /> Minimize
+            </>
+          ) : (
+            <>
+              <Maximize2 className="w-3 h-3" /> Maximize
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Column */}
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-slate-600">Column</label>
         <Select
           value={columnName}
-          onValueChange={(v) => setColumnName(v ?? "")}
+          onValueChange={handleColumnChange}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select column…" />
@@ -378,7 +437,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
       </div>
 
       {/* Date Format Detection Badge */}
-      {isDateColumn && dateFormats && dateFormats.length > 0 && (
+      {expanded && isDateColumn && dateFormats && dateFormats.length > 0 && (
         <DateFormatBadge formats={dateFormats} hasMixed={hasMixedFormats} />
       )}
 
@@ -416,121 +475,151 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
         </Select>
       </div>
 
-      {/* Conflict warning */}
-      {conflictingRule && (
-        <div className="flex items-start gap-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2">
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-amber-800 leading-snug">
-            A <span className="font-semibold">{conflictingRule.rule_type.replace(/_/g, " ")}</span> rule already exists for{" "}
-            <span className="font-semibold">{conflictingRule.dimension}</span> on this column. Only one rule type per column–dimension is allowed.
-          </p>
-        </div>
-      )}
-
-      {/* Example Card */}
-      {example && (
-        <ExampleCard
-          example={example}
-          columnName={columnName || "this column"}
-          onApplyThreshold={(pct) => setThreshold(pct)}
+      {/* Description */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-medium text-slate-600">Description (optional)</label>
+        <textarea
+          rows={2}
+          className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none"
+          placeholder="Notes about why this rule exists or what it checks…"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
-      )}
+      </div>
 
-      {/* Dynamic params */}
-      {(() => {
-        const COLUMN_PARAMS = new Set(["col_b", "reference_column", "if_column"]);
-        return requiredParams.map((param) => (
-          <div key={param} className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-600">
-              {param.replace(/_/g, " ")}
-            </label>
-            {COLUMN_PARAMS.has(param) ? (
-              <Select
-                value={paramValues[param] ?? ""}
-                onValueChange={(v) => {
-                  if (v !== null) setParamValues((prev) => ({ ...prev, [param]: v }));
-                }}
-              >
-                <SelectTrigger className="h-8 text-sm">
-                  <SelectValue placeholder="Select column…" />
-                </SelectTrigger>
-                <SelectContent>
-                  {columnNames
-                    .filter((c) => c !== columnName)
-                    .map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            ) : (
+      {expanded && (
+        <>
+          {/* Conflict warning */}
+          {conflictingRule && (
+            <div className="flex items-start gap-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-amber-800 leading-snug">
+                A <span className="font-semibold">{conflictingRule.rule_type.replace(/_/g, " ")}</span> rule already exists for{" "}
+                <span className="font-semibold">{conflictingRule.dimension}</span> on this column. Only one rule type per column–dimension is allowed.
+              </p>
+            </div>
+          )}
+
+          {/* Example Card */}
+          {example && (
+            <ExampleCard
+              example={example}
+              columnName={columnName || "this column"}
+              onApplyThreshold={(pct) => setThreshold(pct)}
+            />
+          )}
+
+          {/* Dynamic params */}
+          {requiredParams.map((param) => (
+            <div key={param} className="space-y-1.5">
+              <label className="text-xs font-medium text-slate-600">
+                {param.replace(/_/g, " ")}
+              </label>
+              {COLUMN_PARAMS.has(param) ? (
+                <Select
+                  value={paramValues[param] ?? ""}
+                  onValueChange={(v) => {
+                    if (v !== null) setParamValues((prev) => ({ ...prev, [param]: v }));
+                  }}
+                >
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Select column…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {columnNames
+                      .filter((c) => c !== columnName)
+                      .map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <input
+                  type="text"
+                  className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                  placeholder={paramHint(param)}
+                  value={paramValues[param] ?? ""}
+                  onChange={(e) =>
+                    setParamValues((prev) => ({ ...prev, [param]: e.target.value }))
+                  }
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Threshold */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-slate-600">Threshold</label>
+            <div className="flex gap-1.5 flex-wrap">
+              {THRESHOLD_PRESETS.map(({ key, value, label, hint }) => {
+                const isSelected = thresholdMode === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    title={hint}
+                    onClick={() => {
+                      setThresholdMode(key);
+                      if (value) setThreshold(value);
+                    }}
+                    className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                    }`}
+                  >
+                    {label}{value ? ` ${value}%` : ""}
+                  </button>
+                );
+              })}
+            </div>
+            {thresholdMode === "custom" && (
               <input
-                type="text"
+                type="number"
+                min={0}
+                max={100}
+                step={1}
                 className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                placeholder={paramHint(param)}
-                value={paramValues[param] ?? ""}
-                onChange={(e) =>
-                  setParamValues((prev) => ({ ...prev, [param]: e.target.value }))
-                }
+                value={threshold}
+                onChange={(e) => setThreshold(e.target.value)}
+                placeholder="e.g. 90"
               />
             )}
+            <p className="text-[11px] text-slate-400">
+              {thresholdMode === "strict"   && "Zero-tolerance — use for IDs, keys, and mandatory fields."}
+              {thresholdMode === "standard" && "Recommended for most rules. Allows up to 5% exceptions."}
+              {thresholdMode === "lenient"  && "Use for optional or enrichment fields with incomplete data."}
+              {thresholdMode === "custom"   && `Rule passes if score ≥ ${threshold}%.`}
+            </p>
           </div>
-        ));
-      })()}
 
-      {/* Threshold */}
-      <div className="space-y-1.5">
-        <label className="text-xs font-medium text-slate-600">Threshold</label>
-        <div className="flex gap-1.5 flex-wrap">
-          {(
-            [
-              { key: "strict",   value: "99", label: "Strict",   hint: "IDs & keys" },
-              { key: "standard", value: "95", label: "Standard", hint: "most rules" },
-              { key: "lenient",  value: "80", label: "Lenient",  hint: "optional fields" },
-              { key: "custom",   value: null, label: "Custom",   hint: "" },
-            ] as const
-          ).map(({ key, value, label, hint }) => {
-            const isSelected = thresholdMode === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                title={hint}
-                onClick={() => {
-                  setThresholdMode(key);
-                  if (value) setThreshold(value);
-                }}
-                className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                  isSelected
-                    ? "border-[#1E3A5F] bg-[#1E3A5F] text-white"
-                    : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                {label}{value ? ` ${value}%` : ""}
-              </button>
-            );
-          })}
-        </div>
-        {thresholdMode === "custom" && (
-          <input
-            type="number"
-            min={0}
-            max={100}
-            step={1}
-            className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            value={threshold}
-            onChange={(e) => setThreshold(e.target.value)}
-            placeholder="e.g. 90"
-          />
-        )}
-        <p className="text-[11px] text-slate-400">
-          {thresholdMode === "strict"   && "Zero-tolerance — use for IDs, keys, and mandatory fields."}
-          {thresholdMode === "standard" && "Recommended for most rules. Allows up to 5% exceptions."}
-          {thresholdMode === "lenient"  && "Use for optional or enrichment fields with incomplete data."}
-          {thresholdMode === "custom"   && `Rule passes if score ≥ ${threshold}%.`}
-        </p>
-      </div>
+          {/* Scope (optional) */}
+          <div className="space-y-1.5">
+            <button
+              type="button"
+              onClick={() => setScopeOpen((v) => !v)}
+              className="flex w-full items-center justify-between text-xs font-medium text-slate-600 hover:text-slate-800"
+            >
+              <span>
+                Scope (optional){scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
+              </span>
+              <span className="text-slate-400">{scopeOpen ? "−" : "+"}</span>
+            </button>
+            {scopeOpen && (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+                <ScopeConditionEditor
+                  conditions={scopeConditions}
+                  onChange={setScopeConditions}
+                  availableColumns={columnNames}
+                  helperText="Only evaluate rows matching all conditions below (e.g. status == Approved)."
+                />
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>
@@ -543,8 +632,7 @@ export function RuleBuilderPanel({ assetId, columnNames, initialColumn, existing
 
       <button
         type="submit"
-        className="w-full inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90"
-        style={{ background: "#1A1A2E" }}
+        className="w-full inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90"
       >
         Add Rule
       </button>
@@ -699,26 +787,3 @@ function ExampleCard({ example, columnName, onApplyThreshold }: ExampleCardProps
   );
 }
 
-// ---- Param hints -------------------------------------------------------
-
-function paramHint(param: string): string {
-  const hints: Record<string, string> = {
-    pattern:           "e.g. ^\\d{4}-\\d{2}-\\d{2}$",
-    allowed_values:    "comma-separated: yes,no,maybe",
-    expected_type:     "date, numeric, boolean",
-    min:               "e.g. 0",
-    max:               "e.g. 1000000",
-    max_age_days:      "e.g. 30",
-    decimals:          "e.g. 2",
-    max_decimals:      "e.g. 2",
-    case:              "upper, lower, or title",
-    reference_column:  "column name in this dataset",
-    if_column:         "condition column name",
-    if_value:          "condition value",
-    col_b:             "column name to compare",
-    operator:          ">= , <= , == , > , <",
-    template:          "email, phone, date_iso, uuid…",
-    pattern2:          "regex pattern for col_b",
-  };
-  return hints[param] ?? param;
-}

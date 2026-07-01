@@ -69,6 +69,7 @@ export interface AssetRun {
   behavior_score: number | null;
   behavior_flags: import("./dq.types").BehaviorFlag[] | null;
   runs_compared: number | null;
+  scope_conditions: import("./dq.types").ScopeCondition[];
 }
 
 export interface SchemaDiff {
@@ -82,9 +83,11 @@ export interface DQRule {
   asset_id: string;
   clerk_user_id: string;
   column_name: string | null;
+  description: string | null;
   dimension: DQDimension;
   rule_type: string;
   parameters: Record<string, unknown>;
+  scope_conditions: import("./dq.types").ScopeCondition[];
   threshold: number;
   weight: number;
   is_active: boolean;
@@ -110,6 +113,7 @@ export interface DQScore {
   run_id: string;
   asset_id: string;
   column_name: string;
+  description: string | null;
   dimension: DQDimension;
   rule_type: string;
   score: number;
@@ -170,6 +174,8 @@ export interface Workflow {
   name: string;
   description: string | null;
   column_mappings: Record<string, string>;
+  /** Default global scope filter pre-applied whenever this workflow's asset is run through DQ checks. */
+  default_scope_conditions: import("./dq.types").ScopeCondition[];
   is_active: boolean;
   run_count: number;
   last_run_at: string | null;

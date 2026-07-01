@@ -25,7 +25,7 @@ export default async function RemediationPage({
   if (!asset) notFound();
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
       <div>
         <Link
           href={`/dashboard/assets/${assetId}/scoring`}

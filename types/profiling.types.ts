@@ -89,6 +89,27 @@ export interface ColumnProfile {
   outlier_values: number[];
   sample_values: string[]; // masked if PII
   detected_date_formats: DetectedDateFormat[] | null;
+  /** True when unique_count came from a HyperLogLog estimate (extreme-cardinality
+   *  column) rather than an exact distinct count. Absent/false = exact. */
+  unique_count_approximate?: boolean;
+  /** Which method flagged outlier_values. Absent = legacy 3-sigma (pre-Session-11). */
+  outlier_method?: "iqr" | "zscore";
+  /** Threshold(s) used to flag outlier_values — IQR bounds when outlier_method
+   *  is "iqr", or mean ± 3σ when "zscore". Null when the column has no
+   *  numeric stats (no outlier detection ran). */
+  outlier_bounds: { lower: number; upper: number } | null;
+  /** Distinct values that occur more than once in this column (capped list,
+   *  sorted by count desc). */
+  duplicate_values: ValueFreq[];
+  /** Count of distinct values with more than one occurrence (i.e. duplicate
+   *  groups), not individual rows. */
+  duplicate_value_count: number;
+  /** Total "extra" row occurrences across all duplicate groups — for a value
+   *  appearing 5 times, contributes 4. */
+  duplicate_row_count: number;
+  /** True when duplicate stats were computed from a frequency map that was
+   *  capped due to extreme cardinality — duplicate_values may be incomplete. */
+  duplicates_approximate?: boolean;
 }
 
 // ============================================================

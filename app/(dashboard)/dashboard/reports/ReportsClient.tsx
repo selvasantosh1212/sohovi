@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Download, FileText, Table } from "lucide-react";
 import { toast } from "sonner";
-import { ScoreBar, ScoreBadge } from "@/components/shared/ScoreBadge";
+import { ScoreBadge } from "@/components/shared/ScoreBadge";
 import { PlanGate } from "@/components/shared/PlanGate";
 import type { DataAsset, AssetRun } from "@/types/app.types";
 
@@ -22,6 +22,14 @@ export function ReportsClient({ assetRuns }: Props) {
     new Set(assetRuns.map((ar) => ar.asset.id))
   );
   const [exporting, setExporting] = useState(false);
+  const allCheckRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (allCheckRef.current) {
+      allCheckRef.current.indeterminate =
+        selected.size > 0 && selected.size < assetRuns.length;
+    }
+  }, [selected, assetRuns.length]);
 
   function toggleAsset(id: string) {
     setSelected((prev) => {
@@ -84,23 +92,25 @@ export function ReportsClient({ assetRuns }: Props) {
       });
 
       // Per-asset run history
+      const pageH = doc.internal.pageSize.getHeight();
       for (const ar of selectedAssets) {
         if (ar.runs.length === 0) continue;
 
         // @ts-expect-error autoTable adds lastAutoTable to doc
-        const finalY = (doc.lastAutoTable?.finalY ?? 85) + 20;
+        const lastY: number = doc.lastAutoTable?.finalY ?? 85;
 
-        // Check if we need a new page
-        if (finalY > doc.internal.pageSize.getHeight() - 100) {
+        // Start a new page if there isn't room for the heading + at least one table row
+        let sectionY: number;
+        if (lastY + 80 > pageH - 40) {
           doc.addPage();
+          sectionY = 40;
+        } else {
+          sectionY = lastY + 20;
         }
-
-        const yPos = finalY > doc.internal.pageSize.getHeight() - 100 ? 40 : finalY;
 
         doc.setFontSize(11);
         doc.setTextColor(30, 58, 95);
-        // @ts-expect-error autoTable adds lastAutoTable to doc
-        doc.text(ar.asset.name, 40, (doc.lastAutoTable?.finalY ?? 85) + 30);
+        doc.text(ar.asset.name, 40, sectionY + 14);
 
         const runRows = ar.runs.slice(0, 10).map((r) => [
           new Date(r.run_at).toLocaleDateString(),
@@ -112,8 +122,7 @@ export function ReportsClient({ assetRuns }: Props) {
         ]);
 
         autoTable(doc, {
-          // @ts-expect-error autoTable adds lastAutoTable to doc
-          startY: (doc.lastAutoTable?.finalY ?? 85) + 35,
+          startY: sectionY + 20,
           head: [["Date", "File", "Rows", "Score", "Schema Δ", "Status"]],
           body: runRows,
           headStyles: { fillColor: [0, 201, 167] },
@@ -121,7 +130,6 @@ export function ReportsClient({ assetRuns }: Props) {
           styles: { fontSize: 8, cellPadding: 4 },
           margin: { left: 40, right: 40 },
         });
-        void yPos; // suppress unused var
       }
 
       doc.save(`sohovi_dq_report_${Date.now()}.pdf`);
@@ -145,7 +153,6 @@ export function ReportsClient({ assetRuns }: Props) {
       // Summary sheet
       const summaryWs = wb.addWorksheet("Summary");
       summaryWs.addRow(["Asset", "Catalog", "Total Runs", "Latest Score", "Last Run Date", "Status"]);
-      summaryWs.getRow(1).font = { bold: true };
       summaryWs.getRow(1).fill = {
         type: "pattern", pattern: "solid", fgColor: { argb: "FF1E3A5F" },
       };
@@ -167,9 +174,16 @@ export function ReportsClient({ assetRuns }: Props) {
       summaryWs.columns.forEach((col) => { col.width = 20; });
 
       // Per-asset run detail sheets
+      const usedSheetNames = new Set<string>();
       for (const ar of selectedAssets) {
         if (ar.runs.length === 0) continue;
-        const ws = wb.addWorksheet(ar.asset.name.slice(0, 31));
+        let sheetName = ar.asset.name.slice(0, 31);
+        if (usedSheetNames.has(sheetName)) {
+          const suffix = `_${usedSheetNames.size}`;
+          sheetName = sheetName.slice(0, 31 - suffix.length) + suffix;
+        }
+        usedSheetNames.add(sheetName);
+        const ws = wb.addWorksheet(sheetName);
         ws.addRow(["Run Date", "File Name", "Row Count", "Column Count", "Overall Score", "Schema Changed", "Status", "Notes"]);
         ws.getRow(1).font = { bold: true };
         ws.getRow(1).fill = {
@@ -261,33 +275,34 @@ export function ReportsClient({ assetRuns }: Props) {
       </div>
 
       {/* Asset table */}
-      <div className="rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="rounded-md border-2 border-slate-400 shadow-sm overflow-hidden">
+        <table className="w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="px-4 py-3 w-10">
+            <tr className="bg-slate-200 border-b-2 border-slate-400">
+              <th className="px-4 py-3 w-10 border-r border-slate-300">
                 <input
+                  ref={allCheckRef}
                   type="checkbox"
-                  checked={selected.size === assetRuns.length}
+                  checked={selected.size === assetRuns.length && assetRuns.length > 0}
                   onChange={toggleAll}
                   className="rounded"
                 />
               </th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Asset</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Catalog</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Runs</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Latest Score</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Trend (last 5)</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Last Run</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700 border-r border-slate-300">Asset</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700 border-r border-slate-300">Catalog</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700 border-r border-slate-300">Runs</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700 border-r border-slate-300">Latest Score</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700 border-r border-slate-300">Trend (last 5)</th>
+              <th className="px-4 py-3 text-left font-bold text-slate-700">Last Run</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
             {assetRuns.map((ar) => {
               const latest = ar.runs[0];
               const last5 = ar.runs.slice(0, 5).reverse();
               return (
-                <tr key={ar.asset.id} className="bg-white hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-center">
+                <tr key={ar.asset.id} className="hover:bg-accent/5 transition-colors">
+                  <td className="px-4 py-3 text-center border-r border-slate-200">
                     <input
                       type="checkbox"
                       checked={selected.has(ar.asset.id)}
@@ -295,19 +310,24 @@ export function ReportsClient({ assetRuns }: Props) {
                       className="rounded"
                     />
                   </td>
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-slate-800">{ar.asset.name}</p>
+                  <td className="px-4 py-3 border-r border-slate-200">
+                    <Link
+                      href={`/dashboard/assets/${ar.asset.id}`}
+                      className="font-medium text-slate-800 hover:text-[#1E3A5F] hover:underline"
+                    >
+                      {ar.asset.name}
+                    </Link>
                     {ar.asset.source_system && (
                       <p className="text-xs text-slate-400">{ar.asset.source_system}</p>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-slate-500 text-xs">
+                  <td className="px-4 py-3 text-slate-500 text-xs border-r border-slate-200">
                     {ar.asset.catalog?.name ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-200">
                     {ar.runs.length}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 border-r border-slate-200">
                     {latest?.overall_dq_score !== null && latest?.overall_dq_score !== undefined ? (
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-slate-800">{latest.overall_dq_score}</span>
@@ -317,7 +337,7 @@ export function ReportsClient({ assetRuns }: Props) {
                       <span className="text-slate-400">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 border-r border-slate-200">
                     <div className="flex items-end gap-0.5 h-8">
                       {last5.map((r, i) => {
                         const s = r.overall_dq_score ?? 0;

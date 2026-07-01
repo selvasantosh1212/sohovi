@@ -4,7 +4,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createWorkflow, updateWorkflow, type WorkflowInput } from "@/app/actions/workflows";
 import { ColumnMappingEditor } from "./ColumnMappingEditor";
+import { ScopeConditionEditor } from "@/components/shared/ScopeConditionEditor";
 import type { Workflow, DataAsset } from "@/types/app.types";
+import type { ScopeCondition } from "@/types/dq.types";
 
 interface Props {
   assets: DataAsset[];
@@ -21,6 +23,9 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
   const [assetId, setAssetId] = useState(workflow?.asset_id ?? defaultAssetId ?? assets[0]?.id ?? "");
   const [columnMappings, setColumnMappings] = useState<Record<string, string>>(
     workflow?.column_mappings ?? {}
+  );
+  const [defaultScopeConditions, setDefaultScopeConditions] = useState<ScopeCondition[]>(
+    workflow?.default_scope_conditions ?? []
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -40,6 +45,7 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
       name: name.trim(),
       description: description.trim() || null,
       column_mappings: columnMappings,
+      default_scope_conditions: defaultScopeConditions,
     };
 
     startTransition(async () => {
@@ -114,6 +120,23 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
             value={columnMappings}
             onChange={setColumnMappings}
           />
+        </div>
+      )}
+
+      {/* Default scope filter */}
+      {assetId && sourceColumns.length > 0 && (
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700">Default Scope Filter</label>
+          <p className="text-xs text-slate-400">
+            Pre-fills the global scope filter whenever this workflow&apos;s asset is run through DQ checks (still editable per run).
+          </p>
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+            <ScopeConditionEditor
+              conditions={defaultScopeConditions}
+              onChange={setDefaultScopeConditions}
+              availableColumns={sourceColumns}
+            />
+          </div>
         </div>
       )}
 

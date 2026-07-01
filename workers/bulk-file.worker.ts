@@ -4,21 +4,34 @@
  *
  * Handles large file processing (up to 1 GB) by:
  *   1. Streaming the file in row-based chunks (CSV) or slicing rows (Excel)
- *   2. Profiling each chunk using profileColumn() directly
- *   3. Merging all chunk profiles into one combined ColumnProfile[]
- *   4. Collecting a proportional row sample for DQ evaluation
+ *   2. Profiling each chunk via profileColumnWithSketches(), which carries
+ *      forward mergeable HyperLogLog/t-digest sketch state alongside each
+ *      chunk's plain ColumnProfile
+ *   3. Merging all chunk results into one combined ColumnProfile[], unioning
+ *      sketches for accurate dataset-wide cardinality/quantile estimates
+ *   4. Collecting a uniform reservoir-sampled row sample for DQ evaluation
  *
  * Raw data NEVER leaves the browser. All computation is in this worker thread.
  */
 
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
-import { profileColumn } from "@/lib/profiling/profiler";
-import { mergeColumnProfiles } from "@/lib/profiling/profile-merger";
+import { profileColumnWithSketches } from "@/lib/profiling/profiler";
+import { mergeColumnProfiles, type ChunkColumnResult } from "@/lib/profiling/profile-merger";
+import { ReservoirSampler } from "@/lib/profiling/sketches";
 import type { ColumnProfile } from "@/types/profiling.types";
 
+// Bounds the raw row buffer held in memory per chunk — this (not the
+// frequency-map memory, which the HyperLogLog fast-path in profiler.ts now
+// bounds independently) is the binding memory constraint here, so it isn't
+// relaxed even though sketches reduce other memory pressure.
 const CHUNK_ROW_SIZE = 500_000;
-const SAMPLE_PER_CHUNK = 5_000;
+// Reservoir capacity for the combined row sample (see ReservoirSampler) —
+// previously this was an accumulate-everything-then-truncate cap, so memory
+// could briefly balloon to (chunk count x per-chunk slice) before the final
+// slice(0, MAX_SAMPLE_ROWS). It's now a hard ceiling at all times, and the
+// sample is uniform across the whole file instead of biased to the start of
+// each chunk.
 const MAX_SAMPLE_ROWS = 50_000;
 
 // ── Message protocol ────────────────────────────────────────────────────────
@@ -73,7 +86,7 @@ function profileChunk(
   rows: (string | null)[][],
   chunkIndex: number,
   totalChunks: number
-): ColumnProfile[] {
+): ChunkColumnResult[] {
   return headers.map((colName, colIndex) => {
     post({
       type: "BULK_PROGRESS",
@@ -87,7 +100,7 @@ function profileChunk(
       },
     });
     const values = rows.map((row) => row[colIndex] ?? null);
-    return profileColumn(colName, values);
+    return profileColumnWithSketches(colName, values);
   });
 }
 
@@ -120,8 +133,8 @@ self.onmessage = async (e: MessageEvent<BulkFileCommand>) => {
 // ── CSV path (streaming — memory-safe for files up to 1 GB) ─────────────────
 
 async function processCSV(file: File) {
-  const allChunkProfiles: ColumnProfile[][] = [];
-  const allSampleRows: (string | null)[][] = [];
+  const allChunkProfiles: ChunkColumnResult[][] = [];
+  const sampler = new ReservoirSampler<(string | null)[]>(MAX_SAMPLE_ROWS);
   let headers: string[] = [];
   let rowBuffer: (string | null)[][] = [];
   let totalRows = 0;
@@ -162,7 +175,7 @@ async function processCSV(file: File) {
           });
 
           allChunkProfiles.push(profileChunk(headers, chunk, chunkIdx, -1));
-          allSampleRows.push(...chunk.slice(0, SAMPLE_PER_CHUNK));
+          for (const row of chunk) sampler.add(row);
         }
       },
       complete() {
@@ -175,7 +188,7 @@ async function processCSV(file: File) {
             payload: { phase: "splitting", chunkIndex: chunkIdx, totalChunks: chunkIdx + 1 },
           });
           allChunkProfiles.push(profileChunk(headers, rowBuffer, chunkIdx, chunkIdx + 1));
-          allSampleRows.push(...rowBuffer.slice(0, SAMPLE_PER_CHUNK));
+          for (const row of rowBuffer) sampler.add(row);
           rowBuffer = [];
         }
         resolve();
@@ -191,7 +204,7 @@ async function processCSV(file: File) {
     return;
   }
 
-  finalize(headers, allChunkProfiles, allSampleRows, totalRows);
+  finalize(headers, allChunkProfiles, sampler.values(), totalRows);
 }
 
 // ── Excel path (full read + row slicing) ─────────────────────────────────────
@@ -219,8 +232,8 @@ async function processExcel(file: File) {
   );
 
   const totalChunks = Math.max(1, Math.ceil(allDataRows.length / CHUNK_ROW_SIZE));
-  const allChunkProfiles: ColumnProfile[][] = [];
-  const allSampleRows: (string | null)[][] = [];
+  const allChunkProfiles: ChunkColumnResult[][] = [];
+  const sampler = new ReservoirSampler<(string | null)[]>(MAX_SAMPLE_ROWS);
 
   for (let start = 0; start < allDataRows.length; start += CHUNK_ROW_SIZE) {
     const chunk = allDataRows.slice(start, start + CHUNK_ROW_SIZE);
@@ -232,18 +245,18 @@ async function processExcel(file: File) {
     });
 
     allChunkProfiles.push(profileChunk(headers, chunk, chunkIdx, totalChunks));
-    allSampleRows.push(...chunk.slice(0, SAMPLE_PER_CHUNK));
+    for (const row of chunk) sampler.add(row);
   }
 
-  finalize(headers, allChunkProfiles, allSampleRows, allDataRows.length);
+  finalize(headers, allChunkProfiles, sampler.values(), allDataRows.length);
 }
 
 // ── Merge + emit ─────────────────────────────────────────────────────────────
 
 function finalize(
   headers: string[],
-  allChunkProfiles: ColumnProfile[][],
-  allSampleRows: (string | null)[][],
+  allChunkProfiles: ChunkColumnResult[][],
+  sampleRows: (string | null)[][],
   totalRows: number
 ) {
   const totalChunks = allChunkProfiles.length;
@@ -254,7 +267,6 @@ function finalize(
   });
 
   const mergedProfiles = mergeColumnProfiles(allChunkProfiles);
-  const sampleRows = allSampleRows.slice(0, MAX_SAMPLE_ROWS);
 
   post({
     type: "BULK_COMPLETE",

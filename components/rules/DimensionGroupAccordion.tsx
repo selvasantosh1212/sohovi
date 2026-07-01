@@ -1,9 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { AlertTriangle } from "lucide-react";
-import type { DQRule } from "@/types/app.types";
+import { useRouter } from "next/navigation";
+import { AlertTriangle, Filter } from "lucide-react";
+import type { DQRule, DQDimension } from "@/types/app.types";
 import { deleteRule, toggleRule, updateRule } from "@/app/actions/rules";
+import { Tooltip } from "@/components/ui/tooltip";
+import { DIMENSION_COLORS } from "@/lib/dq-engine/dimension-meta";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 
 function formatRuleParam(ruleType: string, params: Record<string, unknown>): string {
   switch (ruleType) {
@@ -34,7 +38,7 @@ function formatRuleParam(ruleType: string, params: Record<string, unknown>): str
     case "referential_integrity":
     case "sequence_validation":
     case "cross_field_comparison":
-      return params.col_b ? `vs ${params.col_b}` : "";
+      return params.reference_column ? `vs ${params.reference_column}` : "";
     case "decimal_places":
     case "rounding_check":
       return params.max_decimals !== undefined
@@ -48,19 +52,6 @@ function formatRuleParam(ruleType: string, params: Record<string, unknown>): str
   }
 }
 
-const DIMENSION_COLORS: Record<string, string> = {
-  completeness: "bg-blue-100 text-blue-700",
-  validity:     "bg-purple-100 text-purple-700",
-  accuracy:     "bg-green-100 text-green-700",
-  uniqueness:   "bg-yellow-100 text-yellow-700",
-  consistency:  "bg-orange-100 text-orange-700",
-  integrity:    "bg-red-100 text-red-700",
-  timeliness:   "bg-teal-100 text-teal-700",
-  currency:     "bg-cyan-100 text-cyan-700",
-  conformity:   "bg-indigo-100 text-indigo-700",
-  precision:    "bg-pink-100 text-pink-700",
-};
-
 interface Props {
   rules: DQRule[];
   assetId: string;
@@ -69,6 +60,7 @@ interface Props {
 }
 
 export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], columnNames = [] }: Props) {
+  const router = useRouter();
   const orphanedSet = new Set(orphanedRuleIds);
   const [openDimensions, setOpenDimensions] = useState<Set<string>>(
     () => new Set(["completeness", "validity"])
@@ -93,21 +85,36 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
   }
 
   function handleToggleRule(rule: DQRule) {
-    startTransition(() => {
-      toggleRule(rule.id, !rule.is_active, assetId);
+    startTransition(async () => {
+      try {
+        await toggleRule(rule.id, !rule.is_active, assetId);
+        router.refresh();
+      } catch {
+        // silently fail — server action's revalidatePath will still fire
+      }
     });
   }
 
   function handleDeleteRule(ruleId: string) {
     if (!confirm("Delete this rule?")) return;
-    startTransition(() => {
-      deleteRule(ruleId, assetId);
+    startTransition(async () => {
+      try {
+        await deleteRule(ruleId, assetId);
+        router.refresh();
+      } catch {
+        // silently fail
+      }
     });
   }
 
   function handleMapRule(ruleId: string, newColumnName: string) {
-    startTransition(() => {
-      updateRule(ruleId, { column_name: newColumnName });
+    startTransition(async () => {
+      try {
+        await updateRule(ruleId, { column_name: newColumnName });
+        router.refresh();
+      } catch {
+        // silently fail
+      }
     });
   }
 
@@ -137,7 +144,7 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
               <div className="flex items-center gap-3">
                 <span
                   className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
-                    DIMENSION_COLORS[dim] ?? "bg-slate-100 text-slate-700"
+                    DIMENSION_COLORS[dim as DQDimension] ?? "bg-slate-100 text-slate-700"
                   }`}
                 >
                   {dim}
@@ -173,13 +180,15 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                       <button
                         type="button"
                         onClick={() => handleToggleRule(rule)}
-                        className={`relative inline-flex h-5 w-9 mt-0.5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none ${
-                          rule.is_active ? "bg-[#00C9A7]" : "bg-slate-200"
+                        className={`relative inline-flex h-5 w-9 mt-0.5 shrink-0 cursor-pointer rounded-full border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-accent ${
+                          rule.is_active
+                            ? "bg-green-600 border-green-600 hover:bg-green-700 hover:border-green-700"
+                            : "bg-slate-400 border-slate-400 hover:bg-slate-500 hover:border-slate-500"
                         }`}
                         title={rule.is_active ? "Disable rule" : "Enable rule"}
                       >
                         <span
-                          className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
+                          className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm ring-1 ring-slate-900/10 transform transition-transform ${
                             rule.is_active ? "translate-x-4" : "translate-x-0"
                           }`}
                         />
@@ -205,6 +214,14 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                               AI
                             </span>
                           )}
+                          {rule.scope_conditions.length > 0 && (
+                            <Tooltip content={formatScopeConditions(rule.scope_conditions)}>
+                              <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 text-[10px] font-medium text-teal-700 cursor-help">
+                                <Filter className="w-2.5 h-2.5" />
+                                Scoped
+                              </span>
+                            </Tooltip>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 mt-0.5">
                           <span className="text-xs text-slate-400">
@@ -220,6 +237,10 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                             ) : null;
                           })()}
                         </div>
+
+                        {rule.description && (
+                          <p className="text-xs text-slate-400 italic mt-1">{rule.description}</p>
+                        )}
 
                         {/* Orphaned rule actions — shown inline below rule info */}
                         {isOrphaned && (

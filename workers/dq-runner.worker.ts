@@ -11,6 +11,7 @@
 
 import type { DQRunCommand, DQRunResponse, RuleResult, EvalResult, RuleConfig } from "@/types/dq.types";
 import { buildRunResult, deriveSeverity } from "@/lib/dq-engine/scorer";
+import { applyScopeFilter } from "@/lib/dq-engine/scope-filter";
 
 // ---- Dimension evaluator imports ----------------------------------------
 
@@ -59,7 +60,7 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
   const msg = e.data;
   if (msg.type !== "RUN") return;
 
-  const { rows, headers, rules, asset_id } = msg.payload;
+  const { rows, headers, rules, asset_id, scope_conditions_global } = msg.payload;
 
   try {
     const activeRules = rules
@@ -69,6 +70,15 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
         const bi = DIMENSION_ORDER.indexOf(b.dimension);
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
       });
+
+    // Global scope filter restricts the whole run to a row subset, applied
+    // once up front — every rule (and its own per-rule scope, if any) then
+    // operates on top of this subset instead of the full dataset.
+    const isGloballyScoped = (scope_conditions_global?.length ?? 0) > 0;
+    const globalScopeIndices = isGloballyScoped
+      ? applyScopeFilter(rows, headers, scope_conditions_global!)
+      : rows.map((_, i) => i);
+    const globalRows = isGloballyScoped ? globalScopeIndices.map((i) => rows[i]) : rows;
 
     const ruleResults: RuleResult[] = [];
 
@@ -89,33 +99,49 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
       try {
         const evalFn = EVALUATORS[rule.dimension];
         if (!evalFn) {
-          ruleResults.push(makeSkipped(rule, rows.length, `Unknown dimension: ${rule.dimension}`));
+          ruleResults.push(makeSkipped(rule, globalRows.length, `Unknown dimension: ${rule.dimension}`));
           continue;
         }
+
+        // Apply per-rule scope conditions (if any) on top of the globally-scoped
+        // subset. inScopeIndices are indices into globalRows — failedIndices
+        // returned by evalFn are relative to the scoped slice and must be
+        // remapped back through inScopeIndices AND globalScopeIndices to reach
+        // ORIGINAL dataset row numbers.
+        const isScoped = rule.scope_conditions?.length > 0;
+        const inScopeIndices = isScoped
+          ? applyScopeFilter(globalRows, headers, rule.scope_conditions)
+          : globalRows.map((_, i) => i);
+        const scopedRows = isScoped ? inScopeIndices.map((i) => globalRows[i]) : globalRows;
 
         // Extract column values (null if dataset-level rule)
         const colIdx = rule.column_name ? headers.indexOf(rule.column_name) : -1;
         const colValues: (string | null)[] =
-          colIdx >= 0 ? rows.map((r) => r[colIdx] ?? null) : [];
+          colIdx >= 0 ? scopedRows.map((r) => r[colIdx] ?? null) : [];
 
-        const result = evalFn(colValues, rows, headers, rule);
+        const result = evalFn(colValues, scopedRows, headers, rule);
+        const remappedFailedIndices = result.failedIndices.map((i) => {
+          const globalIdx = isScoped ? inScopeIndices[i] : i;
+          return isGloballyScoped ? globalScopeIndices[globalIdx] : globalIdx;
+        });
 
         ruleResults.push({
           rule_id: rule.id,
           column_name: rule.column_name,
+          description: rule.description,
           dimension: rule.dimension,
           rule_type: rule.rule_type,
           score: Math.round(result.score * 10000) / 10000,
           status: result.score >= rule.threshold ? "pass" : "fail",
           severity: deriveSeverity(result.score),
-          total_records: rows.length,
-          failed_records: result.failedIndices.length,
-          failed_indices: result.failedIndices,
+          total_records: scopedRows.length,
+          failed_records: remappedFailedIndices.length,
+          failed_indices: remappedFailedIndices,
           message: result.message,
           threshold: rule.threshold,
         });
       } catch (ruleErr) {
-        ruleResults.push(makeSkipped(rule, rows.length, String(ruleErr)));
+        ruleResults.push(makeSkipped(rule, globalRows.length, String(ruleErr)));
       }
     }
 
@@ -139,6 +165,7 @@ function makeSkipped(rule: RuleConfig, totalRows: number, message: string): Rule
   return {
     rule_id: rule.id,
     column_name: rule.column_name,
+    description: rule.description,
     dimension: rule.dimension,
     rule_type: rule.rule_type,
     score: 1,

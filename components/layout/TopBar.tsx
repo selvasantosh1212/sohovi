@@ -17,9 +17,10 @@ const TYPE_META = {
 interface TopBarProps {
   onMenuClick?: () => void;
   alertBell?: React.ReactNode;
+  mobileSidebarOpen?: boolean;
 }
 
-export function TopBar({ onMenuClick, alertBell }: TopBarProps) {
+export function TopBar({ onMenuClick, alertBell, mobileSidebarOpen = false }: TopBarProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -133,8 +134,8 @@ export function TopBar({ onMenuClick, alertBell }: TopBarProps) {
       <button
         className="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
         onClick={onMenuClick}
-        aria-label="Open navigation menu"
-        aria-expanded={false}
+        aria-label={mobileSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={mobileSidebarOpen}
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />

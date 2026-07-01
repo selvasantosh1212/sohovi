@@ -143,7 +143,7 @@ export default async function DashboardPage() {
   const displayBUs = busWithScores.slice(0, 6);
 
   return (
-    <div className="space-y-5 max-w-6xl">
+    <div className="space-y-5 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       <PaymentSuccessToast plan={userPlan} />
       {/* Onboarding checklist — shown until setup is complete */}
       {!setupDone && (

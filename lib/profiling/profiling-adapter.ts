@@ -30,5 +30,9 @@ export function summaryToProfile(s: ProfilingSummary): ColumnProfile {
     outlier_values: [], // not persisted — individual values omitted for privacy
     sample_values: [], // not persisted — raw data never leaves the browser
     detected_date_formats: null,
+    outlier_bounds: null, // not persisted
+    duplicate_values: [], // not persisted — individual values omitted for privacy
+    duplicate_value_count: 0,
+    duplicate_row_count: 0,
   };
 }

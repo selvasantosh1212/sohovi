@@ -5,6 +5,10 @@ import { Download, Search, ShieldAlert, SortAsc, SortDesc } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ColumnProfileCard } from "./ColumnProfileCard";
 import type { ColumnProfile } from "@/types/profiling.types";
+import type { DQGlossaryEntry } from "@/types/dq.types";
+import { buildColumnNarrative } from "@/lib/profiling/narrative";
+import { buildDQGlossary } from "@/lib/profiling/dq-glossary";
+import { explainOutlier } from "@/lib/profiling/value-report-export";
 
 type SortKey = "file_order" | "name" | "null_pct" | "unique_pct";
 type SortDir = "asc" | "desc";
@@ -16,7 +20,70 @@ interface ProfilingDashboardProps {
   sampleMode: boolean;
 }
 
-async function exportProfilingXLSX(profiles: ColumnProfile[], fileName: string) {
+// One row per distinct value/pattern per column, with the "Column Name" cell
+// merged + shaded per group so column boundaries read clearly in Excel.
+function addFrequencySheet(
+  wb: import("exceljs").Workbook,
+  name: string,
+  headerArgb: string,
+  headers: [string, string, string, string],
+  profiles: ColumnProfile[],
+  getItems: (p: ColumnProfile) => { label: string; count: number; pct: number }[],
+  emptyLabel: string,
+) {
+  const white = { argb: "FFFFFFFF" };
+  const altFillArgb = "FFF1F5F9"; // slate-100
+  const borderArgb = "FFE2E8F0"; // slate-200
+
+  const ws = wb.addWorksheet(name);
+  ws.addRow(headers);
+  const hdr = ws.getRow(1);
+  hdr.font = { bold: true, color: white };
+  hdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: headerArgb } };
+  hdr.alignment = { vertical: "middle" };
+  ws.views = [{ state: "frozen", ySplit: 1 }];
+
+  profiles.forEach((p, groupIdx) => {
+    const items = getItems(p);
+    const startRow = ws.rowCount + 1;
+    if (items.length === 0) {
+      ws.addRow([p.column_name, emptyLabel, 0, 0]);
+    } else {
+      for (const item of items) {
+        ws.addRow([p.column_name, item.label, item.count, item.pct]);
+      }
+    }
+    const endRow = ws.rowCount;
+
+    if (groupIdx % 2 === 1) {
+      for (let r = startRow; r <= endRow; r++) {
+        ws.getRow(r).fill = { type: "pattern", pattern: "solid", fgColor: { argb: altFillArgb } };
+      }
+    }
+    if (endRow > startRow) {
+      ws.mergeCells(startRow, 1, endRow, 1);
+    }
+    const nameCell = ws.getCell(startRow, 1);
+    nameCell.font = { bold: true };
+    nameCell.alignment = { vertical: "middle", horizontal: "left" };
+
+    ws.getRow(endRow).eachCell((cell) => {
+      cell.border = { bottom: { style: "thin", color: { argb: borderArgb } } };
+    });
+  });
+
+  ws.getColumn(1).width = 28;
+  ws.getColumn(2).width = 32;
+  ws.getColumn(3).width = 12;
+  ws.getColumn(4).width = 16;
+  return ws;
+}
+
+async function exportProfilingXLSX(
+  profiles: ColumnProfile[],
+  fileName: string,
+  glossary: DQGlossaryEntry[]
+) {
   const ExcelJS = (await import("exceljs")).default;
   const wb = new ExcelJS.Workbook();
   wb.creator = "Sohovi";
@@ -33,7 +100,7 @@ async function exportProfilingXLSX(profiles: ColumnProfile[], fileName: string) 
     "Column Name", "Type", "Row Count", "Null Count", "Null %",
     "Unique Count", "Unique %", "Min Value", "Max Value",
     "Avg Value", "Std Dev", "Min Length", "Max Length", "Avg Length",
-    "Outlier Count", "Top Patterns", "PII Detected", "PII Type",
+    "Outlier Count", "Duplicate Groups", "Duplicate Rows", "Top Patterns", "PII Detected", "PII Type",
   ];
   summaryWs.addRow(summaryHeaders);
   const sumHdr = summaryWs.getRow(1);
@@ -63,6 +130,8 @@ async function exportProfilingXLSX(profiles: ColumnProfile[], fileName: string) 
       p.max_length ?? "",
       p.avg_length ?? "",
       p.outlier_count ?? 0,
+      p.duplicate_value_count ?? 0,
+      p.duplicate_row_count ?? 0,
       topPatterns,
       p.pii_detected ? "Yes" : "No",
       p.pii_type ?? "",
@@ -74,57 +143,131 @@ async function exportProfilingXLSX(profiles: ColumnProfile[], fileName: string) 
 
   // ── Sheet 2: Values ───────────────────────────────────────────────────────
   // One row per distinct value per column: Column | Value | Count | Percentage
-  const valuesWs = wb.addWorksheet("Values");
-  valuesWs.addRow(["Column Name", "Value", "Count", "Percentage (%)"]);
-  const valHdr = valuesWs.getRow(1);
-  valHdr.font = { bold: true, color: white };
-  valHdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: tealArgb } };
-  valHdr.alignment = { vertical: "middle" };
-  valuesWs.views = [{ state: "frozen", ySplit: 1 }];
-
-  for (const p of profiles) {
-    const freqs = p.value_frequency ?? p.top_values ?? [];
-    if (freqs.length === 0) {
-      valuesWs.addRow([p.column_name, "(no values)", 0, 0]);
-    } else {
-      for (const f of freqs) {
-        valuesWs.addRow([
-          p.column_name,
-          f.value ?? "(null)",
-          f.count,
-          f.pct,
-        ]);
-      }
-    }
-  }
-  valuesWs.getColumn(1).width = 28;
-  valuesWs.getColumn(2).width = 32;
-  valuesWs.getColumn(3).width = 12;
-  valuesWs.getColumn(4).width = 16;
+  addFrequencySheet(
+    wb,
+    "Values",
+    tealArgb,
+    ["Column Name", "Value", "Count", "Percentage (%)"],
+    profiles,
+    (p) => p.value_frequency.map((f) => ({ label: f.value, count: f.count, pct: f.pct })),
+    "(no values)",
+  );
 
   // ── Sheet 3: Patterns ─────────────────────────────────────────────────────
-  const patternsWs = wb.addWorksheet("Patterns");
-  patternsWs.addRow(["Column Name", "Pattern", "Count", "Percentage (%)"]);
-  const patHdr = patternsWs.getRow(1);
-  patHdr.font = { bold: true, color: white };
-  patHdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: navyArgb } };
-  patHdr.alignment = { vertical: "middle" };
-  patternsWs.views = [{ state: "frozen", ySplit: 1 }];
+  addFrequencySheet(
+    wb,
+    "Patterns",
+    navyArgb,
+    ["Column Name", "Pattern", "Count", "Percentage (%)"],
+    profiles,
+    (p) => p.pattern_summary.map((pt) => ({ label: pt.pattern, count: pt.count, pct: pt.pct })),
+    "(no patterns)",
+  );
+
+  // ── Sheet 4: Column Descriptions ────────────────────────────────────────
+  const narrativeWs = wb.addWorksheet("Column Descriptions");
+  narrativeWs.addRow(["Column Name", "Description"]);
+  const narrHdr = narrativeWs.getRow(1);
+  narrHdr.font = { bold: true, color: white };
+  narrHdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: tealArgb } };
+  narrHdr.alignment = { vertical: "middle" };
+  narrativeWs.views = [{ state: "frozen", ySplit: 1 }];
 
   for (const p of profiles) {
-    const patterns = p.pattern_summary ?? [];
-    if (patterns.length === 0) {
-      patternsWs.addRow([p.column_name, "(no patterns)", 0, 0]);
-    } else {
-      for (const pt of patterns) {
-        patternsWs.addRow([p.column_name, pt.pattern, pt.count, pt.pct]);
+    const row = narrativeWs.addRow([p.column_name, buildColumnNarrative(p, p.column_name)]);
+    row.getCell(2).alignment = { wrapText: true, vertical: "top" };
+  }
+  narrativeWs.getColumn(1).width = 28;
+  narrativeWs.getColumn(2).width = 90;
+
+  // ── Sheet 5: DQ Glossary ────────────────────────────────────────────────
+  const glossaryWs = wb.addWorksheet("DQ Glossary");
+  const glossaryHeaders = [
+    "Column Name", "Dimension", "Definition", "Why It Applies Here",
+    "Confidence (%)", "Suggested Checks",
+  ];
+  glossaryWs.addRow(glossaryHeaders);
+  const glossHdr = glossaryWs.getRow(1);
+  glossHdr.font = { bold: true, color: white };
+  glossHdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: navyArgb } };
+  glossHdr.alignment = { vertical: "middle" };
+  glossaryWs.views = [{ state: "frozen", ySplit: 1 }];
+
+  for (const g of glossary) {
+    const row = glossaryWs.addRow([
+      g.column_name,
+      g.dimension,
+      g.definition,
+      g.rationale,
+      Math.round(g.confidence * 100),
+      g.rule_types.join(", ").replace(/_/g, " "),
+    ]);
+    row.getCell(3).alignment = { wrapText: true, vertical: "top" };
+    row.getCell(4).alignment = { wrapText: true, vertical: "top" };
+  }
+  glossaryWs.getColumn(1).width = 24;
+  glossaryWs.getColumn(2).width = 14;
+  glossaryWs.getColumn(3).width = 50;
+  glossaryWs.getColumn(4).width = 50;
+  glossaryWs.getColumn(5).width = 14;
+  glossaryWs.getColumn(6).width = 36;
+
+  // ── Sheet 6: Outliers ──────────────────────────────────────────────────────
+  // One row per flagged outlier value — includes a Reason column explaining why
+  // the value was flagged so the report is self-explanatory.
+  const outlierArgb = "FFFBBF24"; // amber-400
+  const outlierWs = wb.addWorksheet("Outliers");
+  outlierWs.addRow(["Column Name", "Value", "Deviation (σ)", "Method", "Reason"]);
+  const outHdr = outlierWs.getRow(1);
+  outHdr.font = { bold: true, color: white };
+  outHdr.fill = { type: "pattern", pattern: "solid", fgColor: { argb: outlierArgb } };
+  outHdr.alignment = { vertical: "middle" };
+  outlierWs.views = [{ state: "frozen", ySplit: 1 }];
+
+  const altFillArgb = "FFF1F5F9";
+  const borderArgb = "FFE2E8F0";
+  profiles.forEach((p, groupIdx) => {
+    if (!p.outlier_values || p.outlier_values.length === 0) return;
+    const mean = p.avg_value ?? 0;
+    const std = p.std_dev ?? 0;
+    const sorted = [...p.outlier_values].sort((a, b) => a - b);
+    const startRow = outlierWs.rowCount + 1;
+    for (const v of sorted) {
+      const deviation = std > 0 ? Math.round(Math.abs(v - mean) / std * 10) / 10 : 0;
+      outlierWs.addRow([p.column_name, v, deviation, p.outlier_method ?? "zscore", explainOutlier(v, p)]);
+    }
+    const endRow = outlierWs.rowCount;
+    if (groupIdx % 2 === 1) {
+      for (let r = startRow; r <= endRow; r++) {
+        outlierWs.getRow(r).fill = { type: "pattern", pattern: "solid", fgColor: { argb: altFillArgb } };
       }
     }
-  }
-  patternsWs.getColumn(1).width = 28;
-  patternsWs.getColumn(2).width = 32;
-  patternsWs.getColumn(3).width = 12;
-  patternsWs.getColumn(4).width = 16;
+    if (endRow > startRow) outlierWs.mergeCells(startRow, 1, endRow, 1);
+    const nc = outlierWs.getCell(startRow, 1);
+    nc.font = { bold: true };
+    nc.alignment = { vertical: "middle", horizontal: "left" };
+    outlierWs.getRow(endRow).eachCell((cell) => {
+      cell.border = { bottom: { style: "thin", color: { argb: borderArgb } } };
+    });
+  });
+  outlierWs.getColumn(1).width = 28;
+  outlierWs.getColumn(2).width = 14;
+  outlierWs.getColumn(3).width = 14;
+  outlierWs.getColumn(4).width = 10;
+  outlierWs.getColumn(5).width = 80;
+  outlierWs.getColumn(5).alignment = { wrapText: true };
+
+  // ── Sheet 7: Duplicates ───────────────────────────────────────────────────
+  // One row per distinct value that appears more than once, sorted by occurrence count desc.
+  addFrequencySheet(
+    wb,
+    "Duplicates",
+    navyArgb,
+    ["Column Name", "Value", "Occurrences", "% of Rows"],
+    profiles,
+    (p) => (p.duplicate_values ?? []).map((d) => ({ label: d.value, count: d.count, pct: d.pct })),
+    "(no duplicates)",
+  );
 
   const buf = await wb.xlsx.writeBuffer();
   const blob = new Blob([buf], {
@@ -159,6 +302,17 @@ export function ProfilingDashboard({
     () => profiles.map((p, i) => ({ ...p, _fileIdx: i })),
     [profiles]
   );
+
+  const glossary = useMemo(() => buildDQGlossary(profiles), [profiles]);
+  const glossaryByColumn = useMemo(() => {
+    const map = new Map<string, DQGlossaryEntry[]>();
+    for (const g of glossary) {
+      const arr = map.get(g.column_name) ?? [];
+      arr.push(g);
+      map.set(g.column_name, arr);
+    }
+    return map;
+  }, [glossary]);
 
   const filtered = useMemo(() => {
     let result = profilesWithIdx;
@@ -230,69 +384,70 @@ export function ProfilingDashboard({
       )}
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-52">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <Input
-            placeholder="Filter columns…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-8 h-8 text-sm"
-          />
-        </div>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex flex-1 flex-wrap items-center gap-3 min-w-0">
+          <div className="relative flex-1 min-w-52">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+            <Input
+              placeholder="Filter columns…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-8 h-8 text-sm"
+            />
+          </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          {(["file_order", "name", "null_pct", "unique_pct"] as SortKey[]).map((key) => {
-            const labels: Record<SortKey, string> = {
-              file_order: "File Order",
-              name: "Name",
-              null_pct: "Null %",
-              unique_pct: "Unique %",
-            };
-            return (
+          <div className="flex items-center gap-2 flex-wrap">
+            {(["file_order", "name", "null_pct", "unique_pct"] as SortKey[]).map((key) => {
+              const labels: Record<SortKey, string> = {
+                file_order: "File Order",
+                name: "Name",
+                null_pct: "Null %",
+                unique_pct: "Unique %",
+              };
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleSort(key)}
+                  className={[
+                    "inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors",
+                    sortKey === key
+                      ? "border-slate-300 bg-slate-100 text-slate-700 font-medium"
+                      : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                  ].join(" ")}
+                >
+                  {labels[key]}
+                  {sortKey === key ? (
+                    sortDir === "asc" ? (
+                      <SortAsc className="w-3 h-3" />
+                    ) : (
+                      <SortDesc className="w-3 h-3" />
+                    )
+                  ) : null}
+                </button>
+              );
+            })}
+
+            {piiCount > 0 && (
               <button
-                key={key}
-                onClick={() => toggleSort(key)}
+                onClick={() => setPiiOnly((v) => !v)}
                 className={[
                   "inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors",
-                  sortKey === key
-                    ? "border-slate-300 bg-slate-100 text-slate-700 font-medium"
+                  piiOnly
+                    ? "border-red-300 bg-red-50 text-red-700 font-medium"
                     : "border-slate-200 text-slate-500 hover:bg-slate-50",
                 ].join(" ")}
               >
-                {labels[key]}
-                {sortKey === key ? (
-                  sortDir === "asc" ? (
-                    <SortAsc className="w-3 h-3" />
-                  ) : (
-                    <SortDesc className="w-3 h-3" />
-                  )
-                ) : null}
+                <ShieldAlert className="w-3 h-3" />
+                PII only
               </button>
-            );
-          })}
-
-          {piiCount > 0 && (
-            <button
-              onClick={() => setPiiOnly((v) => !v)}
-              className={[
-                "inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors",
-                piiOnly
-                  ? "border-red-300 bg-red-50 text-red-700 font-medium"
-                  : "border-slate-200 text-slate-500 hover:bg-slate-50",
-              ].join(" ")}
-            >
-              <ShieldAlert className="w-3 h-3" />
-              PII only
-            </button>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Download button */}
         <button
-          onClick={() => exportProfilingXLSX(profiles, fileName)}
-          className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90 ml-auto"
-          style={{ background: "#1A1A2E" }}
+          onClick={() => exportProfilingXLSX(profiles, fileName, glossary)}
+          className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90 shrink-0"
         >
           <Download className="w-3.5 h-3.5" />
           Download Excel
@@ -300,9 +455,13 @@ export function ProfilingDashboard({
       </div>
 
       {/* Column cards */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         {filtered.map((profile, idx) => (
-          <ColumnProfileCard key={profile.column_name || idx} profile={profile} />
+          <ColumnProfileCard
+            key={profile.column_name || idx}
+            profile={profile}
+            glossaryEntries={glossaryByColumn.get(profile.column_name) ?? []}
+          />
         ))}
       </div>
 

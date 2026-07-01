@@ -167,7 +167,7 @@ export function LearnPageClient() {
           <div className="flex items-center gap-2 mb-6">
             <Video className="w-5 h-5 text-slate-400" />
             <h2 className="text-base font-bold text-slate-700">Video Tutorials</h2>
-            <span className="text-xs text-slate-400 ml-1">— 7 walkthroughs, coming soon</span>
+            <span className="text-xs text-slate-400 ml-1">— 9 walkthroughs, coming soon</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {VIDEO_TUTORIALS.map((v) => (

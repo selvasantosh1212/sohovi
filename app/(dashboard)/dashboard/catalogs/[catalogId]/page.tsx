@@ -18,7 +18,7 @@ export default async function CatalogDetailPage({ params }: { params: Promise<{ 
   if (!catalog) notFound();
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       <div>
         <Link href="/dashboard/catalogs" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4">
           <ArrowLeft className="w-3.5 h-3.5" />Catalogs

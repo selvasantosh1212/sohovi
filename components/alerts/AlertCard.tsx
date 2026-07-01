@@ -38,6 +38,7 @@ export function AlertCard({ alert, events, assetName }: Props) {
   }
 
   function handleDelete() {
+    if (!window.confirm(`Delete alert "${alert.name}"? This cannot be undone.`)) return;
     startTransition(async () => {
       try {
         await deleteAlert(alert.id);

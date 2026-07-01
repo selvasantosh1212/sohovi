@@ -70,6 +70,7 @@ create table if not exists workflows (
   name              text not null,
   description       text,
   column_mappings   jsonb default '{}',
+  default_scope_conditions jsonb not null default '[]',
   is_active         boolean not null default true,
   run_count         integer not null default 0,
   last_run_at       timestamptz,
@@ -96,7 +97,8 @@ create table if not exists asset_runs (
   schema_diff         jsonb,
   workflow_id         uuid references workflows(id),
   status              text not null default 'completed',
-  notes               text
+  notes               text,
+  scope_conditions    jsonb not null default '[]'
 );
 create index idx_runs_asset on asset_runs(asset_id);
 create index idx_runs_user on asset_runs(clerk_user_id);
@@ -110,9 +112,11 @@ create table if not exists dq_rules (
   asset_id        uuid not null references data_assets(id) on delete cascade,
   clerk_user_id   text not null,
   column_name     text,
+  description     text,
   dimension       text not null,
   rule_type       text not null,
   parameters      jsonb not null default '{}',
+  scope_conditions jsonb not null default '[]',
   threshold       numeric(5,4) not null default 0.95,
   weight          numeric(5,4) not null default 1.0,
   is_active       boolean not null default true,
@@ -130,6 +134,7 @@ create table if not exists dq_scores (
   run_id          uuid not null references asset_runs(id) on delete cascade,
   asset_id        uuid not null,
   column_name     text not null,
+  description     text,
   dimension       text not null,
   rule_type       text not null,
   score           numeric(5,4) not null,

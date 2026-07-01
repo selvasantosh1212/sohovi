@@ -1,22 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload, Plug, Layers } from "lucide-react";
 import { UploadFlow } from "./UploadFlow";
 import { LargeFileFlow } from "./LargeFileFlow";
 import { ConnectorGate } from "@/components/connectors/ConnectorGate";
 import { ConnectorFlow } from "@/components/connectors/ConnectorFlow";
+import { useFileStore } from "@/store/fileStore";
 
 interface UploadOrConnectProps {
   assetId: string;
   assetName: string;
   previousSchema: string[] | null;
+  workflowId?: string | null;
 }
 
 type Tab = "upload" | "connect" | "bulk";
 
-export function UploadOrConnect({ assetId, assetName, previousSchema }: UploadOrConnectProps) {
+export function UploadOrConnect({ assetId, assetName, previousSchema, workflowId = null }: UploadOrConnectProps) {
   const [tab, setTab] = useState<Tab>("upload");
+  const setWorkflowId = useFileStore((s) => s.setWorkflowId);
+
+  useEffect(() => {
+    setWorkflowId(workflowId);
+  }, [workflowId, setWorkflowId]);
 
   return (
     <div className="space-y-6">

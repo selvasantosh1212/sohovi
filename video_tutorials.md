@@ -58,6 +58,89 @@ Before recording any demo video, generate these three datasets from **sohovi.com
 
 ---
 
+### Domain Vertical Datasets (Banking, Supply Chain, Healthcare)
+
+> **Why these exist:** Datasets A/B/C above are generic ("CustomerDB", "SalesQ1") so they work for any Learn tutorial. The three datasets below exist specifically for **industry vertical marketing videos** — viewers self-select faster when the on-screen data looks like *their* data. All three are built the same way as A/B/C: generated free from **sohovi.com/tools/test-data-generator**, then hand-edited for realism and to inject specific DQ issues. They are **not** sourced from Kaggle or any third-party dataset — this avoids licensing/redistribution ambiguity in a public marketing video and keeps every dataset fully reproducible by anyone re-recording these scripts. (If you'd rather use a real public dataset for extra authenticity, see "Optional: real-data alternatives" at the end of this section — but check that dataset's license before using it on camera.)
+>
+> HR and Finance verticals reuse **Dataset C (EmployeeDir.csv)** and **Dataset B (SalesQ1.csv)** respectively — they already fit those industries well enough that a fourth/fifth dataset isn't needed.
+
+---
+
+#### Dataset D — CustomerAccounts.csv (Banking, 400 rows, messy)
+
+**Step 1 — Generate the base file:**
+- Go to `/tools/test-data-generator`
+- Click the **"Customer list"** preset (id, first_name, last_name, email, phone, country)
+- Click **Add Column** four times and configure: `account_number` (type: UUID), `balance` (type: Float), `kyc_status` (type: Boolean), `account_opened` (type: Date)
+- Set row count to **400**
+- Click **Generate** → **Download CSV**
+
+**Step 2 — Relabel for banking (Excel/Sheets):**
+- Rename `id` → `customer_id`, `country` → `branch_country`
+- `kyc_status` came through as `true`/`false` — find/replace: `true` → `Verified`, `false` → `Pending`
+
+**Step 3 — Introduce quality issues:**
+- **Missing emails:** Blank the email in ~8% of rows (32 rows) — a real KYC gap.
+- **Duplicate customers:** Copy 30 rows to the bottom with the same `customer_id` (simulates a core-banking merge).
+- **Invalid account numbers:** Replace `account_number` with `TEST-0000` or leave blank in 15 rows.
+- **Balance outliers:** Set 5 rows to an absurd value like `999999999.99` (decimal entry error) and blank 10 rows.
+- **Missing KYC status:** Blank `kyc_status` in ~10% of rows — a compliance gap, perfect for a Completeness rule with a real business consequence.
+- **Save as:** `CustomerAccounts.csv`
+
+**What this simulates:** A retail bank's core-banking customer export after a merger — exactly the kind of file a banking DQ analyst actually has to deal with. Strong fit for Completeness (KYC status, email), Accuracy (balance), Uniqueness (customer_id), Scope conditions (e.g. `branch_country == US AND kyc_status == Verified`), and the **PII Audit** / **De-Identify** free tools (this file is loaded with exactly the PII those tools are built to catch).
+
+---
+
+#### Dataset E — InventoryShipments.csv (Supply Chain, 300 rows, messy)
+
+**Step 1 — Generate the base file:**
+- Go to `/tools/test-data-generator`
+- Don't use a preset — build custom columns: `shipment_id` (UUID), `sku` (UUID), `supplier_name` (Company name), `warehouse_city` (City), `warehouse_country` (Country), `quantity_on_hand` (Integer), `unit_cost` (Float), `ship_date` (Date)
+- Set row count to **300**
+- Click **Generate** → **Download CSV**
+
+**Step 2 — Introduce quality issues:**
+- **Missing supplier:** Blank `supplier_name` in ~10% of rows (broken vendor feed).
+- **Negative quantity:** Set `quantity_on_hand` negative in 15 rows (warehouse system entry errors).
+- **Duplicate shipments:** Copy 20 rows to the bottom with the same `shipment_id` (a retry bug double-recorded the shipment).
+- **Cost outliers:** Set `unit_cost` to `0.00` in 8 rows and `99999.00` in 4 rows.
+- **Future ship dates:** Edit 6 rows' `ship_date` to a year in the future (a warehouse scanner clock bug).
+- **Save as:** `InventoryShipments.csv`
+
+**What this simulates:** A logistics company's warehouse management export, merged across regional warehouses. Strong fit for Accuracy (quantity > 0, cost > 0), Timeliness (no future ship dates), Uniqueness (shipment_id), and Scope conditions (e.g. `warehouse_country == US`).
+
+---
+
+#### Dataset F — PatientIntake.csv (Healthcare, 250 rows, messy)
+
+**Step 1 — Generate the base file:**
+- Go to `/tools/test-data-generator`
+- Custom columns: `patient_id` (Auto-increment ID), `full_name` (Full name), `email`, `phone`, `date_of_birth` (Date), `city`, `country`, `admission_date` (Date)
+- Set row count to **250**
+- Click **Generate** → **Download CSV**
+
+**Step 2 — Relabel for realism (Excel/Sheets):**
+- `date_of_birth` generates in the tool's 2020–2025 range — manually edit these to realistic birth years (1945–2008) for ~80% of rows.
+
+**Step 3 — Introduce quality issues:**
+- **Missing phone:** Blank in ~12% of rows.
+- **Duplicate intake records:** Copy 15 rows to the bottom with the same `patient_id`.
+- **Malformed emails:** Corrupt 10 rows' emails (`@@`, missing domain).
+- **Impossible dates:** In 8 rows, set `date_of_birth` *after* `admission_date` — a logically impossible record, ideal for a cross-field Accuracy/Consistency rule.
+- **Missing location:** Blank `city` and `country` in ~8% of rows.
+- **Save as:** `PatientIntake.csv`
+
+**What this simulates:** A hospital intake / EHR export. Strong fit for Completeness, the `date_of_birth` vs `admission_date` cross-field check, and — especially — the **De-Identify** free tool (k-anonymity, HIPAA Safe Harbor framing) and **PII Audit**.
+
+---
+
+**Optional: real-data alternatives.** If you'd rather record against a real public dataset instead of synthetic data, these Kaggle datasets match each vertical reasonably well — but verify the license (most are fine for non-commercial demos; check before using in a monetized/public marketing video) and that you're comfortable with real (if anonymized) personal data appearing on screen:
+- Banking: [Bank Customer Churn Dataset](https://www.kaggle.com/datasets/gauravtopre/bank-customer-churn-dataset), [Banking and Customer Transaction Data](https://www.kaggle.com/datasets/yogeshtekawade/banking-and-customer-transaction-data)
+- Supply Chain: [Logistics and Supply Chain Dataset](https://www.kaggle.com/datasets/datasetengineer/logistics-and-supply-chain-dataset), [Supply Chain Dataset](https://www.kaggle.com/datasets/amirmotefaker/supply-chain-dataset)
+- Healthcare: [Synthetic Healthcare Patient Records Dataset](https://www.kaggle.com/datasets/dnation/synthetic-healthcare-patient-records-dataset), [Healthcare Dataset](https://www.kaggle.com/datasets/prasad22/healthcare-dataset) (both already synthetic, so licensing is simpler)
+
+---
+
 ## Part 1: Landing Page Video
 
 ---
@@ -276,6 +359,7 @@ NARRATION: "You haven't run any quality checks yet — that comes next. But prof
 ### VIDEO 8 — Connect Google Sheets
 
 **Platform:** Learn (In-App Tutorial)
+**Plan:** Business plan required (`ConnectorGate`, `minPlan="business"`) — do not present as available on Free/Pro, and do not use as cold-acquisition content. Best suited for sales-assist / onboarding content aimed at teams already evaluating Business.
 **Duration:** 3 minutes
 **Dataset:** None (live Google Sheet)
 
@@ -304,6 +388,7 @@ NARRATION: "Any time you want fresh data from the sheet, hit Sync. You can also 
 ### VIDEO 9 — Connect Airtable
 
 **Platform:** Learn (In-App Tutorial)
+**Plan:** Business plan required — see the note on VIDEO 8. Same caveat applies: enterprise/sales-assist content, not a free-tier hook.
 **Duration:** 3 minutes
 **Dataset:** None
 
@@ -329,6 +414,7 @@ NARRATION: "From here, it works exactly like any other data asset. Add rules, ru
 ### VIDEO 10 — Connect Cloud Storage
 
 **Platform:** Learn (In-App Tutorial)
+**Plan:** Business plan required — see the note on VIDEO 8. Same caveat applies: enterprise/sales-assist content, not a free-tier hook.
 **Duration:** 3 minutes
 **Dataset:** None
 
@@ -351,6 +437,7 @@ NARRATION: "Click Connect. Sohovi fetches the file and profiles it. The raw file
 ### VIDEO 11 — Connect a REST API
 
 **Platform:** Learn (In-App Tutorial)
+**Plan:** Business plan required — see the note on VIDEO 8. Same caveat applies: enterprise/sales-assist content, not a free-tier hook.
 **Duration:** 3 minutes
 **Dataset:** None
 
@@ -577,6 +664,9 @@ NARRATION: "Select Completeness. This rule checks that a column isn't missing va
 **[SCREEN: Rule form: Column selector (dropdown), Threshold (percentage, default 95%), Weight (1-5).]**
 NARRATION: "Choose which column to check. I'll select 'email'. Set the threshold — how complete does it need to be? 95% means at most 5% nulls are acceptable."
 
+**[SCREEN: Below Rule Type, an optional 'Description' textarea. Type: 'Email is required so Sales can follow up within 24 hours of signup.']**
+NARRATION: "Before you set the threshold, there's an optional Description field. Use it to write down why the rule exists — it'll show up later in the rules list, in your run results, and in the failed records view, so nobody has to guess."
+
 **[SCREEN: Select column: email. Threshold: 95%. Weight: 3 (medium). Click 'Save Rule'.]**
 NARRATION: "The weight controls how much this rule impacts your overall DQ score. I'll set it to 3 — medium importance."
 
@@ -705,6 +795,9 @@ NARRATION: "Click Get AI Suggestions. Sohovi's rule engine analyzes your column 
 **[SCREEN: Suggested rules list: 1) email Completeness 95%, 2) email Validity email format, 3) id Uniqueness 100%, 4) phone Validity phone pattern, 5) first_name Completeness 100%, 6) country Allowed values.]**
 NARRATION: "It is suggesting exactly what you would expect — completeness on email and name, uniqueness on ID, validity on email and phone, and an allowed-values list for country."
 
+**[SCREEN: Each suggested rule card has its own small 'Add a description (optional)…' input, right under the reason text.]**
+NARRATION: "Before you accept any of these, you can type a short description right on that card — it gets saved along with the rule the moment you accept it."
+
 **[SCREEN: Check all 6. Click 'Add Selected Rules'.]**
 NARRATION: "Select the ones you want. I will take all six. Click Add Selected Rules."
 
@@ -718,28 +811,38 @@ NARRATION: "All six rules added in one click. AI suggestions work best after pro
 ### VIDEO 25 — Testing Rules in the Sandbox
 
 **Platform:** Learn (In-App Tutorial)
-**Duration:** 3 minutes
+**Plan:** Business plan required (`PlanGate minPlan="business"` on the Sandbox route) — not visible to Free or Pro users. Frame for existing Business customers or sales-assist demos, not cold acquisition.
+**Duration:** 3.5 minutes
 **Dataset:** A (CustomerDB.csv)
 
-**[SCREEN: Data Asset page. Rules tab. Button: 'Open Sandbox'. Click it.]**
-NARRATION: "Before you commit to a rule, test it in the Sandbox — without affecting your run history or your score."
+**[SCREEN: Data Asset page. Open the Sandbox tab. Two panels side by side: 'Configure Rule' on the left, 'Result' on the right.]**
+NARRATION: "Before you commit to a rule, test it in the Sandbox. It runs against your real in-memory file, but nothing here touches your saved rules or run history until you choose to save it."
 
-**[SCREEN: Sandbox panel. Left: rule builder. Right: live preview showing violation count in real time.]**
-NARRATION: "The Sandbox has two panels. On the left you build a rule. On the right you instantly see how many rows would fail — in real time as you type."
+**[SCREEN: Left panel, top to bottom: Column = email, Dimension = Completeness, Rule Type = Not Null, Threshold (%) = 100.]**
+NARRATION: "Configure it exactly like a real rule — column, dimension, rule type, threshold. I'll set email to Not Null at 100%."
 
-**[SCREEN: Add Completeness on email at 100% threshold. Right panel updates: '70 rows would fail (12.7%)'.]**
-NARRATION: "I set Completeness on email to 100%. The right panel immediately shows 70 rows would fail."
+**[SCREEN: Below Threshold, a 'Description (optional)' textarea. Type: 'Testing whether 100% is realistic for email.']**
+NARRATION: "There's an optional Description field here too — write your reasoning now, and it carries straight over if you decide to save this as a real rule."
 
-**[SCREEN: Change threshold to 85%. Right panel updates: '0 rows would fail'.]**
-NARRATION: "Change the threshold to 85% — zero rows fail. Tune the threshold until it matches your actual business standard."
+**[SCREEN: Below Description, a collapsed 'Scope (optional)' row. Click it open. Add condition: country == US.]**
+NARRATION: "The same Scope section from the rule builder lives here as well — so you can test a scoped rule before you ever commit to it. I'll scope this to country equals US."
 
-**[SCREEN: Add a Validity rule with a custom regex. Right panel shows real-time match count.]**
-NARRATION: "Test any regex pattern and see immediately how many rows match. No guessing — instant feedback."
+**[SCREEN: Click 'Run Test'. Brief spinner: 'Evaluating rule…'.]**
+NARRATION: "Click Run Test. Sohovi evaluates the rule against your real file right now, in your browser."
 
-**[SCREEN: Click 'Save to Rules' from sandbox. Rule moves to the main rules list.]**
-NARRATION: "When you are happy with it, click Save to Rules. It moves straight to your active rules."
+**[SCREEN: Result panel: a colored score box, a red 'BREAKING' badge next to it, the description text beneath, then a 'Total rows / Failed rows / Severity' stat row.]**
+NARRATION: "The result comes back BREAKING — that's Sohovi's word for a failing rule, everywhere in the product, not just here. Your description shows right next to the badge."
 
-**CTA:** Always sandbox new rules on real data before committing — especially when tuning thresholds.
+**[SCREEN: Click the red BREAKING badge itself. A 'Failed Records' popup opens with the real failing rows — just the US ones, since that's what we scoped.]**
+NARRATION: "Click the badge, and it opens the same Failed Records view a real run would give you — actual rows, ready to download — so you can sanity-check the rule before saving anything."
+
+**[SCREEN: Close the popup. Change threshold to 85. Click 'Run Test' again. Badge flips to green 'PASS'.]**
+NARRATION: "Loosen the threshold to 85 and run it again — now it passes. Tune and re-run as many times as you want; nothing is saved until you say so."
+
+**[SCREEN: Click 'Save Rule' next to Run Test. Toast notification: 'Rule saved to asset'.]**
+NARRATION: "Happy with it? Click Save Rule. It's added to this asset's real rules — description, scope, and all."
+
+**CTA:** Always sandbox a new or scoped rule on real data before committing — especially when tuning thresholds.
 
 ---
 
@@ -784,11 +887,11 @@ NARRATION: "You have uploaded your file and set up your rules. Now let's run the
 **[SCREEN: Click 'Run DQ Check'. Progress: 'Running rules… 1/6… 2/6… 3/6…' completes in under 3 seconds.]**
 NARRATION: "Click Run DQ Check. All rules execute right here in your browser. A 550-row file takes under 3 seconds."
 
-**[SCREEN: Results appear. Score gauge fills to 52/100 — amber. Summary: '3 of 6 rules failed'.]**
+**[SCREEN: Results appear. Score gauge fills to 52/100 — amber. Top summary bar: Rules 6, Passed Rules 3, Failed Rules 3, Columns 6.]**
 NARRATION: "The score is calculated. 52 out of 100 — amber, which means significant issues but not completely broken data."
 
-**[SCREEN: Rule results: green checkmarks for id Uniqueness, country Allowed Values, first_name Completeness. Red X marks for email Completeness, email Validity, phone Validity.]**
-NARRATION: "Three rules passed, three failed. ID uniqueness and first name completeness are fine. Email completeness, email format, and phone format are failing."
+**[SCREEN: Rule Breakdown panel: green 'PASS' badges for id Uniqueness, country Allowed Values, first_name Completeness. Red 'BREAKING' badges for email Completeness, email Validity, phone Validity.]**
+NARRATION: "Three rules passed, three are breaking — that's Sohovi's word for a failing rule. ID uniqueness and first name completeness are fine. Email completeness, email format, and phone format are breaking."
 
 **[SCREEN: Run History tab at bottom. Shows this run with timestamp and score 52/100.]**
 NARRATION: "Every run is saved in your history. You can always come back and compare results over time."
@@ -834,7 +937,7 @@ NARRATION: "Below the overall score, you see individual scores for each column. 
 **[SCREEN: Column grid: id 100 green, first_name 100 green, last_name 100 green, email 61 amber, phone 84 teal, country 100 green.]**
 NARRATION: "ID, first name, last name, and country all score 100 — perfect. Email scores 61 because two rules failed on it. Phone scores 84 — one rule barely passed."
 
-**[SCREEN: Click 'email' column score card. Expands: Completeness rule FAIL 12.7% null threshold 95%. Validity rule FAIL 8% invalid format.]**
+**[SCREEN: Click 'email' column score card. Expands: Completeness rule BREAKING 12.7% null threshold 95%. Validity rule BREAKING 8% invalid format.]**
 NARRATION: "Click any column card to see which specific rules passed or failed for that column."
 
 **[SCREEN: Click 'phone' column. Validity rule: PASS — 96% match the pattern. Threshold was 95%. Borderline.]**
@@ -850,20 +953,23 @@ NARRATION: "Phone shows a borderline pass. 96% validity against a 95% threshold.
 **Duration:** 3 minutes
 **Dataset:** A (post-run)
 
-**[SCREEN: DQ results page. Click 'Failed Records' tab.]**
-NARRATION: "The Failed Records tab shows every single row that violated at least one rule — with the specific violation highlighted."
+**[SCREEN: DQ results page (Scoring Dashboard). Three panels side by side: 'Column Scores', 'Rule Breakdown', 'Failed Records'.]**
+NARRATION: "After you run a check, Failed Records is the third panel — always visible, no tab to click."
 
-**[SCREEN: Table with columns: row number, all data columns, Reason column. Rows with issues highlighted red.]**
-NARRATION: "Each failed row shows all its data, plus a Reason column explaining the violation. Email blank. Phone invalid. You can see it plainly."
+**[SCREEN: Failed Records panel. A row of pill buttons across the top, one per failing rule: 'not null (70)', 'regex match (44)'. 'not null (70)' is highlighted.]**
+NARRATION: "Each failing rule gets its own pill with a live failure count. Click one to switch the table below to that rule's failing rows."
 
-**[SCREEN: Filter dropdown: 'All violations', 'email Completeness', 'email Validity', 'phone Validity'. Select 'email Completeness'.]**
-NARRATION: "Use the filter to narrow down to a specific violation. I'll filter to email completeness failures only."
+**[SCREEN: Below the pills, the rule's Description (if one was set), then a one-line plain-English summary, then the table — row number, a handful of data columns, with the violating column (email) highlighted in red.]**
+NARRATION: "If you wrote a Description when you created the rule, it shows right here — context before you even look at the rows. Then the table itself, with the column that broke the rule highlighted so you don't have to hunt for it."
 
-**[SCREEN: 70 rows remain. Row numbers 10, 17, 24, 31 — the rows where we deleted the email.]**
-NARRATION: "70 rows — exactly the ones where we left the email blank. Row 10, 17, 24 — all visible."
+**[SCREEN: Click the 'Column Scores' panel, then click the 'email' card. Both 'Rule Breakdown' and 'Failed Records' narrow to just email's rules.]**
+NARRATION: "Click any column score to filter the whole view — Rule Breakdown and Failed Records both narrow down instantly."
 
-**[SCREEN: Click 'Download Failed Records (CSV)'. File downloads.]**
-NARRATION: "Download the failed records as a CSV. Hand them off to the data owner, fix them, then re-upload."
+**[SCREEN: In the middle 'Rule Breakdown' panel, click the red 'BREAKING' badge next to a rule. A popup opens with the same Failed Records table, pre-scoped to that exact rule.]**
+NARRATION: "You can also jump here directly — click any BREAKING badge in Rule Breakdown, and a popup opens already scoped to that rule, no scrolling required."
+
+**[SCREEN: Click 'Download CSV (70 rows)'. File downloads with a 'Rules Violated' column alongside the original data.]**
+NARRATION: "Download the failed records as a CSV — it includes every row currently in view, plus which rule or rules each one violated. Hand it to the data owner, fix it, then re-upload."
 
 **CTA:** Failed records give you a precise hit list for fixing your data — no manual searching required.
 
@@ -881,8 +987,14 @@ NARRATION: "The Score Transparency panel shows exactly how your final score was 
 **[SCREEN: Table: Rule name, Column, Pass/Fail, Weight, Score contribution, Penalty.]**
 NARRATION: "Every rule is listed. Pass or fail. Its weight. How many points it contributed. How many points it penalized."
 
-**[SCREEN: Highlight: email Completeness — FAIL — Weight 3 — Penalty 18.2 points.]**
-NARRATION: "Email completeness failed, and because it had weight 3, it cost 18 points. That is the biggest drag on the score."
+**[SCREEN: Under the email Completeness row, a muted line of text — the rule's own Description, written when the rule was created: 'Email is required so Sales can follow up within 24 hours.']**
+NARRATION: "If the rule has a Description, it shows right under the rule — context for the score, not just a number."
+
+**[SCREEN: Highlight: email Completeness — BREAKING — Weight 3 — Penalty 18.2 points.]**
+NARRATION: "Email completeness is breaking — Sohovi's word for a failing rule — and because it had weight 3, it cost 18 points. That is the biggest drag on the score."
+
+**[SCREEN: Click the red 'BREAKING' badge on the email Completeness row. A 'Failed Records' popup opens, pre-scoped to that rule, with a CSV download.]**
+NARRATION: "Click that BREAKING badge and a Failed Records popup opens straight from this panel — the exact rows, ready to download — without leaving Score Transparency."
 
 **[SCREEN: Highlight: id Uniqueness — PASS — Weight 4 — Contribution 20 points.]**
 NARRATION: "ID uniqueness passed, and because it is weight 4, it added 20 points. Passing rules contribute their full weight."
@@ -909,7 +1021,7 @@ NARRATION: "Click Compare Runs, select two runs, and click Compare."
 **[SCREEN: Side-by-side comparison. Left: Run 1 score 52. Right: Run 2 score 89. Delta: +37 points.]**
 NARRATION: "Both scores side by side, and the delta — a 37-point improvement."
 
-**[SCREEN: Rule-level comparison: email Completeness Run 1 FAIL to Run 2 PASS. email Validity Run 1 FAIL to Run 2 PASS. phone Validity Run 1 FAIL to Run 2 PASS.]**
+**[SCREEN: Rule-level comparison: email Completeness Run 1 BREAKING to Run 2 PASS. email Validity Run 1 BREAKING to Run 2 PASS. phone Validity Run 1 BREAKING to Run 2 PASS.]**
 NARRATION: "Each rule shows whether its status changed between runs. You can see exactly which fixes moved the needle."
 
 **[SCREEN: Schema comparison: Run 1 — 6 columns. Run 2 — 6 columns. 'No schema changes detected'.]**
@@ -1042,6 +1154,7 @@ NARRATION: "Consistent quality checks, every time, for every file of the same ty
 ### VIDEO 38 — Remediate Failed Records
 
 **Platform:** Learn (In-App Tutorial)
+**Plan:** Business plan required (`PlanGate minPlan="business"` on the Remediation route) — not visible to Free or Pro users. Frame for existing Business customers, not cold acquisition.
 **Duration:** 3 minutes
 **Dataset:** A (post-run, failed records visible)
 
@@ -1469,7 +1582,7 @@ NARRATION: "Sohovi scores your data from 0 to 100 based on the rules you set. Gr
 **[SCREEN: Score Transparency panel — rule list with weights and contributions.]**
 NARRATION: "The score is a weighted average of your rule results. Each rule has a weight — how important it is — and a pass or fail result."
 
-**[SCREEN: Highlight: email Completeness — FAIL — Weight 3 — cost 18 points. id Uniqueness — PASS — Weight 4 — earned 20 points.]**
+**[SCREEN: Highlight: email Completeness — BREAKING — Weight 3 — cost 18 points. id Uniqueness — PASS — Weight 4 — earned 20 points.]**
 NARRATION: "A failing rule with high weight costs you the most points. A passing rule with high weight earns you the most. It is transparent — you can verify every number."
 
 **[SCREEN: Second run after cleanup — score 89. Delta shown: +37 points.]**
@@ -1940,7 +2053,7 @@ NARRATION: "Every time you run a DQ check, Sohovi saves the result. Your run his
 **[SCREEN: Click Compare Runs. Select Run 3 score 89 and Run 4 score 61. Side by side comparison.]**
 NARRATION: "Compare any two runs. Run 3 was 89. Run 4 dropped to 61. Something changed."
 
-**[SCREEN: Rule comparison: email Completeness was PASS in Run 3, now FAIL in Run 4. Null rate jumped from 2% to 18%.]**
+**[SCREEN: Rule comparison: email Completeness was PASS in Run 3, now BREAKING in Run 4. Null rate jumped from 2% to 18%.]**
 NARRATION: "The rule comparison shows that email completeness suddenly jumped from 2% null to 18% null. Something in the data pipeline started dropping email values."
 
 **[SCREEN: Schema comparison: Run 3 had 6 columns. Run 4 has 6 columns. No schema change. The problem is in the data, not the structure.]**
@@ -1984,6 +2097,7 @@ NARRATION: "And since detection runs entirely in your browser, you can safely sc
 ### VIDEO 71 — How to Fix Bad Data Using Sohovi's Remediation Workflow
 
 **Platform:** YouTube / Blog / Instagram
+**Plan:** Business plan required — same caveat as VIDEO 38. If used publicly, the hook/CTA should target teams already evaluating Business, not be framed as a free-tier capability.
 **SEO Target:** "how to fix bad data", "data remediation process", "data quality remediation tool"
 **Duration:** 2 minutes
 **Dataset:** A (post-run, failed records)
@@ -3295,7 +3409,7 @@ NARRATION: "After standardising: consistent format, clean column, no more ambigu
 **[SCREEN: Sohovi Run History tab. 8 weeks of runs visible. Scores: 52, 71, 84, 89, 91, 89, 74, 68.]**
 NARRATION: "This is 8 weeks of data quality scores for one asset. It tells a story. Scores were improving — then something changed in week 7."
 
-**[SCREEN: Click on week 7 run — score 74. Compare with week 6 — score 89. Rule comparison: email Completeness went from PASS to FAIL. Null rate jumped from 3% to 19%.]**
+**[SCREEN: Click on week 7 run — score 74. Compare with week 6 — score 89. Rule comparison: email Completeness went from PASS to BREAKING. Null rate jumped from 3% to 19%.]**
 NARRATION: "Week 7 dropped from 89 to 74. The comparison shows email completeness suddenly failed — null rate jumped from 3% to 19%. Something changed upstream."
 
 **[SCREEN: Score Drop alert at 80 — would have fired at week 7 automatically.]**
@@ -3447,8 +3561,11 @@ NARRATION: "Step four: download the cleaned list. Score 97. No duplicates, no in
 **[SCREEN: Sohovi DQ results. Score 52/100. Click 'Score Transparency' tab.]**
 NARRATION: "After running a DQ check, click Score Transparency. This panel shows exactly how the score was calculated — rule by rule."
 
-**[SCREEN: Table: email Completeness FAIL Weight 3 Penalty 18 points. email Validity FAIL Weight 3 Penalty 15 points. phone Validity FAIL Weight 2 Penalty 8 points. Three passing rules contributing full weight.]**
-NARRATION: "Three rules failed. Email completeness — 18 point penalty. Email validity — 15 points. Phone validity — 8 points. Three rules passed and contributed their full weight."
+**[SCREEN: Table: email Completeness BREAKING Weight 3 Penalty 18 points. email Validity BREAKING Weight 3 Penalty 15 points. phone Validity BREAKING Weight 2 Penalty 8 points. Three passing rules contributing full weight.]**
+NARRATION: "Three rules are breaking. Email completeness — 18 point penalty. Email validity — 15 points. Phone validity — 8 points. Three rules passed and contributed their full weight."
+
+**[SCREEN: Under the email Completeness row, a muted line — the rule's own Description, written when it was created: 'Email is required so Sales can follow up within 24 hours.']**
+NARRATION: "If you wrote a Description when you built the rule, you don't even have to translate it live — it's sitting right there under the score, in your own words."
 
 **[SCREEN: Translate to plain English for stakeholders: 'We lost 41 points because 70 emails are missing, 44 emails are incorrectly formatted, and 22 phone numbers are invalid'.]**
 NARRATION: "Translate this directly: we lost 41 points because of three specific, fixable issues. 70 missing emails. 44 bad formats. 22 invalid phones."
@@ -3886,5 +4003,418 @@ NARRATION: "Schema drift, statistical drift, distribution shift — Sohovi catch
 
 ---
 
-*End of Sohovi Video Scripts — 142 videos total*
-*(1 Landing Page + 41 Learn Tutorials + 100 YouTube/Instagram Videos + 3 New Feature Videos)*
+---
+
+## NEW FEATURE VIDEO SCRIPTS (Added with Rule Descriptions, Scope Filters, Breaking Records & DQ Glossary)
+
+> **Context:** A recent update added five workflow upgrades to the rule builder, sandbox, scoring views, and profiling export: an optional free-text **Description** on every rule, generic **Scope conditions** (filter any rule to a subset of rows), **"Breaking"** replacing "Fail" everywhere a result is shown — plus a click-to-popup Failed Records view with CSV download — a per-column **DQ Glossary** explaining why each dimension applies, and a richer profiling Excel export with prose and glossary sheets. The five videos below cover each, in the same Learn/In-App style as Part 2.
+
+---
+
+### VIDEO 143 — Add a Description to Your DQ Rule
+
+**Platform:** Learn (In-App Tutorial)
+**Duration:** 2 minutes
+**Dataset:** A (CustomerDB.csv)
+
+**[SCREEN: Data Asset page. Rules tab. Click 'Add Rule'. Column = email, Dimension = Completeness, Rule Type = Not Null.]**
+NARRATION: "Every rule now has an optional Description field — a place to write down why the rule exists, not just what it checks."
+
+**[SCREEN: Below Rule Type, a 'Description (optional)' textarea with placeholder 'Notes about why this rule exists or what it checks…'.]**
+NARRATION: "Type a real reason. I'll write: 'Email is required so Sales can follow up within 24 hours of signup.'"
+
+**[SCREEN: Set threshold 95%. Click 'Add Rule'. Success message: 'Rule created successfully.']**
+NARRATION: "Save the rule like normal. The description travels with it everywhere from here on."
+
+**[SCREEN: Rules list. Under the rule's threshold line, a small italic gray line shows the description text.]**
+NARRATION: "In the rules list, it shows right under the rule as a quiet italic note — there for anyone who opens this asset later."
+
+**[SCREEN: Run a DQ Check. Score Transparency panel — under the failing email rule, the same description text appears beneath the rule name.]**
+NARRATION: "Run a check, and it follows the rule into Score Transparency too — so the score isn't just a number, it has context."
+
+**[SCREEN: Click the rule's BREAKING badge. Failed Records popup opens — the description is the first line above the table.]**
+NARRATION: "Open the Failed Records view for that rule, and the description is the first thing you see — before the data itself."
+
+**[SCREEN: Rules page → 'Get AI Suggestions'. Each suggested rule card now has its own small 'Add a description (optional)…' input before you click Accept.]**
+NARRATION: "And it's not just the manual builder — every AI-suggested rule has the same optional description box right on the card, before you accept it."
+
+**CTA:** Use descriptions for any rule whose reasoning isn't obvious from its name — your team, and future you, will read it instead of guessing at it.
+
+---
+
+### VIDEO 144 — Scope a Rule to a Subset of Rows
+
+**Platform:** Learn (In-App Tutorial)
+**Duration:** 3 minutes
+**Dataset:** B (SalesQ1.csv)
+
+**[SCREEN: SalesQ1 Data Asset. Rules tab. Add Rule. Column = email, Dimension = Completeness, Rule Type = Not Null, Threshold 95%.]**
+NARRATION: "Some rules shouldn't apply to every row. Sohovi's Scope conditions let you check a rule against only a filtered subset."
+
+**[SCREEN: Below Threshold, a collapsed row: 'Scope (optional)' with a '+' on the right. Click it — it expands with helper text: 'Only evaluate rows matching all conditions below (e.g. status == Approved).']**
+NARRATION: "Click Scope to expand it. Anything you add here narrows down which rows this specific rule is checked against — every other row is skipped entirely, pass or fail."
+
+**[SCREEN: Click '+ Add condition'. A row appears: Column select, Operator select (defaults to '=='), Value input. Set Column = region, leave operator '==', type Value = 'US'.]**
+NARRATION: "Add a condition: region equals US. We only want to enforce strict email completeness on US orders."
+
+**[SCREEN: Click '+ Add condition' again. Second row: Column = amount, Operator changed to '>', Value = '500'.]**
+NARRATION: "Add a second condition: amount greater than 500. Conditions stack with AND — so now this rule only runs against US orders over $500, where a missing email actually blocks a sales follow-up."
+
+**[SCREEN: Operator dropdown opened, showing all 8 choices: equals, not equals, greater than, greater or equal, less than, less or equal, 'in (comma-separated)', contains.]**
+NARRATION: "You've got eight operators to work with — equals, not equals, the four numeric comparisons, 'in' for a comma-separated list, and contains for partial text matches."
+
+**[SCREEN: Click 'Add Rule'. Rules list shows the new rule with a small teal 'Scoped' pill and a filter icon next to it.]**
+NARRATION: "Save it. Back in the rules list, scoped rules get a teal 'Scoped' badge so you can tell at a glance which rules aren't checking the whole file."
+
+**[SCREEN: Hover the 'Scoped' badge. Tooltip shows: 'region == US AND amount > 500'.]**
+NARRATION: "Hover over it any time to see exactly what the scope is, in plain text — no need to reopen the rule."
+
+**[SCREEN: Run DQ Check. Failed Records for this rule only shows US orders over $500 with blank emails — other rows aren't touched.]**
+NARRATION: "When you run the check, only in-scope rows count toward this rule's pass or fail — and only in-scope rows can show up as failed records for it."
+
+**[SCREEN: Switch to the Sandbox. The same 'Scope (optional)' section appears there too, above the Run Test button.]**
+NARRATION: "The same Scope section is available in the Sandbox, so you can test a scoped rule against your real file before you ever save it."
+
+**CTA:** Scope conditions work on every dimension and rule type, not just completeness — use them whenever a rule should only apply to part of your data.
+
+---
+
+### VIDEO 145 — Breaking Records: Click a Badge to See and Download Failures
+
+**Platform:** Learn (In-App Tutorial)
+**Duration:** 2.5 minutes
+**Dataset:** A (post-run, score 52)
+
+**[SCREEN: Scoring Dashboard after a run. Top bar: score gauge 52, then Rules 6 / Passed Rules 3 / Failed Rules 3 / Columns 6.]**
+NARRATION: "First, some terminology: Sohovi calls a failing rule 'Breaking' everywhere in the product — not 'Fail'. Same meaning, just the word you'll see on screen."
+
+**[SCREEN: Three columns below the top bar: 'Column Scores', 'Rule Breakdown', 'Failed Records' — all visible at once, no tabs.]**
+NARRATION: "After a run, these three panels sit side by side. No tab-switching — column scores, the rule-by-rule breakdown, and the actual failed records are all on screen together."
+
+**[SCREEN: Middle 'Rule Breakdown' panel. Each rule row ends with a colored pill: green 'PASS' or red 'BREAKING'.]**
+NARRATION: "Every rule gets a pill badge. Green PASS, or red BREAKING."
+
+**[SCREEN: Click the red 'BREAKING' badge next to 'email — Completeness'. A popup titled 'Failed Records' opens.]**
+NARRATION: "Click any BREAKING badge, and a popup opens — pre-scoped to that exact rule."
+
+**[SCREEN: Inside the popup: the rule's Description (if set) at the top, then a one-line plain-English summary, then the table of actual failing rows with the email column highlighted in red.]**
+NARRATION: "If the rule has a description, it's the first thing you see. Below it, the real rows — with the column that broke the rule highlighted so you don't have to hunt for it."
+
+**[SCREEN: Pill buttons above the table: 'not null (70)', another rule '(44)'. Click between them.]**
+NARRATION: "If more than one rule is failing, switch between them with these pills — each one shows its own live failure count."
+
+**[SCREEN: Click 'Download CSV (70 rows)'. File downloads with a 'Rules Violated' column alongside the original data.]**
+NARRATION: "Download the CSV. It includes every visible failing row, plus exactly which rule or rules each one broke."
+
+**[SCREEN: Close the popup. The same red BREAKING badge with the same click-to-popup behavior also appears in the Sandbox after clicking Run Test.]**
+NARRATION: "The exact same badge and popup show up in the Sandbox too, the moment you click Run Test — so you can see real failing rows before you've even saved the rule."
+
+**[SCREEN: Navigate to Run History → open an old run. The BREAKING label is shown, but it's plain text — clicking it does nothing.]**
+NARRATION: "One exception: past runs in your Run History show the BREAKING label, but you can't click through. Sohovi never stores your raw rows on the server — only the score — so once a session ends, there's nothing left to click into. Same privacy model that keeps your data in your browser in the first place."
+
+**CTA:** Click first, scroll never — every BREAKING badge is a shortcut straight to the rows that caused it.
+
+---
+
+### VIDEO 146 — DQ Glossary: Why Each Dimension Applies to Your Columns
+
+**Platform:** Learn (In-App Tutorial)
+**Duration:** 2.5 minutes
+**Dataset:** A (CustomerDB.csv)
+
+**[SCREEN: Profiling Dashboard for CustomerDB.csv. Under the 'email' column's name and type badge, a row of small colored pills: 'completeness', 'validity'.]**
+NARRATION: "Every column card now shows which DQ dimensions actually apply to it — before you've written a single rule."
+
+**[SCREEN: Click the 'id' column card. Pills show only 'uniqueness'.]**
+NARRATION: "An ID column only gets 'uniqueness' — that's the dimension that actually matters for a key column."
+
+**[SCREEN: Click 'email' card to expand it. Scroll to a section titled 'DQ Glossary — why these dimensions apply'.]**
+NARRATION: "Expand any card and scroll down to the DQ Glossary section — this is where Sohovi explains its reasoning."
+
+**[SCREEN: Inside, one block per dimension: a colored 'completeness' pill, '94% confidence', a gray definition sentence, a bold rationale sentence specific to this column, then 'Suggested checks: not null'.]**
+NARRATION: "Each dimension gets its own card: a plain-English definition of what that dimension even means, then the specific reason it applies to THIS column — based on what Sohovi found when it profiled your file."
+
+**[SCREEN: Read the definition aloud: 'Whether values that should be present actually are. Real-world extracts often have gaps from optional fields, failed integrations, or skipped entry — this flags how much of that gap exists here.']**
+NARRATION: "These definitions assume your data isn't perfect — because real source data never is. That's the whole point of profiling before you analyze."
+
+**[SCREEN: Scroll to the Validity block for email — the rationale mentions the 8% non-standard pattern found earlier in profiling.]**
+NARRATION: "The rationale isn't generic — it references the actual pattern mismatch Sohovi found in your file, the same number you saw in the column's pattern breakdown."
+
+**[SCREEN: Click 'Get AI Suggestions' on the Rules page — the suggested rules match the same dimensions just seen in the Glossary.]**
+NARRATION: "This is the same reasoning engine behind AI Rule Suggestions — the Glossary just shows you the 'why' up front, per column, before you decide what to do about it."
+
+**CTA:** Read the Glossary before you write rules — it tells you what to check and why, not just what's possible.
+
+---
+
+### VIDEO 147 — Export the Full Profiling Report (5-Sheet Excel Workbook)
+
+**Platform:** Learn (In-App Tutorial)
+**Duration:** 3 minutes
+**Dataset:** A (CustomerDB.csv)
+
+**[SCREEN: Profiling Dashboard toolbar. Far right, a navy 'Download Excel' button with a download icon.]**
+NARRATION: "Every profiling session can be exported as a full Excel workbook — not just a screenshot of the dashboard."
+
+**[SCREEN: Click 'Download Excel'. File saves as 'CustomerDB_profiling.xlsx'.]**
+NARRATION: "Click it. The file is named after your original upload with _profiling added, so it's obvious what it is later."
+
+**[SCREEN: Open in Excel. Tab 1 'Summary' — one frozen-header row per column: type, row/null/unique counts and percentages, min/max/avg/std dev, lengths, outlier count, top 3 patterns, PII detected and type.]**
+NARRATION: "Tab one, Summary — every stat for every column in one flat table. This is your spreadsheet-native version of the dashboard."
+
+**[SCREEN: Tab 2 'Values' — Column Name | Value | Count | Percentage, grouped and shaded by column.]**
+NARRATION: "Tab two, Values — every distinct value per column, with light shading alternating column by column so you can see where one ends and the next begins."
+
+**[SCREEN: Tab 3 'Patterns' — same layout, but for detected format patterns instead of raw values.]**
+NARRATION: "Tab three, Patterns — the same idea, but for formats. Useful for spotting the mixed-format problems we saw earlier in phone and email."
+
+**[SCREEN: Tab 4 'Column Descriptions' — two columns: Column Name, Description. Each row a full sentence, e.g. '"email" is a text column with 550 rows. 12.7% of values are missing. 87.3% are unique. Most common format "word@word.word" (92%). Appears to contain PII (email).']**
+NARRATION: "Tab four is new — Column Descriptions. One plain-English paragraph per column, written for a human, not a dashboard."
+
+**[SCREEN: Tab 5 'DQ Glossary' — Column Name | Dimension | Definition | Why It Applies Here | Confidence (%) | Suggested Checks, one row per column-dimension pair.]**
+NARRATION: "Tab five is also new — the DQ Glossary from the dashboard, flattened into one sortable, filterable table: every dimension, every column, the definition, the specific reason it applies, and the confidence score."
+
+**[SCREEN: Sort the DQ Glossary tab by Confidence descending in Excel.]**
+NARRATION: "Because it's a real spreadsheet, you can sort and filter it — for example, by confidence, to see Sohovi's strongest findings first."
+
+**CTA:** Hand this workbook to a stakeholder who doesn't even have a Sohovi login — it's the full case for why your data needs work, not just the conclusion.
+
+---
+
+---
+
+## DOMAIN VERTICALS & UNCOVERED FEATURES (Banking, Supply Chain, Free Tools, Differentiators)
+
+> **Context:** A feature/value audit turned up two real gaps: (1) no industry video exists for Banking or Supply Chain specifically — only generic or partially-related verticals (HR, Finance, E-commerce, etc.) — and (2) three live, zero-coverage free tools (PII Audit, De-Identify, Compare) plus two genuinely differentiated capabilities (date-format ambiguity resolution, the DQ Glossary's "why" reasoning) had no dedicated marketing video. The 8 scripts below close those gaps, plus one transparency video laying out exactly what's free vs. Pro vs. Business — see the "Plan Tiers" note added to several earlier videos for why that distinction matters.
+
+---
+
+### VIDEO 148 — Data Quality for Banking: Catch What Manual Review Misses
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "data quality banking", "kyc data quality check", "bank customer data cleansing", "data quality for financial services"
+**Duration:** 2 minutes
+**Dataset:** D (CustomerAccounts.csv)
+
+**Hook:** "Your core-banking export has 400 customers. 32 are missing an email on file. 30 are duplicates from your last system merge. Nobody caught it — until now."
+
+**[SCREEN: CustomerAccounts.csv open in Excel. Visible blank cells in kyc_status and email columns, a few rows with TEST-0000 account numbers.]**
+NARRATION: "This is a normal shape for a bank's customer export — and it's full of exactly the kind of gaps that fail an audit."
+
+**[SCREEN: Drop CustomerAccounts.csv onto Sohovi. Profiling completes. Column cards: kyc_status shows 10% null, customer_id shows duplicates, balance shows an outlier flagged at $999,999,999.99.]**
+NARRATION: "Drop it into Sohovi. Profiling runs entirely in your browser — for a bank, that's not a nice-to-have, that's the whole point. No customer PII ever touches a server."
+
+**[SCREEN: PII banner appears: 'PII detected in 4 columns' — email, phone, full name, account_number flagged.]**
+NARRATION: "Sohovi automatically flags every column that holds personal data — email, phone, name, account number — before you do anything else with this file."
+
+**[SCREEN: Add rules: Completeness on kyc_status at 100%, Uniqueness on customer_id, Accuracy: balance > 0. Scope the balance rule to branch_country == US.]**
+NARRATION: "Set the rules that actually matter for compliance: KYC status must be filled in, customer IDs must be unique, balances must be sane. Scope any rule to a specific branch or region if your policy varies by geography."
+
+**[SCREEN: Run DQ Check. Score 58/100. Failed Records popup open on kyc_status — the BREAKING badge clicked, showing the exact 40 missing-KYC rows.]**
+NARRATION: "Run it. 58 out of 100 — and a clickable list of exactly which 40 customers are missing KYC status, ready to hand to compliance."
+
+**[SCREEN: Switch to sohovi.com/tools/pii-audit. Drop the same file. Result: '4 PII types found — 412 instances' with a breakdown by type.]**
+NARRATION: "Before this file goes anywhere — an email to a vendor, an upload to a BI tool — run it through the free PII Scanner first. It's a second, independent check, and it takes ten seconds."
+
+**CTA:** Banking data doesn't get a second chance at "oops." Catch it before it leaves your hands — free at sohovi.com.
+
+---
+
+### VIDEO 149 — Data Quality for Supply Chain: Stop Phantom Inventory Before It Costs You
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "data quality supply chain", "inventory data accuracy", "warehouse data cleansing", "logistics data quality"
+**Duration:** 2 minutes
+**Dataset:** E (InventoryShipments.csv)
+
+**Hook:** "Your warehouse system says you shipped -40 units last Tuesday. Nobody's going to notice that until a customer complains. Here's how to catch it first."
+
+**[SCREEN: InventoryShipments.csv in Excel — a few quantity_on_hand cells visibly negative, supplier_name blank in several rows.]**
+NARRATION: "Negative inventory. Missing suppliers. A shipment dated next year. This is a normal day for a warehouse management export."
+
+**[SCREEN: Drop into Sohovi. Profiling: quantity_on_hand column flags 15 outliers, ship_date flags 6 future-dated rows.]**
+NARRATION: "Profiling finds the impossible values automatically — negative stock and future ship dates don't need a rule to be obviously wrong, but Sohovi flags them as outliers immediately."
+
+**[SCREEN: Add Accuracy rule: quantity_on_hand > 0. Add Timeliness rule: ship_date not a future date. Add Uniqueness on shipment_id.]**
+NARRATION: "Turn those into enforced rules: quantity can't be negative, ship dates can't be in the future, shipment IDs can't repeat."
+
+**[SCREEN: Scope a rule to warehouse_country == US. Add a Description: 'US warehouses use a different ERP feed — checked separately because of the integration lag.']**
+NARRATION: "If one warehouse's feed is less reliable than another, scope the rule to just that region — and write down why, so the next person doesn't have to ask."
+
+**[SCREEN: Run check. Score 61/100. Click the BREAKING badge on quantity_on_hand. Failed Records popup shows the 15 negative-stock rows. Download CSV.]**
+NARRATION: "Run it, click straight through to the 15 broken rows, download the list, and send it to whoever owns that warehouse feed."
+
+**[SCREEN: Re-run after a fix. Score climbs to 92.]**
+NARRATION: "Fix it upstream, re-run, and now your inventory numbers are something your ops team can actually plan around."
+
+**CTA:** Bad inventory data doesn't just cost money — it costs trust with every customer who ordered something you didn't actually have. Catch it free at sohovi.com.
+
+---
+
+### VIDEO 150 — Free PII Scanner: See Every Email, SSN, and API Key Before You Send a File
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "pii scanner online free", "check csv for personal information", "find ssn in spreadsheet", "scan file for api keys"
+**Duration:** 75 seconds
+**Dataset:** D (CustomerAccounts.csv)
+
+**Hook:** "You're about to email a CSV to a vendor. Do you actually know everything that's in it? Most people don't — until it's too late."
+
+**[SCREEN: sohovi.com/tools/pii-audit. Drop CustomerAccounts.csv onto the upload zone.]**
+NARRATION: "Go to Sohovi's free PII Scanner. Drop in any CSV or Excel file."
+
+**[SCREEN: Scan completes in seconds. Result panel: 'Found: 380 emails, 372 phone numbers, 1 SSN, 0 credit cards, 0 API keys' with example matches shown (masked).]**
+NARRATION: "It scans the whole file for emails, phone numbers, social security numbers, credit cards, physical addresses — even API keys and AWS secrets someone accidentally left in a column."
+
+**[SCREEN: Click the 'SSN' result. One row expands showing the masked match — '***-**-1234' — and which column and row number it's in.]**
+NARRATION: "Click any result to see exactly where it is — which column, which row — without exposing the full value on screen."
+
+**[SCREEN: Privacy banner: 'This file was never uploaded. Everything you see happened in your browser.']**
+NARRATION: "And the file never left your browser to find this out. That's not a caveat — that's the entire point of a PII scanner you can trust."
+
+**[SCREEN: sohovi.com/tools/pii-audit — 'Free. No sign-up.']**
+NARRATION: "Free, no account needed. Run it on anything before you send it. Link in description."
+
+**CTA:** Scan before you send — free at sohovi.com/tools/pii-audit.
+
+---
+
+### VIDEO 151 — De-Identify Your Data for Research in Under 2 Minutes (k-Anonymity, HIPAA Safe Harbor)
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "de-identify data online free", "anonymize csv for research", "k-anonymity tool", "hipaa safe harbor de-identification"
+**Duration:** 90 seconds
+**Dataset:** F (PatientIntake.csv)
+
+**Hook:** "Your IRB wants de-identified data. Your research partner wants a CSV. You don't have a statistician on call. Here's the free tool that does both."
+
+**[SCREEN: sohovi.com/tools/de-identify. Drop PatientIntake.csv.]**
+NARRATION: "Drop your dataset into Sohovi's free De-Identifier — built for exactly this handoff."
+
+**[SCREEN: Tool auto-detects: 'Direct identifiers: full_name, email, phone. Quasi-identifiers: date_of_birth, city, country.']**
+NARRATION: "It automatically separates direct identifiers — name, email, phone, the obvious stuff — from quasi-identifiers like date of birth and city, which can re-identify someone in combination, even if no single column does alone."
+
+**[SCREEN: Method selector per column: full_name → Suppress, email/phone → Mask, date_of_birth → Generalize to year, city → Generalize to region.]**
+NARRATION: "Choose a method per column: suppress, mask, or generalize. Generalizing date of birth down to just the birth year, for instance, keeps it useful for research while reducing re-identification risk."
+
+**[SCREEN: k-anonymity check: 'k = 3 — every combination of quasi-identifiers matches at least 3 records.']**
+NARRATION: "Run the k-anonymity check. It tells you, in plain terms, the minimum group size for any combination of the remaining quasi-identifiers — the actual measure your IRB or reviewer will ask about."
+
+**[SCREEN: Click 'Export'. Downloads the de-identified CSV plus a 'methods_log.txt' describing exactly what was done to each column.]**
+NARRATION: "Export the de-identified file and a methods log you can drop straight into your IRB appendix — it documents exactly what was masked, suppressed, or generalized, and why."
+
+**CTA:** Free, in your browser, nothing uploaded — at sohovi.com/tools/de-identify.
+
+---
+
+### VIDEO 152 — Compare Two Spreadsheets and See Exactly What Changed (Free Reconciliation Tool)
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "compare two csv files online", "spreadsheet diff tool free", "reconcile two spreadsheets"
+**Duration:** 75 seconds
+**Dataset:** Two snapshots of Dataset D (CustomerAccounts.csv) — "last month" vs "this month"
+
+**Hook:** "Two exports of the same data, one week apart. Something changed. Finding it by eye in Excel is how afternoons disappear."
+
+**[SCREEN: sohovi.com/tools/compare. Two upload zones: 'File A' and 'File B'.]**
+NARRATION: "Drop last month's export as File A, this month's as File B."
+
+**[SCREEN: Match-key selector: pick 'customer_id' as the key column.]**
+NARRATION: "Pick the column that uniquely identifies a record — here, customer_id — so Sohovi knows how to line the two files up."
+
+**[SCREEN: Four result buckets appear: 'Only in A (12)', 'Only in B (8)', 'Changed (34)', 'Unchanged (346)'.]**
+NARRATION: "Four buckets, instantly: rows that disappeared, rows that are new, rows that changed, and rows that didn't."
+
+**[SCREEN: Click 'Changed (34)'. Table shows each changed row with the old and new value side by side, changed cells highlighted.]**
+NARRATION: "Click into Changed, and see exactly which cell changed and what it changed from and to — not just that the row is different."
+
+**[SCREEN: Click 'Download' on the 'Only in A' bucket — the 12 rows that vanished between exports.]**
+NARRATION: "Download any bucket on its own. The 12 records that disappeared between exports? That's your first question for whoever owns the source system."
+
+**CTA:** Free, no sign-up — at sohovi.com/tools/compare.
+
+---
+
+### VIDEO 153 — Why Your Dates Are Secretly Wrong (Date Format Ambiguity, Explained)
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "date format ambiguity", "mm/dd vs dd/mm data quality", "date parsing errors csv"
+**Duration:** 75 seconds
+**Dataset:** A (CustomerDB.csv, with a date column added)
+
+**Hook:** "03/04/2024. Is that March 4th, or April 3rd? Your spreadsheet doesn't know. Most tools just guess — and guess wrong, silently."
+
+**[SCREEN: A simple two-column CSV: id, signup_date — values like '03/04/2024', '15/06/2024', '07/22/2024' mixed together.]**
+NARRATION: "Look at this column. Some values, like 15/06/2024, are only valid one way — day first, because there's no 15th month. Others, like 03/04/2024, could mean either."
+
+**[SCREEN: Upload to Sohovi. Profiling dashboard, signup_date column expanded. 'Detected Date Formats' section: 'DD/MM/YYYY — 64% of values — day-first confirmed' with a confidence bar.]**
+NARRATION: "Sohovi looks at every value in the column — not just the first one — and uses the unambiguous ones, like 15/06, to statistically resolve the ambiguous ones. It tells you 'day-first confirmed,' not just 'we assumed.'"
+
+**[SCREEN: Second pattern row: 'MM/DD/YYYY — 12% of values — mixed format'. Amber warning: 'Mixed date formats detected — this is a data quality issue.']**
+NARRATION: "And if a chunk of the column genuinely doesn't match the dominant format, it tells you that too — because that's not a parsing nuance, that's a real bug somewhere upstream."
+
+**[SCREEN: Add a Conformity rule using the detected format_check template, auto-filled.]**
+NARRATION: "Turn the detected format straight into an enforced rule — Sohovi pre-fills the template for you."
+
+**CTA:** Stop guessing what a date means. Free at sohovi.com.
+
+---
+
+### VIDEO 154 — Sohovi Doesn't Just Flag Problems — It Explains Them (DQ Glossary)
+
+**Platform:** YouTube / Blog / Instagram
+**SEO Target:** "data quality dimensions explained", "why does this dq rule apply", "data quality glossary tool"
+**Duration:** 90 seconds
+**Dataset:** A (CustomerDB.csv)
+
+**Hook:** "Most data quality tools tell you WHAT broke. Almost none tell you WHY a rule applies to that column in the first place. Here's the one that does."
+
+**[SCREEN: Generic mockup, text only: a bare rule list — 'email — not_null — 95%' — no explanation.]**
+NARRATION: "Most tools hand you a rule builder and a column list, and leave you to figure out what to check and why."
+
+**[SCREEN: Sohovi Profiling Dashboard, CustomerDB.csv. Column cards each show small colored pills under the name: 'completeness', 'validity' for email.]**
+NARRATION: "Sohovi shows you which dimensions actually apply to each column — before you write a single rule."
+
+**[SCREEN: Expand the 'email' card. Scroll to 'DQ Glossary — why these dimensions apply'. Validity block: a definition sentence, then a bold rationale: '8% of values don't match the standard email pattern found in this column.']**
+NARRATION: "Then it explains itself. Not a generic definition — the actual reason, grounded in what it found in your file. 8% of your emails don't match the pattern it detected. That's why Validity is flagged here, specifically."
+
+**[SCREEN: Confidence shown: '94% confidence'. Suggested checks: 'not null, regex match'.]**
+NARRATION: "A confidence score, and the specific checks it'd suggest — so you're making an informed decision, not a guess."
+
+**[SCREEN: Download Excel. 'DQ Glossary' tab — the same explanations, every column, in one sortable spreadsheet.]**
+NARRATION: "Export the whole thing as a spreadsheet, and you've got a document you can hand to a stakeholder who's never opened Sohovi — the case for why your data needs work, not just the verdict."
+
+**CTA:** See it explain itself — free at sohovi.com.
+
+---
+
+### VIDEO 155 — Free vs Pro vs Business: What You Actually Get at Each Tier
+
+**Platform:** YouTube / Blog / Website (pricing page embed)
+**SEO Target:** "sohovi pricing", "data quality tool free plan", "sohovi pro vs business"
+**Duration:** 2 minutes
+**Dataset:** None
+
+**Hook:** "Most pricing pages bury what's actually free. Here's exactly what you get at each tier — no asterisks."
+
+**[SCREEN: Sohovi pricing page, three columns: Free / Pro / Business.]**
+NARRATION: "Let's be precise about this, because it matters when you're deciding what to actually build your workflow around."
+
+**[SCREEN: Free column highlighted. List: 5 data assets, 5 rules per asset, 1 business unit, 7-day run history, full profiling, DQ Glossary, manual rule builder across all 10 dimensions, plain-English AI rule builder, DQ scoring, BREAKING records with download, 5-sheet profiling Excel export, schema-change detection, all 12 free standalone tools.]**
+NARRATION: "Free isn't a trial — it's a real, permanent tier. Five assets, five rules each, profiling, the DQ Glossary, manual and plain-English rule building, scoring, and the full profiling export. All of it, forever, no card required."
+
+**[SCREEN: Pro column highlighted. List: unlimited assets and rules, 90-day history, automatic PII detection in profiling, bulk AI rule suggestions across your whole file, Alerts (score-drop, schema-change), reusable Workflows, PDF/Excel run reports.]**
+NARRATION: "Pro removes the ceiling — unlimited assets and rules — and adds what matters once you're monitoring data on an ongoing basis: automatic PII detection, AI suggestions across your whole file at once, alerts, reusable workflows, and exportable run reports."
+
+**[SCREEN: Business column highlighted. List: unlimited business units and history, Sandbox (test before you save), Remediation workflow, live connectors (Google Sheets, Airtable, cloud storage, REST API).]**
+NARRATION: "Business is for teams running this in production: a Sandbox to test rules safely, a guided remediation workflow, and direct connectors — Google Sheets, Airtable, S3, REST APIs — so nobody's exporting a CSV by hand every time."
+
+**[SCREEN: Closing text: "Try the real product free. Upgrade only when you hit a real ceiling."]**
+NARRATION: "Try the real product on the free plan. Upgrade when you actually hit one of these ceilings — not before."
+
+**CTA:** Start free at sohovi.com — no credit card, no expiration.
+
+---
+
+*End of Sohovi Video Scripts — 155 videos total*
+*(142 original scripts + 5 rule-description/scope/breaking/glossary videos + 8 domain-vertical & uncovered-feature videos)*

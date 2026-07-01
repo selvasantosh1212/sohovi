@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { parseFile } from "@/workers/worker-bridge";
 import { useFileStore } from "@/store/fileStore";
+import { useGlobalScopeFilterStore } from "@/store/globalScopeFilterStore";
 
 export type ParseStatus = "idle" | "parsing" | "done" | "error";
 
@@ -22,10 +23,12 @@ export function useFileWorker(): UseFileWorkerResult {
   const [error, setError] = useState<string | null>(null);
   const setData = useFileStore((s) => s.setData);
   const clearData = useFileStore((s) => s.clear);
+  const clearGlobalScope = useGlobalScopeFilterStore((s) => s.clear);
 
   const startParsing = useCallback(
     async (file: File) => {
       clearData();
+      clearGlobalScope();
       setStatus("parsing");
       setProgress(0);
       setRowsProcessed(0);
@@ -45,16 +48,17 @@ export function useFileWorker(): UseFileWorkerResult {
         setStatus("error");
       }
     },
-    [setData, clearData]
+    [setData, clearData, clearGlobalScope]
   );
 
   const reset = useCallback(() => {
     clearData();
+    clearGlobalScope();
     setStatus("idle");
     setProgress(0);
     setRowsProcessed(0);
     setError(null);
-  }, [clearData]);
+  }, [clearData, clearGlobalScope]);
 
   return { status, progress, rowsProcessed, error, startParsing, reset };
 }

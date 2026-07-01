@@ -25,7 +25,7 @@ export default async function CatalogsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.025em]" style={{ color: "#0A0A0F" }}>Catalogs</h1>
@@ -50,7 +50,7 @@ export default async function CatalogsPage() {
           actionHref="/dashboard/catalogs/new"
         />
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           {catalogsWithCounts.map((c) => <CatalogCard key={c.id} catalog={c} />)}
         </div>
       )}

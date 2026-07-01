@@ -19,10 +19,14 @@ interface FileState {
   data: ParsedData | null;
   /** Schema diff computed when a profiling snapshot is saved (new vs previous column_schema) */
   schemaDiff: SchemaDiff | null;
+  /** Workflow that was active when the file was uploaded (carried through to save-to-history) */
+  workflowId: string | null;
   /** Set parsed file data (called after file-parser worker completes) */
   setData: (data: ParsedData) => void;
   /** Store the schema diff returned from saveProfilingSnapshot */
   setSchemaDiff: (diff: SchemaDiff | null) => void;
+  /** Store the active workflow ID (set when upload page is opened with ?workflowId=) */
+  setWorkflowId: (workflowId: string | null) => void;
   /** Clear all file data (e.g. when navigating away or re-uploading) */
   clear: () => void;
   /**
@@ -36,9 +40,11 @@ interface FileState {
 export const useFileStore = create<FileState>()((set) => ({
   data: null,
   schemaDiff: null,
+  workflowId: null,
   setData: (data) => set({ data }),
   setSchemaDiff: (diff) => set({ schemaDiff: diff }),
-  clear: () => set({ data: null, schemaDiff: null }),
+  setWorkflowId: (workflowId) => set({ workflowId }),
+  clear: () => set({ data: null, schemaDiff: null, workflowId: null }),
   reapplyHeader: (rowIndex: number) =>
     set((state) => {
       if (!state.data || !state.data.previewRows || rowIndex === 0) return state;

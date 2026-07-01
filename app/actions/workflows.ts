@@ -4,12 +4,14 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import type { Workflow } from "@/types/app.types";
+import type { ScopeCondition } from "@/types/dq.types";
 
 export interface WorkflowInput {
   asset_id: string;
   name: string;
   description?: string | null;
   column_mappings?: Record<string, string>;
+  default_scope_conditions?: ScopeCondition[];
 }
 
 export async function getWorkflows(assetId?: string): Promise<Workflow[]> {
@@ -47,6 +49,7 @@ export async function createWorkflow(input: WorkflowInput): Promise<Workflow> {
       ...input,
       clerk_user_id: userId,
       column_mappings: input.column_mappings ?? {},
+      default_scope_conditions: input.default_scope_conditions ?? [],
       is_active: true,
       run_count: 0,
     })

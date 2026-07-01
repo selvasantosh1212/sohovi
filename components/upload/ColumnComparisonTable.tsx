@@ -68,23 +68,23 @@ export function ColumnComparisonTable({
         </div>
       )}
 
-      <div className="rounded-xl border border-slate-100 overflow-hidden">
+      <div className="rounded-md border-2 border-slate-400 shadow-sm overflow-hidden">
         <div className="max-h-64 overflow-y-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 sticky top-0">
+          <table className="w-full text-sm border-collapse">
+            <thead className="bg-slate-200 sticky top-0 border-b-2 border-slate-400">
               <tr>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-slate-700 uppercase tracking-wider border-r border-slate-300">
                   Column
                 </th>
-                <th className="text-left px-4 py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-24">
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-slate-700 uppercase tracking-wider w-24">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-200">
               {diff.added.map((col, i) => (
                 <tr key={`added-${col || i}`} className="bg-emerald-50">
-                  <td className="px-4 py-2 font-mono text-xs text-emerald-800">{col}</td>
+                  <td className="px-4 py-2 font-mono text-xs text-emerald-800 border-r border-slate-200">{col}</td>
                   <td className="px-4 py-2">
                     <span className="inline-flex items-center gap-1 text-xs text-emerald-700 font-medium">
                       <Plus className="w-3 h-3" />Added
@@ -94,7 +94,7 @@ export function ColumnComparisonTable({
               ))}
               {diff.removed.map((col, i) => (
                 <tr key={`removed-${col || i}`} className="bg-red-50">
-                  <td className="px-4 py-2 font-mono text-xs text-red-800">{col}</td>
+                  <td className="px-4 py-2 font-mono text-xs text-red-800 border-r border-slate-200">{col}</td>
                   <td className="px-4 py-2">
                     <span className="inline-flex items-center gap-1 text-xs text-red-700 font-medium">
                       <Minus className="w-3 h-3" />Removed
@@ -104,7 +104,7 @@ export function ColumnComparisonTable({
               ))}
               {diff.unchanged.map((col, i) => (
                 <tr key={`unchanged-${col || i}`}>
-                  <td className="px-4 py-2 font-mono text-xs text-slate-600">{col}</td>
+                  <td className="px-4 py-2 font-mono text-xs text-slate-600 border-r border-slate-200">{col}</td>
                   <td className="px-4 py-2">
                     <span className="inline-flex items-center gap-1 text-xs text-slate-400">
                       <Equal className="w-3 h-3" />Same

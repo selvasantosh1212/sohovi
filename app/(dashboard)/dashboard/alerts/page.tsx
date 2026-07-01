@@ -29,7 +29,7 @@ export default async function AlertsPage() {
   const totalUnread = allEvents.filter((e) => !e.is_read).length;
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-8 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>

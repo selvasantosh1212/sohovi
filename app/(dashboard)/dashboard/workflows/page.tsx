@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, Settings2, Clock } from "lucide-react";
 import { getWorkflows } from "@/app/actions/workflows";
 import { PlanGate } from "@/components/shared/PlanGate";
+import { WorkflowDeleteButton } from "@/components/workflows/WorkflowDeleteButton";
 
 export const metadata = { title: "Workflows" };
 
@@ -9,7 +10,7 @@ export default async function WorkflowsPage() {
   const workflows = await getWorkflows();
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.025em]" style={{ color: "#0A0A0F" }}>Workflows</h1>
@@ -48,13 +49,15 @@ export default async function WorkflowsPage() {
       ) : (
         <div className="space-y-3">
           {workflows.map((wf) => (
-            <Link
+            <div
               key={wf.id}
-              href={`/dashboard/workflows/${wf.id}`}
-              className="block rounded-[16px] border border-[#EEF0F3] bg-white px-5 py-4 hover:shadow-sm transition-shadow duration-150"
+              className="flex items-center rounded-[16px] border border-[#EEF0F3] bg-white hover:shadow-sm transition-shadow duration-150"
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 min-w-0">
+              <Link
+                href={`/dashboard/workflows/${wf.id}`}
+                className="flex-1 min-w-0 flex items-center gap-4 px-5 py-4"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="rounded-lg p-2 shrink-0" style={{ background: "rgba(26,26,46,0.06)" }}>
                     <Settings2 className="w-4 h-4" style={{ color: "#1A1A2E" }} />
                   </div>
@@ -86,8 +89,11 @@ export default async function WorkflowsPage() {
                     {Object.keys(wf.column_mappings ?? {}).length !== 1 ? "s" : ""}
                   </span>
                 </div>
+              </Link>
+              <div className="pr-3">
+                <WorkflowDeleteButton workflowId={wf.id} workflowName={wf.name} />
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

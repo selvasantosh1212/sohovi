@@ -41,7 +41,7 @@ export default async function AssetDetailPage({
   const hasScore = asset.latest_dq_score !== null && asset.latest_dq_score !== undefined;
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
       {/* Breadcrumb + header */}
       <div>
         <Link

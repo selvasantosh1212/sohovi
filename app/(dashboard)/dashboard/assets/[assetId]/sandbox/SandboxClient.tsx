@@ -12,11 +12,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Play, Save, Upload, BookOpen, CheckCircle, XCircle } from "lucide-react";
+import { Play, Save, Upload, BookOpen, CheckCircle, XCircle, X } from "lucide-react";
 import Link from "next/link";
 import type { DQDimension } from "@/types/app.types";
-import type { RuleConfig, RuleResult } from "@/types/dq.types";
+import type { RuleConfig, RuleResult, ScopeCondition, ScopeOperator } from "@/types/dq.types";
 import { getRuleExample } from "@/lib/dq-rule-examples";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { FailedRecordsTable } from "@/components/scoring/FailedRecordsTable";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+const SCOPE_OPERATORS: { value: ScopeOperator; label: string }[] = [
+  { value: "==", label: "equals" },
+  { value: "!=", label: "not equals" },
+  { value: ">", label: "greater than" },
+  { value: ">=", label: "greater or equal" },
+  { value: "<", label: "less than" },
+  { value: "<=", label: "less or equal" },
+  { value: "in", label: "in (comma-separated)" },
+  { value: "contains", label: "contains" },
+];
 
 const DIMENSIONS: DQDimension[] = [
   "completeness", "validity", "accuracy", "uniqueness",
@@ -39,7 +53,7 @@ const RULE_TYPES: Record<DQDimension, { value: string; label: string; params?: s
   accuracy: [
     { value: "range_check", label: "Range Check", params: ["min", "max"] },
     { value: "positive_check", label: "Positive Check" },
-    { value: "cross_field_comparison", label: "Cross-Field Compare", params: ["col_b", "operator"] },
+    { value: "cross_field_comparison", label: "Cross-Field Compare", params: ["reference_column", "operator"] },
   ],
   uniqueness: [
     { value: "unique_column", label: "Unique Column" },
@@ -90,7 +104,6 @@ function paramHint(param: string): string {
     reference_column: "column name",
     if_column: "condition column",
     if_value: "condition value",
-    col_b: "column to compare",
     operator: ">= <= == > <",
     template: "email, phone, date_iso, uuid",
   };
@@ -105,9 +118,13 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
   const [columnName, setColumnName] = useState(columnSchema[0] ?? "");
   const [threshold, setThreshold] = useState("95");
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
+  const [description, setDescription] = useState("");
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<RuleResult | null>(null);
   const [saving, setSaving] = useState(false);
+  const [scopeOpen, setScopeOpen] = useState(false);
+  const [scopeConditions, setScopeConditions] = useState<ScopeCondition[]>([]);
+  const [showFailures, setShowFailures] = useState(false);
 
   const columns = fileData?.headers ?? columnSchema;
 
@@ -120,6 +137,7 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
     setDimension(d);
     setRuleType(RULE_TYPES[d]?.[0]?.value ?? "");
     setParamValues({});
+    setScopeConditions([]);
     setResult(null);
   }
 
@@ -147,9 +165,11 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
     const rule: RuleConfig = {
       id: "__sandbox__",
       column_name: columnName || null,
+      description: description.trim() || null,
       dimension,
       rule_type: ruleType,
       parameters,
+      scope_conditions: scopeConditions,
       threshold: thresholdNum,
       weight: 1,
       is_active: true,
@@ -170,7 +190,7 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
     } finally {
       setRunning(false);
     }
-  }, [fileData, dimension, ruleType, columnName, threshold, paramValues, requiredParams, assetId]);
+  }, [fileData, dimension, ruleType, columnName, threshold, paramValues, requiredParams, scopeConditions, description, assetId]);
 
   async function handleSaveRule() {
     const thresholdNum = parseFloat(threshold) / 100;
@@ -191,9 +211,11 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
       await createRule({
         asset_id: assetId,
         column_name: columnName || null,
+        description: description.trim() || null,
         dimension,
         rule_type: ruleType,
         parameters,
+        scope_conditions: scopeConditions,
         threshold: thresholdNum,
       });
       toast.success("Rule saved to asset");
@@ -290,6 +312,112 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
           />
         </div>
 
+        {/* Description */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-slate-600">Description (optional)</label>
+          <textarea
+            rows={2}
+            value={description}
+            onChange={(e) => { setDescription(e.target.value); setResult(null); }}
+            placeholder="Notes about why this rule exists or what it checks…"
+            className="flex w-full rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none"
+          />
+        </div>
+
+        {/* Scope (optional) */}
+        <div className="space-y-1.5">
+          <button
+            type="button"
+            onClick={() => setScopeOpen((v) => !v)}
+            className="flex w-full items-center justify-between text-xs font-medium text-slate-600 hover:text-slate-800"
+          >
+            <span>
+              Scope (optional){scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
+            </span>
+            <span className="text-slate-400">{scopeOpen ? "−" : "+"}</span>
+          </button>
+          {scopeOpen && (
+            <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+              <p className="text-[11px] text-slate-500">
+                Only evaluate rows matching all conditions below (e.g. status == Approved).
+              </p>
+              {scopeConditions.map((cond, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <Select
+                    value={cond.column}
+                    onValueChange={(v) =>
+                      setScopeConditions((prev) =>
+                        prev.map((c, idx) => (idx === i ? { ...c, column: v ?? "" } : c))
+                      )
+                    }
+                  >
+                    <SelectTrigger className="h-8 text-xs flex-1">
+                      <SelectValue placeholder="Column…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columns.map((col) => (
+                        <SelectItem key={col} value={col}>
+                          {col}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={cond.operator}
+                    onValueChange={(v) =>
+                      setScopeConditions((prev) =>
+                        prev.map((c, idx) => (idx === i ? { ...c, operator: (v ?? "==") as ScopeOperator } : c))
+                      )
+                    }
+                  >
+                    <SelectTrigger className="h-8 text-xs w-[88px] shrink-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SCOPE_OPERATORS.map((op) => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <input
+                    type="text"
+                    className="flex h-8 w-24 rounded-lg border border-input bg-transparent px-2 py-1 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                    placeholder="Value"
+                    value={cond.value}
+                    onChange={(e) =>
+                      setScopeConditions((prev) =>
+                        prev.map((c, idx) => (idx === i ? { ...c, value: e.target.value } : c))
+                      )
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setScopeConditions((prev) => prev.filter((_, idx) => idx !== i))}
+                    className="shrink-0 text-slate-400 hover:text-red-500"
+                    aria-label="Remove condition"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  setScopeConditions((prev) => [
+                    ...prev,
+                    { column: columns[0] ?? "", operator: "==", value: "" },
+                  ])
+                }
+                className="text-[11px] font-medium text-[#1E3A5F] hover:underline"
+              >
+                + Add condition
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="flex gap-2">
           <button
             onClick={handleRun}
@@ -348,10 +476,19 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
                 {Math.round(result.score * 100)}
               </div>
               <div>
-                <p className={`text-lg font-bold ${result.status === "pass" ? "text-emerald-600" : "text-red-600"}`}>
-                  {result.status === "pass" ? "PASS" : "FAIL"}
-                </p>
-                <p className="text-sm text-slate-500">{result.message}</p>
+                <StatusBadge
+                  status={result.status}
+                  className="text-sm px-2.5 py-1"
+                  onClick={
+                    result.failed_indices.length > 0
+                      ? () => setShowFailures(true)
+                      : undefined
+                  }
+                />
+                {result.description && (
+                  <p className="text-sm text-slate-700 mt-1">{result.description}</p>
+                )}
+                <p className="text-sm text-slate-500 mt-1">{result.message}</p>
               </div>
             </div>
 
@@ -369,44 +506,26 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
               ))}
             </div>
 
-            {/* Sample failed rows */}
-            {result.failed_indices.length > 0 && fileData && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                  Sample failed rows (first {Math.min(5, result.failed_indices.length)})
-                </p>
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="bg-slate-50 border-b border-slate-200">
-                        <th className="px-2 py-1.5 text-left text-slate-500 font-medium">#</th>
-                        {fileData.headers.slice(0, 4).map((h) => (
-                          <th key={h} className={`px-2 py-1.5 text-left font-medium ${h === columnName ? "text-red-600 bg-red-50/50" : "text-slate-500"}`}>
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {result.failed_indices.slice(0, 5).map((rowIdx) => (
-                        <tr key={rowIdx} className="border-b border-slate-100">
-                          <td className="px-2 py-1.5 text-slate-400">{rowIdx + 1}</td>
-                          {fileData.headers.slice(0, 4).map((h, ci) => (
-                            <td key={h} className={`px-2 py-1.5 ${fileData.headers[ci] === columnName ? "text-red-600 font-medium" : "text-slate-700"}`}>
-                              {fileData.rows[rowIdx]?.[ci] ?? <span className="text-slate-300 italic">null</span>}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
     </div>
+
+    {/* Failed records popup */}
+    <Dialog open={showFailures} onOpenChange={setShowFailures}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Failed Records</DialogTitle>
+        </DialogHeader>
+        {result && fileData && (
+          <FailedRecordsTable
+            ruleResults={[result]}
+            headers={fileData.headers}
+            rows={fileData.rows}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
 
     {/* Rule Examples Panel */}
     {example && (

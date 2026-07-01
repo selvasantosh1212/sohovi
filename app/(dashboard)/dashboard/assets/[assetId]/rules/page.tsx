@@ -1,15 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, Play, Wand2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Plus, Play, AlertTriangle } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
 import { getRules } from "@/app/actions/rules";
+import { getWorkflows } from "@/app/actions/workflows";
 import { DimensionGroupAccordion } from "@/components/rules/DimensionGroupAccordion";
-import { RuleSuggestionsPanel } from "@/components/rules/RuleSuggestionsPanel";
-import { PlanGate } from "@/components/shared/PlanGate";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
 import { RunDQButton } from "@/components/rules/RunDQButton";
 import { DataPreviewTable } from "@/components/rules/DataPreviewTable";
-import { QuickSetupCard } from "@/components/rules/QuickSetupCard";
+import { GlobalScopeFilterPanel } from "@/components/rules/GlobalScopeFilterPanel";
 import type { DQRule } from "@/types/app.types";
 
 export async function generateMetadata({
@@ -28,11 +27,18 @@ export default async function RulesPage({
   params: Promise<{ assetId: string }>;
 }) {
   const { assetId } = await params;
-  const [asset, rules] = await Promise.all([getAsset(assetId), getRules(assetId)]);
+  const [asset, rules, workflows] = await Promise.all([
+    getAsset(assetId),
+    getRules(assetId),
+    getWorkflows(assetId),
+  ]);
 
   if (!asset) notFound();
 
   const columnNames = asset.column_schema ?? [];
+  const defaultScopeWorkflow = workflows.find(
+    (w) => w.is_active && w.default_scope_conditions?.length > 0
+  );
 
   // Build existing rule key set for deduplication in suggestions panel
   const existingRuleKeys = new Set<string>(
@@ -45,10 +51,9 @@ export default async function RulesPage({
   );
   const orphanedRuleIds = orphanedRules.map((r: DQRule) => r.id);
   const orphanedColumns = [...new Set(orphanedRules.map((r: DQRule) => r.column_name as string))];
-  const hasFewRules = rules.filter((r: DQRule) => r.is_active).length < 3;
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-7xl 2xl:max-w-[1800px] mx-auto">
       {/* Header */}
       <div>
         <Link
@@ -67,18 +72,20 @@ export default async function RulesPage({
         </div>
       </div>
 
-      {/* Smart Start card — shown when profiling data exists and rules are sparse */}
-      <QuickSetupCard
-        assetId={assetId}
-        existingRuleKeys={existingRuleKeys}
-        hasFewRules={hasFewRules}
-      />
-
       {/* Data preview table */}
       <DataPreviewTable
         assetId={assetId}
         columnNames={columnNames}
+        rules={rules}
         existingRuleKeys={Array.from(existingRuleKeys)}
+      />
+
+      {/* Global scope filter — restricts the entire DQ run below, leaves profiling unaffected */}
+      <GlobalScopeFilterPanel
+        assetId={assetId}
+        columnNames={columnNames}
+        defaultScopeConditions={defaultScopeWorkflow?.default_scope_conditions}
+        defaultScopeSourceName={defaultScopeWorkflow?.name}
       />
 
       {/* Main two-column layout */}
@@ -110,9 +117,10 @@ export default async function RulesPage({
           <DimensionGroupAccordion rules={rules} assetId={assetId} orphanedRuleIds={orphanedRuleIds} columnNames={columnNames} />
         </div>
 
-        {/* Right: add rule + suggestions (1/3 width) */}
+        {/* Right: add rule (1/3 width). AI suggestions live inline in the
+            Data Preview table above (click a column → AI Suggestions) —
+            no separate copy of that panel here. */}
         <div className="space-y-6">
-          {/* Rule Builder — shown first for quick access */}
           <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-3">
             <div className="flex items-center gap-2">
               <Plus className="w-4 h-4 text-slate-400" />
@@ -126,29 +134,11 @@ export default async function RulesPage({
               <RuleBuilderPanel assetId={assetId} columnNames={columnNames} existingRules={rules} />
             )}
           </div>
-
-          {/* AI Rule Identifier */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-3">
-            <div className="flex items-center gap-2">
-              <Wand2 className="w-4 h-4 text-violet-500" />
-              <h2 className="text-sm font-semibold text-slate-700">AI Rule Identifier</h2>
-            </div>
-            <PlanGate
-              minPlan="pro"
-              feature="AI Rule Suggestions"
-              description="AI-powered rule suggestions are available on the Pro plan. Upgrade to get suggested rules based on your column profiles."
-            >
-              <RuleSuggestionsPanel
-                assetId={assetId}
-                existingRuleKeys={existingRuleKeys}
-              />
-            </PlanGate>
-          </div>
         </div>
       </div>
 
-      {/* Sticky action bar — stays visible while scrolling through rules */}
-      <div className="sticky bottom-0 -mx-4 md:-mx-6 px-4 md:px-6 py-3 bg-white/90 backdrop-blur-sm border-t border-slate-200 flex items-center justify-between">
+      {/* Floating action bar — stays visible while scrolling through rules */}
+      <div className="sticky bottom-4 rounded-xl border border-slate-200 bg-white/95 backdrop-blur-sm shadow-sm px-4 py-3 flex items-center justify-between">
         <p className="text-xs text-slate-500">
           {rules.filter((r: DQRule) => r.is_active).length} active rule
           {rules.filter((r: DQRule) => r.is_active).length !== 1 ? "s" : ""} ready to run

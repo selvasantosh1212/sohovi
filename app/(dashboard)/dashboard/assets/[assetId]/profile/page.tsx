@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ListChecks, UploadCloud } from "lucide-react";
 import { ProfilingDashboard } from "@/components/profiling/ProfilingDashboard";
 import { SchemaDriftBanner } from "@/components/profiling/SchemaDriftBanner";
+import { ScopePreviewCard } from "@/components/profiling/ScopePreviewCard";
 import { useProfilingStore } from "@/store/profilingStore";
 import { useFileStore } from "@/store/fileStore";
 import { saveProfilingSnapshot } from "@/app/actions/runs";
@@ -67,7 +68,7 @@ export default function AssetProfilePage() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-6 max-w-7xl 2xl:max-w-[1800px] mx-auto">
       <div>
         <Link
           href={`/dashboard/assets/${assetId}/upload`}
@@ -91,8 +92,7 @@ export default function AssetProfilePage() {
             </Link>
             <Link
               href={`/dashboard/assets/${assetId}/rules`}
-              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg transition-opacity hover:opacity-90"
-              style={{ background: "#1E3A5F", color: "#fff" }}
+              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90"
             >
               <ListChecks className="w-4 h-4" />Run DQ Check
             </Link>
@@ -106,6 +106,8 @@ export default function AssetProfilePage() {
           assetId={assetId}
         />
       )}
+
+      <ScopePreviewCard assetId={assetId} columnNames={fileData.headers} />
 
       <ProfilingDashboard
         profiles={profiles}

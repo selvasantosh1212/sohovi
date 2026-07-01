@@ -4,10 +4,12 @@ import type { RuleResult } from "@/types/dq.types";
 import { Tooltip } from "@/components/ui/tooltip";
 import { DQ_DIMENSION_DESCRIPTIONS } from "@/lib/dq-dimension-descriptions";
 import { getFriendlyMessage, renderFriendly } from "@/lib/dq-engine/friendly-messages";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface Props {
   ruleResults: RuleResult[];
   columnName: string | null; // null = show all
+  onOpenFailures?: (ruleId: string) => void;
 }
 
 const DIMENSION_BADGE: Record<string, string> = {
@@ -23,7 +25,7 @@ const DIMENSION_BADGE: Record<string, string> = {
   precision:    "bg-pink-100 text-pink-700",
 };
 
-export function ScoreTransparencyPanel({ ruleResults, columnName }: Props) {
+export function ScoreTransparencyPanel({ ruleResults, columnName, onOpenFailures }: Props) {
   const filtered = columnName
     ? ruleResults.filter((r) => r.column_name === columnName)
     : ruleResults;
@@ -74,6 +76,9 @@ export function ScoreTransparencyPanel({ ruleResults, columnName }: Props) {
                     </span>
                   </Tooltip>
                 </div>
+                {r.description && (
+                  <p className="text-xs text-slate-600 mt-1 leading-snug">{r.description}</p>
+                )}
                 {!pass && (() => {
                   const friendly = getFriendlyMessage(r);
                   return friendly ? (
@@ -98,15 +103,10 @@ export function ScoreTransparencyPanel({ ruleResults, columnName }: Props) {
                 >
                   {pct}%
                 </span>
-                <span
-                  className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                    pass
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-red-50 text-red-600"
-                  }`}
-                >
-                  {pass ? "PASS" : "FAIL"}
-                </span>
+                <StatusBadge
+                  status={r.status}
+                  onClick={onOpenFailures ? () => onOpenFailures(r.rule_id) : undefined}
+                />
               </div>
             </div>
 

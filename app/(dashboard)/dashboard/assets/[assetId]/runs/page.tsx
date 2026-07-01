@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, Database, ScanSearch } from "lucide-react";
+import { ArrowLeft, Clock, Database, ScanSearch, Filter } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
 import { getRuns } from "@/app/actions/runs";
 import { ScoreBadge, ScoreBar } from "@/components/shared/ScoreBadge";
 import { ScoreTrendChart } from "@/components/trends/ScoreTrendChart";
 import { RunComparisonTable } from "@/components/trends/RunComparisonTable";
 import { AnomalyFlagCard } from "@/components/trends/AnomalyFlagCard";
+import { Tooltip } from "@/components/ui/tooltip";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 
 export async function generateMetadata({
   params,
@@ -29,7 +31,7 @@ export default async function RunsPage({
   if (!asset) notFound();
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
       <div>
         <Link
           href={`/dashboard/assets/${assetId}`}
@@ -89,6 +91,14 @@ export default async function RunsPage({
                         <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
                           Schema changed
                         </span>
+                      )}
+                      {run.scope_conditions && run.scope_conditions.length > 0 && (
+                        <Tooltip content={formatScopeConditions(run.scope_conditions)}>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 cursor-help">
+                            <Filter className="w-2.5 h-2.5" />
+                            Scoped
+                          </span>
+                        </Tooltip>
                       )}
                       <span
                         className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${

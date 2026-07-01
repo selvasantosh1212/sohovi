@@ -14,10 +14,13 @@ export async function generateMetadata({
 
 export default async function AssetUploadPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ assetId: string }>;
+  searchParams: Promise<{ workflowId?: string }>;
 }) {
   const { assetId } = await params;
+  const { workflowId } = await searchParams;
   const asset = await getAsset(assetId);
   if (!asset) notFound();
 
@@ -27,6 +30,7 @@ export default async function AssetUploadPage({
         assetId={assetId}
         assetName={asset.name}
         previousSchema={asset.column_schema ?? null}
+        workflowId={workflowId ?? null}
       />
     </div>
   );
