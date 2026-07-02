@@ -60,7 +60,7 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
   const msg = e.data;
   if (msg.type !== "RUN") return;
 
-  const { rows, headers, rules, asset_id, scope_conditions_global } = msg.payload;
+  const { rows, headers, rules, asset_id } = msg.payload;
 
   try {
     const activeRules = rules
@@ -71,15 +71,9 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
       });
 
-    // Global scope filter restricts the whole run to a row subset, applied
-    // once up front — every rule (and its own per-rule scope, if any) then
-    // operates on top of this subset instead of the full dataset.
-    const isGloballyScoped = (scope_conditions_global?.length ?? 0) > 0;
-    const globalScopeIndices = isGloballyScoped
-      ? applyScopeFilter(rows, headers, scope_conditions_global!)
-      : rows.map((_, i) => i);
-    const globalRows = isGloballyScoped ? globalScopeIndices.map((i) => rows[i]) : rows;
-
+    // Dataset-wide scoping happens upstream now (the working dataset in
+    // fileStore is already filtered before it ever reaches this worker) —
+    // only per-rule scope_conditions are applied here.
     const ruleResults: RuleResult[] = [];
 
     for (let i = 0; i < activeRules.length; i++) {
@@ -99,20 +93,19 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
       try {
         const evalFn = EVALUATORS[rule.dimension];
         if (!evalFn) {
-          ruleResults.push(makeSkipped(rule, globalRows.length, `Unknown dimension: ${rule.dimension}`));
+          ruleResults.push(makeSkipped(rule, rows.length, `Unknown dimension: ${rule.dimension}`));
           continue;
         }
 
-        // Apply per-rule scope conditions (if any) on top of the globally-scoped
-        // subset. inScopeIndices are indices into globalRows — failedIndices
-        // returned by evalFn are relative to the scoped slice and must be
-        // remapped back through inScopeIndices AND globalScopeIndices to reach
-        // ORIGINAL dataset row numbers.
+        // Apply per-rule scope conditions (if any). inScopeIndices are indices
+        // into rows — failedIndices returned by evalFn are relative to the
+        // scoped slice and must be remapped back through inScopeIndices to
+        // reach original dataset row numbers.
         const isScoped = rule.scope_conditions?.length > 0;
         const inScopeIndices = isScoped
-          ? applyScopeFilter(globalRows, headers, rule.scope_conditions)
-          : globalRows.map((_, i) => i);
-        const scopedRows = isScoped ? inScopeIndices.map((i) => globalRows[i]) : globalRows;
+          ? applyScopeFilter(rows, headers, rule.scope_conditions)
+          : rows.map((_, i) => i);
+        const scopedRows = isScoped ? inScopeIndices.map((i) => rows[i]) : rows;
 
         // Extract column values (null if dataset-level rule)
         const colIdx = rule.column_name ? headers.indexOf(rule.column_name) : -1;
@@ -120,10 +113,9 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
           colIdx >= 0 ? scopedRows.map((r) => r[colIdx] ?? null) : [];
 
         const result = evalFn(colValues, scopedRows, headers, rule);
-        const remappedFailedIndices = result.failedIndices.map((i) => {
-          const globalIdx = isScoped ? inScopeIndices[i] : i;
-          return isGloballyScoped ? globalScopeIndices[globalIdx] : globalIdx;
-        });
+        const remappedFailedIndices = result.failedIndices.map((i) =>
+          isScoped ? inScopeIndices[i] : i
+        );
 
         ruleResults.push({
           rule_id: rule.id,
@@ -141,7 +133,7 @@ self.onmessage = (e: MessageEvent<DQRunCommand>) => {
           threshold: rule.threshold,
         });
       } catch (ruleErr) {
-        ruleResults.push(makeSkipped(rule, globalRows.length, String(ruleErr)));
+        ruleResults.push(makeSkipped(rule, rows.length, String(ruleErr)));
       }
     }
 

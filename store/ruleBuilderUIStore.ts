@@ -6,7 +6,7 @@
  * clicking a column in the data preview pre-fills the Add Rule form and
  * filters AI suggestions, instead of each widget owning a separate copy
  * of "add a rule for this column" UI. Session-only, same pattern as
- * fileStore/profilingStore/globalScopeFilterStore.
+ * fileStore/profilingStore.
  */
 
 import { create } from "zustand";

@@ -15,7 +15,7 @@ export default async function WorkflowsPage() {
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.025em]" style={{ color: "#0A0A0F" }}>Workflows</h1>
           <p className="text-[14px] text-slate-500 mt-1.5">
-            Reusable DQ check configurations with column mappings.
+            Reusable rule templates you can apply across data assets.
           </p>
         </div>
         <Link
@@ -36,7 +36,7 @@ export default async function WorkflowsPage() {
         <div className="rounded-[16px] border border-dashed border-[#EEF0F3] bg-[#F8FAFC] p-12 text-center space-y-2">
           <p className="text-slate-500 font-medium">No workflows yet</p>
           <p className="text-[13px] text-slate-400">
-            Create a workflow to save a reusable DQ configuration for a data asset.
+            Select rules on a data asset&apos;s Rules page and &quot;Save as Workflow&quot; to create your first one.
           </p>
           <Link
             href="/dashboard/workflows/new"
@@ -80,13 +80,12 @@ export default async function WorkflowsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 shrink-0 text-xs text-slate-400">
+                  <span>
+                    {wf.rule_count ?? 0} rule{(wf.rule_count ?? 0) !== 1 ? "s" : ""}
+                  </span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {wf.run_count} run{wf.run_count !== 1 ? "s" : ""}
-                  </span>
-                  <span>
-                    {Object.keys(wf.column_mappings ?? {}).length} mapping
-                    {Object.keys(wf.column_mappings ?? {}).length !== 1 ? "s" : ""}
+                    applied {wf.applied_count}×
                   </span>
                 </div>
               </Link>

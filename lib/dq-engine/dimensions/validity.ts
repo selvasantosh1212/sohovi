@@ -22,6 +22,8 @@ export function evaluate(
       return regexMatch(colValues, rule);
     case "enum_validation":
       return enumValidation(colValues, rule);
+    case "value_equals":
+      return valueEquals(colValues, rule);
     case "datatype_check":
       return datatypeCheck(colValues, rule);
     case "sequence_validation":
@@ -71,6 +73,24 @@ function enumValidation(values: (string | null)[], rule: RuleConfig): EvalResult
     score,
     failedIndices,
     message: `${failedIndices.length} values not in allowed set [${allowed.slice(0, 5).join(", ")}${allowed.length > 5 ? "…" : ""}]`,
+  };
+}
+
+function valueEquals(values: (string | null)[], rule: RuleConfig): EvalResult {
+  const expected = String(rule.parameters.expected_value ?? "");
+  const failedIndices: number[] = [];
+  let nonNull = 0;
+  for (let i = 0; i < values.length; i++) {
+    const v = norm(values[i]);
+    if (v === null) continue;
+    nonNull++;
+    if (v.toLowerCase() !== expected.toLowerCase()) failedIndices.push(i);
+  }
+  const score = nonNull > 0 ? (nonNull - failedIndices.length) / nonNull : 1;
+  return {
+    score,
+    failedIndices,
+    message: `${failedIndices.length} value${failedIndices.length !== 1 ? "s" : ""} ≠ '${expected}' out of ${nonNull} record${nonNull !== 1 ? "s" : ""}`,
   };
 }
 

@@ -1,12 +1,11 @@
 "use client";
 
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Lightbulb, Video, CheckCircle2 } from "lucide-react";
 import type { Guide, GuideCategory } from "@/lib/learn/guides";
 
@@ -21,10 +20,10 @@ export function GuideDetailSheet({ guide, category, open, onOpenChange }: GuideD
   if (!guide || !category) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto p-0">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-full sm:max-w-lg max-h-[85vh] overflow-y-auto p-0">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-5">
+        <div className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-5 rounded-t-xl">
           <div className="flex items-center gap-2 mb-1">
             <span
               className="text-xs font-semibold px-2 py-0.5 rounded-full text-white"
@@ -34,8 +33,8 @@ export function GuideDetailSheet({ guide, category, open, onOpenChange }: GuideD
             </span>
             <span className="text-xs text-slate-400">{guide.duration}</span>
           </div>
-          <SheetTitle className="text-base font-bold text-slate-800 mt-1">{guide.title}</SheetTitle>
-          <SheetDescription className="text-sm text-slate-500 mt-1">{guide.summary}</SheetDescription>
+          <DialogTitle className="text-base font-bold text-slate-800 mt-1">{guide.title}</DialogTitle>
+          <DialogDescription className="text-sm text-slate-500 mt-1">{guide.summary}</DialogDescription>
         </div>
 
         <div className="px-6 py-5 space-y-6">
@@ -95,7 +94,7 @@ export function GuideDetailSheet({ guide, category, open, onOpenChange }: GuideD
             </div>
           )}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

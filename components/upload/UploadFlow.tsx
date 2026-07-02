@@ -121,7 +121,7 @@ export function UploadFlow({ assetId, assetName, previousSchema }: UploadFlowPro
           </div>
 
           {/* Optional header row checkbox */}
-          <label className="inline-flex items-center gap-2.5 cursor-pointer select-none group">
+          <label className="flex w-fit items-center gap-2.5 cursor-pointer select-none group">
             <input
               type="checkbox"
               checked={showHeaderSelector}
@@ -143,15 +143,15 @@ export function UploadFlow({ assetId, assetName, previousSchema }: UploadFlowPro
             />
           )}
 
-          {/* Start profiling button — visible when checkbox is unchecked */}
+          {/* Run profiling button — visible when checkbox is unchecked */}
           {!showHeaderSelector && (
             <button
               type="button"
               onClick={() => setHeaderConfirmed(true)}
-              className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90"
+              className="flex w-fit items-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-full text-white transition-opacity hover:opacity-90"
               style={{ background: "#1A1A2E" }}
             >
-              Start Profiling →
+              Run Profiling →
             </button>
           )}
         </div>

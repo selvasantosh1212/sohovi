@@ -37,6 +37,7 @@ const RULE_TYPES: Record<DQDimension, { value: string; label: string; params?: s
   validity: [
     { value: "regex_match",       label: "Regex Match",      params: ["pattern"] },
     { value: "enum_validation",   label: "Enum Validation",  params: ["allowed_values"] },
+    { value: "value_equals",      label: "Value Equals",     params: ["expected_value"] },
     { value: "datatype_check",    label: "Datatype Check",   params: ["expected_type"] },
     { value: "sequence_validation", label: "Sequence Check", params: ["reference_column"] },
   ],
@@ -100,7 +101,7 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
   const [description, setDescription] = useState("");
   const [scopeOpen, setScopeOpen] = useState(true);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [scopeConditions, setScopeConditions] = useState<ScopeCondition[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -595,7 +596,7 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
             </p>
           </div>
 
-          {/* Scope (optional) */}
+          {/* Scope Filter */}
           <div className="space-y-1.5">
             <button
               type="button"
@@ -603,7 +604,7 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
               className="flex w-full items-center justify-between text-xs font-medium text-slate-600 hover:text-slate-800"
             >
               <span>
-                Scope (optional){scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
+                Scope Filter{scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
               </span>
               <span className="text-slate-400">{scopeOpen ? "−" : "+"}</span>
             </button>

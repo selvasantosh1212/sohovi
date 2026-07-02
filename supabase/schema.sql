@@ -65,15 +65,17 @@ create index idx_assets_user on data_assets(clerk_user_id);
 -- ============================================================
 create table if not exists workflows (
   id                uuid primary key default gen_random_uuid(),
-  asset_id          uuid not null references data_assets(id) on delete cascade,
+  asset_id          uuid references data_assets(id) on delete set null, -- origin asset only; optional, not a functional dependency
   clerk_user_id     text not null,
   name              text not null,
   description       text,
-  column_mappings   jsonb default '{}',
+  column_mappings   jsonb default '{}', -- deprecated, superseded by per-apply mapping in applyWorkflowToAsset
   default_scope_conditions jsonb not null default '[]',
   is_active         boolean not null default true,
-  run_count         integer not null default 0,
-  last_run_at       timestamptz,
+  run_count         integer not null default 0, -- deprecated, superseded by applied_count
+  last_run_at       timestamptz, -- deprecated, superseded by last_applied_at
+  applied_count     integer not null default 0,
+  last_applied_at   timestamptz,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
 );
@@ -121,10 +123,12 @@ create table if not exists dq_rules (
   weight          numeric(5,4) not null default 1.0,
   is_active       boolean not null default true,
   is_suggested    boolean not null default false,
+  source_workflow_id uuid references workflows(id) on delete set null,
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
 create index idx_rules_asset on dq_rules(asset_id);
+create index idx_rules_source_workflow on dq_rules(source_workflow_id);
 
 -- ============================================================
 -- DQ SCORES
@@ -184,14 +188,47 @@ create index idx_profiling_run on profiling_summaries(run_id);
 create index idx_profiling_asset on profiling_summaries(asset_id);
 
 -- ============================================================
--- WORKFLOW RULE SETS
+-- WORKFLOW RULES  (durable rule snapshots owned by a workflow — a workflow
+-- keeps working even if the dq_rules row it was promoted from is later
+-- edited or deleted, since this table copies the rule definition inline
+-- rather than referencing dq_rules.id directly)
 -- ============================================================
-create table if not exists workflow_rule_sets (
-  id            uuid primary key default gen_random_uuid(),
-  workflow_id   uuid not null references workflows(id) on delete cascade,
-  rule_id       uuid not null references dq_rules(id) on delete cascade,
-  sort_order    integer not null default 0
+create table if not exists workflow_rules (
+  id                uuid primary key default gen_random_uuid(),
+  workflow_id       uuid not null references workflows(id) on delete cascade,
+  clerk_user_id     text not null,
+  column_name       text,
+  description       text,
+  dimension         text not null,
+  rule_type         text not null,
+  parameters        jsonb not null default '{}',
+  scope_conditions  jsonb not null default '[]',
+  threshold         numeric(5,4) not null default 0.95,
+  weight            numeric(5,4) not null default 1.0,
+  sort_order        integer not null default 0,
+  source_rule_id    uuid references dq_rules(id) on delete set null,
+  created_at        timestamptz not null default now(),
+  updated_at        timestamptz not null default now()
 );
+create index idx_workflow_rules_workflow on workflow_rules(workflow_id);
+create index idx_workflow_rules_user on workflow_rules(clerk_user_id);
+
+-- ============================================================
+-- WORKFLOW APPLICATIONS  (history of which assets a workflow's rules
+-- have been materialized onto, and the column mapping used each time)
+-- ============================================================
+create table if not exists workflow_applications (
+  id                uuid primary key default gen_random_uuid(),
+  workflow_id       uuid not null references workflows(id) on delete cascade,
+  asset_id          uuid not null references data_assets(id) on delete cascade,
+  clerk_user_id     text not null,
+  rules_created     integer not null default 0,
+  rules_skipped     integer not null default 0,
+  column_mappings   jsonb not null default '{}',
+  applied_at        timestamptz not null default now()
+);
+create index idx_workflow_applications_workflow on workflow_applications(workflow_id);
+create index idx_workflow_applications_asset on workflow_applications(asset_id);
 
 -- ============================================================
 -- ALERTS
@@ -275,7 +312,8 @@ alter table asset_runs         enable row level security;
 alter table dq_rules           enable row level security;
 alter table dq_scores          enable row level security;
 alter table profiling_summaries enable row level security;
-alter table workflow_rule_sets  enable row level security;
+alter table workflow_rules      enable row level security;
+alter table workflow_applications enable row level security;
 alter table alerts             enable row level security;
 alter table alert_events       enable row level security;
 alter table blog_posts         enable row level security;

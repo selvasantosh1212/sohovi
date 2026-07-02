@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useDQRunner } from "@/hooks/useDQRunner";
 import { useFileStore } from "@/store/fileStore";
-import { useGlobalScopeFilterStore } from "@/store/globalScopeFilterStore";
 import type { DQRule } from "@/types/app.types";
 import type { RuleConfig } from "@/types/dq.types";
 
@@ -16,7 +15,6 @@ export function RunDQButton({ assetId, rules }: Props) {
   const router = useRouter();
   const { status, progress, error, startRun } = useDQRunner();
   const fileData = useFileStore((s) => s.data);
-  const globalScopeConditions = useGlobalScopeFilterStore((s) => s.conditions);
 
   const activeRules: RuleConfig[] = rules
     .filter((r) => r.is_active)
@@ -34,7 +32,7 @@ export function RunDQButton({ assetId, rules }: Props) {
     }));
 
   async function handleRun() {
-    await startRun(activeRules, assetId, globalScopeConditions);
+    await startRun(activeRules, assetId);
     // Navigate to scoring page after run
     router.push(`/dashboard/assets/${assetId}/scoring`);
   }

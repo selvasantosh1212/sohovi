@@ -94,6 +94,10 @@ export function ScoreTransparencyPanel({ ruleResults, columnName, onOpenFailures
                 <p className="text-[10px] text-slate-400 mt-0.5 font-mono truncate">
                   <span className="not-italic text-slate-300">Detail: </span>{r.message}
                 </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  Evaluated {r.total_records.toLocaleString()} row{r.total_records !== 1 ? "s" : ""}
+                  {r.failed_records > 0 && ` · ${r.failed_records.toLocaleString()} failed`}
+                </p>
               </div>
               <div className="shrink-0 flex flex-col items-end gap-1">
                 <span

@@ -50,6 +50,9 @@ export function getFriendlyMessage(r: RuleResult): string | null {
     case "enum_validation":
       return `${bold} has ${plural(n, "value")} that aren't in the allowed list`;
 
+    case "value_equals":
+      return `${bold} has ${plural(n, "value")} that don't match the expected value`;
+
     case "datatype_check":
       return `${bold} has ${plural(n, "value")} that can't be read as the expected type`;
 

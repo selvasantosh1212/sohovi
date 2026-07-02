@@ -18,7 +18,6 @@ import type {
   DQRunResponse,
   DQRunResult,
   RuleConfig,
-  ScopeCondition,
 } from "@/types/dq.types";
 import type { ConnectorCommand, ConnectorResponse } from "@/types/connectors.types";
 
@@ -250,7 +249,6 @@ export function runDQRules(
   rows: (string | null)[][],
   rules: RuleConfig[],
   assetId: string,
-  scopeConditionsGlobal: ScopeCondition[] = [],
   onProgress?: (p: DQRunProgress) => void
 ): Promise<DQRunResult> {
   return new Promise((resolve, reject) => {
@@ -278,7 +276,7 @@ export function runDQRules(
 
     const cmd: DQRunCommand = {
       type: "RUN",
-      payload: { rows, headers, rules, asset_id: assetId, scope_conditions_global: scopeConditionsGlobal },
+      payload: { rows, headers, rules, asset_id: assetId },
     };
     worker.postMessage(cmd);
   });

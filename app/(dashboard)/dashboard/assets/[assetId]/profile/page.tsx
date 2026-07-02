@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ListChecks, UploadCloud } from "lucide-react";
+import { ArrowLeft, Filter, ListChecks, UploadCloud } from "lucide-react";
 import { ProfilingDashboard } from "@/components/profiling/ProfilingDashboard";
 import { SchemaDriftBanner } from "@/components/profiling/SchemaDriftBanner";
 import { ScopePreviewCard } from "@/components/profiling/ScopePreviewCard";
@@ -11,6 +11,7 @@ import { useProfilingStore } from "@/store/profilingStore";
 import { useFileStore } from "@/store/fileStore";
 import { saveProfilingSnapshot } from "@/app/actions/runs";
 import type { SchemaDiff } from "@/store/fileStore";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 
 export default function AssetProfilePage() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function AssetProfilePage() {
   const profiledAssetId = useProfilingStore((s) => s.assetId);
   const fileData = useFileStore((s) => s.data);
   const setSchemaDiff = useFileStore((s) => s.setSchemaDiff);
+  const appliedScopeConditions = useFileStore((s) => s.appliedScopeConditions);
+  const originalTotalRows = useFileStore((s) => s.originalTotalRows);
 
   const [schemaDiff, setSchemaDiffLocal] = useState<SchemaDiff | null>(null);
   const hasSaved = useRef(false);
@@ -33,6 +36,8 @@ export default function AssetProfilePage() {
       !hasSaved.current
     ) {
       hasSaved.current = true;
+      // Captures the dataset as first uploaded — always the original, unfiltered
+      // row count, since this effect only ever fires once per asset.
       saveProfilingSnapshot({
         asset_id: assetId,
         file_name: fileData.fileName,
@@ -107,7 +112,22 @@ export default function AssetProfilePage() {
         />
       )}
 
-      <ScopePreviewCard assetId={assetId} columnNames={fileData.headers} />
+      {/* key forces a clean remount per asset — the card's filter draft is local
+          state seeded once from the store, and App Router doesn't guarantee a
+          remount across sibling assetId navigations on this same route template. */}
+      <ScopePreviewCard key={assetId} assetId={assetId} columnNames={fileData.headers} />
+
+      {appliedScopeConditions.length > 0 && (
+        <div className="flex items-center gap-2 rounded-lg bg-teal-50 border border-teal-100 px-3 py-2 text-xs font-medium text-teal-700">
+          <Filter className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">
+            Showing filtered profile — {fileData.totalRows.toLocaleString()} of{" "}
+            {(originalTotalRows ?? fileData.totalRows).toLocaleString()} rows matching{" "}
+            <span className="font-mono">{formatScopeConditions(appliedScopeConditions)}</span>.
+            This same filtered data carries forward to the Rules page and any DQ run.
+          </span>
+        </div>
+      )}
 
       <ProfilingDashboard
         profiles={profiles}

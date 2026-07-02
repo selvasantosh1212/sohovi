@@ -67,6 +67,15 @@ export const DQ_RULE_EXAMPLES: Record<string, Record<string, RuleExample>> = {
       whenToUse: "Use for status, category, gender, region, or any controlled vocabulary column.",
       recommendedThreshold: 99,
     },
+    value_equals: {
+      title: "Value Must Equal",
+      description: "Every in-scope value must exactly match a single expected value — pair with Scope conditions to make it conditional (e.g. only when State = Tamil Nadu and pincode = 600088).",
+      passingExamples: ["Adambakkam", "Adambakkam", "Adambakkam"],
+      failingExamples: ["Adyar", "Chennai", "(blank)"],
+      businessImpact: "Unexpected values for a scoped business rule (e.g. wrong city for a pincode) indicate bad source data or mapping errors.",
+      whenToUse: "Use for conditional business rules — 'when X and Y, then Z must equal this' — by combining with Scope conditions.",
+      recommendedThreshold: 99,
+    },
     datatype_check: {
       title: "Type Conformance",
       description: "Every value must be parseable as the specified data type.",

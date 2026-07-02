@@ -11,11 +11,12 @@ import { useProfilingStore } from "@/store/profilingStore";
 import { useRuleBuilderUIStore } from "@/store/ruleBuilderUIStore";
 import { suggestRules } from "@/lib/ml/rule-suggester";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
 import { RuleSuggestionsPanel } from "@/components/rules/RuleSuggestionsPanel";
 import { PlanGate } from "@/components/shared/PlanGate";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 import type { DQRule } from "@/types/app.types";
 
 const PREVIEW_ROWS = 10;
@@ -41,6 +42,8 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
     return acc;
   }, {});
   const fileData = useFileStore((s) => s.data);
+  const appliedScopeConditions = useFileStore((s) => s.appliedScopeConditions);
+  const originalTotalRows = useFileStore((s) => s.originalTotalRows);
   const profiles = useProfilingStore((s) => s.profiles);
 
   // Selected column lives in a shared store so the "Add Custom Rule" and
@@ -52,7 +55,7 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
 
   const [open, setOpen] = useState(true);
   const [colOffset, setColOffset] = useState(0);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [ruleDialogOpen, setRuleDialogOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Wider screens can show more columns at once before paging is needed
@@ -147,8 +150,16 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
           <Table2 className="w-4 h-4 text-slate-400" />
           <span className="text-sm font-semibold text-slate-700">Data Preview</span>
           <span className="text-xs text-slate-400">
-            · {totalRows.toLocaleString()} rows · {headers.length} col{headers.length !== 1 ? "s" : ""}
+            · {totalRows.toLocaleString()} rows
+            {appliedScopeConditions.length > 0 &&
+              ` (filtered from ${(originalTotalRows ?? totalRows).toLocaleString()})`}{" "}
+            · {headers.length} col{headers.length !== 1 ? "s" : ""}
           </span>
+          {appliedScopeConditions.length > 0 && (
+            <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-700">
+              Scope filter active
+            </span>
+          )}
         </div>
         <span className="flex items-center justify-center w-7 h-7 rounded-md border border-slate-200 bg-slate-50 text-slate-500">
           {open
@@ -160,6 +171,14 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
 
       {open && (
         <div className="px-5 pb-5 space-y-3">
+
+          {appliedScopeConditions.length > 0 && (
+            <p className="text-xs text-teal-700 bg-teal-50 rounded-md px-2.5 py-1.5">
+              Scoped to rows matching{" "}
+              <span className="font-mono">{formatScopeConditions(appliedScopeConditions)}</span> —
+              set on the Profile page. This is the data every rule below runs against.
+            </p>
+          )}
 
           {/* ── Column navigation (wide datasets only) ─────────────── */}
           {showSlider && (
@@ -207,7 +226,7 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={() => setSheetOpen(true)}
+                  onClick={() => setRuleDialogOpen(true)}
                   className="flex items-center gap-1 rounded-md bg-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground hover:opacity-90 transition-opacity"
                 >
                   <Plus className="w-3 h-3" />
@@ -369,24 +388,24 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
         </div>
       )}
 
-      {/* ── Add Rule slide-in sheet — stays anchored to this table ─── */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>
+      {/* ── Add Rule centered dialog ──────────────────────────────── */}
+      <Dialog open={ruleDialogOpen} onOpenChange={setRuleDialogOpen}>
+        <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
               Add Rule{activeCol && (
                 <>
                   {" — "}
                   <span className="font-mono text-primary">{activeCol}</span>
                 </>
               )}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="px-4 pb-6">
+            </DialogTitle>
+          </DialogHeader>
+          <div className="pb-2">
             <RuleBuilderPanel assetId={assetId} columnNames={columnNames} existingRules={rules} />
           </div>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

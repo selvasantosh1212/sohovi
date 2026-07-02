@@ -34,6 +34,7 @@ function buildSuggestions(ruleResults: RuleResult[]): Suggestion[] {
       format_standardization: { fix: "Trim whitespace and normalize formatting.", fixType: "trim" },
       regex_match:       { fix: "Correct values to match the expected pattern.", fixType: "manual" },
       enum_validation:   { fix: "Replace out-of-range values with an accepted enum member.", fixType: "manual" },
+      value_equals:      { fix: "Correct the value to match the expected value, or review the scope conditions.", fixType: "manual" },
       range_check:       { fix: "Clamp or null-out values outside the allowed range.", fixType: "manual" },
       unique_column:     { fix: "Deduplicate rows or assign unique identifiers.", fixType: "manual" },
       duplicate_detection: { fix: "Remove or merge duplicate records.", fixType: "manual" },

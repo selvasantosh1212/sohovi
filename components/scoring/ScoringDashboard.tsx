@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Filter } from "lucide-react";
 import { useDQStore } from "@/store/dqStore";
 import { useFileStore } from "@/store/fileStore";
 import { ScoreGauge } from "./ScoreGauge";
@@ -13,6 +14,7 @@ import type { DQRunResult } from "@/types/dq.types";
 import { useProfilingStore } from "@/store/profilingStore";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 
 interface Props {
   assetId: string;
@@ -22,9 +24,10 @@ interface Props {
 export function ScoringDashboard({ assetId, fileName }: Props) {
   const router = useRouter();
   const result = useDQStore((s) => s.result);
-  const scopeConditions = useDQStore((s) => s.scopeConditions);
   const fileData = useFileStore((s) => s.data);
   const schemaDiff = useFileStore((s) => s.schemaDiff);
+  const appliedScopeConditions = useFileStore((s) => s.appliedScopeConditions);
+  const originalTotalRows = useFileStore((s) => s.originalTotalRows);
   const columnProfiles = useProfilingStore((s) => s.profiles);
   const workflowId = useFileStore((s) => s.workflowId);
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
@@ -70,7 +73,7 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
             schema_diff: schemaDiff ?? null,
             workflow_id: workflowId ?? null,
             column_profiles: columnProfiles ?? [],
-            scope_conditions: scopeConditions,
+            scope_conditions: appliedScopeConditions,
           },
           result
         );
@@ -89,6 +92,19 @@ export function ScoringDashboard({ assetId, fileName }: Props) {
 
   return (
     <div className="space-y-6">
+      {appliedScopeConditions.length > 0 && (
+        <div className="flex items-center gap-2 rounded-lg bg-teal-50 border border-teal-100 px-3 py-2 text-xs font-medium text-teal-700">
+          <Filter className="w-3.5 h-3.5 shrink-0" />
+          <span>
+            Scoped run — {(fileData?.totalRows ?? 0).toLocaleString()} of{" "}
+            {(originalTotalRows ?? fileData?.totalRows ?? 0).toLocaleString()} rows matched{" "}
+            {appliedScopeConditions.length} condition{appliedScopeConditions.length !== 1 ? "s" : ""}
+            {": "}
+            <span className="font-mono">{formatScopeConditions(appliedScopeConditions)}</span>
+          </span>
+        </div>
+      )}
+
       {/* Top summary bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-6">

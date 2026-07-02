@@ -5,7 +5,6 @@ import { processBulkFile } from "@/workers/worker-bridge";
 import type { BulkProgress } from "@/workers/worker-bridge";
 import { useFileStore } from "@/store/fileStore";
 import { useProfilingStore } from "@/store/profilingStore";
-import { useGlobalScopeFilterStore } from "@/store/globalScopeFilterStore";
 
 export type BulkPhase = "idle" | "splitting" | "profiling" | "merging" | "done" | "error";
 
@@ -43,13 +42,11 @@ export function useLargeFileProcessor() {
   const clearData = useFileStore((s) => s.clear);
   const setProfiles = useProfilingStore((s) => s.setProfiles);
   const clearProfiles = useProfilingStore((s) => s.clear);
-  const clearGlobalScope = useGlobalScopeFilterStore((s) => s.clear);
 
   const start = useCallback(
     async (file: File, assetId: string) => {
       clearData();
       clearProfiles();
-      clearGlobalScope();
 
       setState({
         ...INITIAL,
@@ -119,15 +116,14 @@ export function useLargeFileProcessor() {
         setState((prev) => ({ ...prev, phase: "error", error: msg }));
       }
     },
-    [clearData, clearProfiles, clearGlobalScope, setData, setProfiles]
+    [clearData, clearProfiles, setData, setProfiles]
   );
 
   const reset = useCallback(() => {
     clearData();
     clearProfiles();
-    clearGlobalScope();
     setState(INITIAL);
-  }, [clearData, clearProfiles, clearGlobalScope]);
+  }, [clearData, clearProfiles]);
 
   return { state, start, reset };
 }

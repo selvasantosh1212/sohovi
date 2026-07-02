@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react";
 import { connectAndFetch } from "@/workers/worker-bridge";
 import { useFileStore } from "@/store/fileStore";
-import { useGlobalScopeFilterStore } from "@/store/globalScopeFilterStore";
 import type { ConnectorCommand } from "@/types/connectors.types";
 
 export type ConnectStatus = "idle" | "connecting" | "done" | "error";
@@ -24,12 +23,10 @@ export function useConnectorWorker(): UseConnectorWorkerResult {
   const [error, setError] = useState<string | null>(null);
   const setData = useFileStore((s) => s.setData);
   const clearData = useFileStore((s) => s.clear);
-  const clearGlobalScope = useGlobalScopeFilterStore((s) => s.clear);
 
   const startConnect = useCallback(
     async (command: ConnectorCommand) => {
       clearData();
-      clearGlobalScope();
       setStatus("connecting");
       setProgress(0);
       setProgressMessage("Initializing…");
@@ -49,17 +46,16 @@ export function useConnectorWorker(): UseConnectorWorkerResult {
         setStatus("error");
       }
     },
-    [setData, clearData, clearGlobalScope]
+    [setData, clearData]
   );
 
   const reset = useCallback(() => {
     clearData();
-    clearGlobalScope();
     setStatus("idle");
     setProgress(0);
     setProgressMessage("");
     setError(null);
-  }, [clearData, clearGlobalScope]);
+  }, [clearData]);
 
   return { status, progress, progressMessage, error, startConnect, reset };
 }

@@ -12,11 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Play, Save, Upload, BookOpen, CheckCircle, XCircle, X } from "lucide-react";
+import { Play, Save, Upload, BookOpen, CheckCircle, XCircle, X, Filter } from "lucide-react";
 import Link from "next/link";
 import type { DQDimension } from "@/types/app.types";
 import type { RuleConfig, RuleResult, ScopeCondition, ScopeOperator } from "@/types/dq.types";
 import { getRuleExample } from "@/lib/dq-rule-examples";
+import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { FailedRecordsTable } from "@/components/scoring/FailedRecordsTable";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -112,6 +113,7 @@ function paramHint(param: string): string {
 
 export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
   const fileData = useFileStore((s) => s.data);
+  const appliedScopeConditions = useFileStore((s) => s.appliedScopeConditions);
 
   const [dimension, setDimension] = useState<DQDimension>("completeness");
   const [ruleType, setRuleType] = useState("not_null");
@@ -248,6 +250,15 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
 
   return (
     <div className="space-y-6">
+    {appliedScopeConditions.length > 0 && (
+      <div className="flex items-center gap-2 rounded-lg bg-teal-50 border border-teal-100 px-3 py-2 text-xs font-medium text-teal-700">
+        <Filter className="w-3.5 h-3.5 shrink-0" />
+        <span>
+          A scope filter set on the Profile page is active — sandbox tests below run against that
+          filtered data (<span className="font-mono">{formatScopeConditions(appliedScopeConditions)}</span>).
+        </span>
+      </div>
+    )}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Rule config panel */}
       <div className="rounded-xl border border-slate-200 bg-white px-5 py-5 space-y-4">
@@ -324,7 +335,7 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
           />
         </div>
 
-        {/* Scope (optional) */}
+        {/* Scope Filter */}
         <div className="space-y-1.5">
           <button
             type="button"
@@ -332,7 +343,7 @@ export function SandboxClient({ assetId, assetName, columnSchema }: Props) {
             className="flex w-full items-center justify-between text-xs font-medium text-slate-600 hover:text-slate-800"
           >
             <span>
-              Scope (optional){scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
+              Scope Filter{scopeConditions.length > 0 ? ` · ${scopeConditions.length} condition${scopeConditions.length !== 1 ? "s" : ""}` : ""}
             </span>
             <span className="text-slate-400">{scopeOpen ? "−" : "+"}</span>
           </button>

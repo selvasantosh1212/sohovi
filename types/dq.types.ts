@@ -103,8 +103,6 @@ export type DQRunCommand = {
     headers: string[];
     rules: RuleConfig[];
     asset_id: string;
-    /** Restricts the entire run to a row subset, applied once before any rule runs. */
-    scope_conditions_global?: ScopeCondition[];
   };
 };
 

@@ -24,7 +24,8 @@ export default async function NewWorkflowPage({
         </Link>
         <h1 className="text-2xl font-bold text-slate-900">New Workflow</h1>
         <p className="text-sm text-slate-500 mt-1">
-          Create a reusable DQ configuration with column mappings.
+          Create an empty, named workflow shell. Add rules to it from any asset&apos;s Rules page via
+          &quot;Save as Workflow&quot;.
         </p>
       </div>
 

@@ -92,6 +92,7 @@ export interface DQRule {
   weight: number;
   is_active: boolean;
   is_suggested: boolean;
+  source_workflow_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -169,18 +170,58 @@ export interface PatternEntry {
 
 export interface Workflow {
   id: string;
-  asset_id: string;
+  /** Asset this workflow was originally authored from. Optional — display/traceability only, not a functional dependency. */
+  asset_id: string | null;
   clerk_user_id: string;
   name: string;
   description: string | null;
+  /** @deprecated superseded by the per-apply column mapping in applyWorkflowToAsset(); no longer read or written. */
   column_mappings: Record<string, string>;
-  /** Default global scope filter pre-applied whenever this workflow's asset is run through DQ checks. */
+  /** Default global scope filter pre-applied whenever this workflow's origin asset is run through DQ checks. */
   default_scope_conditions: import("./dq.types").ScopeCondition[];
   is_active: boolean;
+  /** @deprecated superseded by applied_count. */
   run_count: number;
+  /** @deprecated superseded by last_applied_at. */
   last_run_at: string | null;
+  applied_count: number;
+  last_applied_at: string | null;
   created_at: string;
   updated_at: string;
+  // Aggregated (not in DB, computed client-side from joins)
+  rule_count?: number;
+  asset?: Pick<DataAsset, "id" | "name"> | null;
+}
+
+export interface WorkflowRule {
+  id: string;
+  workflow_id: string;
+  clerk_user_id: string;
+  column_name: string | null;
+  description: string | null;
+  dimension: DQDimension;
+  rule_type: string;
+  parameters: Record<string, unknown>;
+  scope_conditions: import("./dq.types").ScopeCondition[];
+  threshold: number;
+  weight: number;
+  sort_order: number;
+  source_rule_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkflowApplication {
+  id: string;
+  workflow_id: string;
+  asset_id: string;
+  clerk_user_id: string;
+  rules_created: number;
+  rules_skipped: number;
+  column_mappings: Record<string, string>;
+  applied_at: string;
+  // Joined
+  asset?: Pick<DataAsset, "id" | "name"> | null;
 }
 
 export interface Alert {

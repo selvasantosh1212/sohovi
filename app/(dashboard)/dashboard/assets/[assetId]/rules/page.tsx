@@ -3,12 +3,10 @@ import Link from "next/link";
 import { ArrowLeft, Plus, Play, AlertTriangle } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
 import { getRules } from "@/app/actions/rules";
-import { getWorkflows } from "@/app/actions/workflows";
 import { DimensionGroupAccordion } from "@/components/rules/DimensionGroupAccordion";
 import { RuleBuilderPanel } from "@/components/rules/RuleBuilderPanel";
 import { RunDQButton } from "@/components/rules/RunDQButton";
 import { DataPreviewTable } from "@/components/rules/DataPreviewTable";
-import { GlobalScopeFilterPanel } from "@/components/rules/GlobalScopeFilterPanel";
 import type { DQRule } from "@/types/app.types";
 
 export async function generateMetadata({
@@ -27,18 +25,14 @@ export default async function RulesPage({
   params: Promise<{ assetId: string }>;
 }) {
   const { assetId } = await params;
-  const [asset, rules, workflows] = await Promise.all([
+  const [asset, rules] = await Promise.all([
     getAsset(assetId),
     getRules(assetId),
-    getWorkflows(assetId),
   ]);
 
   if (!asset) notFound();
 
   const columnNames = asset.column_schema ?? [];
-  const defaultScopeWorkflow = workflows.find(
-    (w) => w.is_active && w.default_scope_conditions?.length > 0
-  );
 
   // Build existing rule key set for deduplication in suggestions panel
   const existingRuleKeys = new Set<string>(
@@ -78,14 +72,6 @@ export default async function RulesPage({
         columnNames={columnNames}
         rules={rules}
         existingRuleKeys={Array.from(existingRuleKeys)}
-      />
-
-      {/* Global scope filter — restricts the entire DQ run below, leaves profiling unaffected */}
-      <GlobalScopeFilterPanel
-        assetId={assetId}
-        columnNames={columnNames}
-        defaultScopeConditions={defaultScopeWorkflow?.default_scope_conditions}
-        defaultScopeSourceName={defaultScopeWorkflow?.name}
       />
 
       {/* Main two-column layout */}

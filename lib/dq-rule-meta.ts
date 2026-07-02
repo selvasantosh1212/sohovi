@@ -11,6 +11,7 @@ export const RULE_TYPE_PARAMS: Record<string, string[]> = {
   conditional_not_null: ["if_column", "if_value"],
   regex_match: ["pattern"],
   enum_validation: ["allowed_values"],
+  value_equals: ["expected_value"],
   datatype_check: ["expected_type"],
   sequence_validation: ["reference_column"],
   range_check: ["min", "max"],
@@ -49,6 +50,7 @@ export function paramHint(param: string): string {
   const hints: Record<string, string> = {
     pattern: "e.g. ^\\d{4}-\\d{2}-\\d{2}$",
     allowed_values: "comma-separated: yes,no,maybe",
+    expected_value: "e.g. Adambakkam",
     expected_type: "date, numeric, boolean",
     min: "e.g. 0",
     max: "e.g. 1000000",

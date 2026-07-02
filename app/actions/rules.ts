@@ -30,6 +30,7 @@ export interface RuleInput {
   threshold?: number;
   weight?: number;
   is_suggested?: boolean;
+  source_workflow_id?: string | null;
 }
 
 export async function createRule(input: RuleInput): Promise<DQRule> {
@@ -79,6 +80,7 @@ export async function createRule(input: RuleInput): Promise<DQRule> {
       threshold: input.threshold ?? 0.95,
       weight: input.weight ?? 1,
       is_suggested: input.is_suggested ?? false,
+      source_workflow_id: input.source_workflow_id ?? null,
     })
     .select()
     .single();

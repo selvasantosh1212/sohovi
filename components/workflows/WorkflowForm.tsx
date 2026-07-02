@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createWorkflow, updateWorkflow, type WorkflowInput } from "@/app/actions/workflows";
-import { ColumnMappingEditor } from "./ColumnMappingEditor";
 import { ScopeConditionEditor } from "@/components/shared/ScopeConditionEditor";
 import type { Workflow, DataAsset } from "@/types/app.types";
 import type { ScopeCondition } from "@/types/dq.types";
@@ -20,31 +19,26 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
 
   const [name, setName] = useState(workflow?.name ?? "");
   const [description, setDescription] = useState(workflow?.description ?? "");
-  const [assetId, setAssetId] = useState(workflow?.asset_id ?? defaultAssetId ?? assets[0]?.id ?? "");
-  const [columnMappings, setColumnMappings] = useState<Record<string, string>>(
-    workflow?.column_mappings ?? {}
-  );
+  const originAssetId = workflow?.asset_id ?? defaultAssetId ?? null;
+  const originAsset = assets.find((a) => a.id === originAssetId);
   const [defaultScopeConditions, setDefaultScopeConditions] = useState<ScopeCondition[]>(
     workflow?.default_scope_conditions ?? []
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const selectedAsset = assets.find((a) => a.id === assetId);
-  const sourceColumns = selectedAsset?.column_schema ?? [];
+  const sourceColumns = originAsset?.column_schema ?? [];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) { setError("Name is required."); return; }
-    if (!assetId) { setError("Select a data asset."); return; }
     setError(null);
     setSubmitting(true);
 
     const input: WorkflowInput = {
-      asset_id: assetId,
+      asset_id: originAssetId,
       name: name.trim(),
       description: description.trim() || null,
-      column_mappings: columnMappings,
       default_scope_conditions: defaultScopeConditions,
     };
 
@@ -74,26 +68,9 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Monthly Sales Data Check"
+          placeholder="e.g. Customer Master DQ"
           className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
-      </div>
-
-      {/* Asset */}
-      <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Data Asset *</label>
-        <select
-          value={assetId}
-          onChange={(e) => setAssetId(e.target.value)}
-          className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none focus:border-ring"
-        >
-          <option value="">Select asset…</option>
-          {assets.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
       </div>
 
       {/* Description */}
@@ -108,27 +85,21 @@ export function WorkflowForm({ assets, workflow, defaultAssetId }: Props) {
         />
       </div>
 
-      {/* Column mappings */}
-      {assetId && (
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">Column Mappings</label>
-          <p className="text-xs text-slate-400">
-            Map source column names to canonical names so rules apply across file variants.
-          </p>
-          <ColumnMappingEditor
-            sourceColumns={sourceColumns}
-            value={columnMappings}
-            onChange={setColumnMappings}
-          />
+      {/* Origin asset — display only; rules are added via "Save as Workflow" on the Rules page */}
+      {originAsset && (
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Originally authored from</label>
+          <p className="text-sm text-slate-500">{originAsset.name}</p>
         </div>
       )}
 
-      {/* Default scope filter */}
-      {assetId && sourceColumns.length > 0 && (
+      {/* Default scope filter — only meaningful once we know a column list (i.e. an origin asset) */}
+      {originAsset && sourceColumns.length > 0 && (
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700">Default Scope Filter</label>
           <p className="text-xs text-slate-400">
-            Pre-fills the global scope filter whenever this workflow&apos;s asset is run through DQ checks (still editable per run).
+            Pre-fills the scope filter on the Profiling page whenever the origin asset is uploaded, and seeds
+            scope conditions on rules created when this workflow is applied elsewhere (still editable before applying).
           </p>
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
             <ScopeConditionEditor

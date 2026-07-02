@@ -2,12 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Filter } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, Filter, Workflow as WorkflowIcon } from "lucide-react";
 import type { DQRule, DQDimension } from "@/types/app.types";
 import { deleteRule, toggleRule, updateRule } from "@/app/actions/rules";
 import { Tooltip } from "@/components/ui/tooltip";
 import { DIMENSION_COLORS } from "@/lib/dq-engine/dimension-meta";
 import { formatScopeConditions } from "@/lib/dq-engine/format-scope-conditions";
+import { SaveAsWorkflowDialog } from "@/components/workflows/SaveAsWorkflowDialog";
 
 function formatRuleParam(ruleType: string, params: Record<string, unknown>): string {
   switch (ruleType) {
@@ -22,6 +24,8 @@ function formatRuleParam(ruleType: string, params: Record<string, unknown>): str
     }
     case "regex_match":
       return params.pattern ? `regex: ${params.pattern}` : "";
+    case "value_equals":
+      return params.expected_value !== undefined ? `= ${params.expected_value}` : "";
     case "format_check":
     case "datatype_enforcement":
       return String(params.template ?? params.expected_type ?? "");
@@ -65,7 +69,17 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
   const [openDimensions, setOpenDimensions] = useState<Set<string>>(
     () => new Set(["completeness", "validity"])
   );
+  const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
+  const [saveAsWorkflowOpen, setSaveAsWorkflowOpen] = useState(false);
   const [, startTransition] = useTransition();
+
+  function toggleSelected(ruleId: string) {
+    setSelectedRuleIds((prev) => {
+      const next = new Set(prev);
+      next.has(ruleId) ? next.delete(ruleId) : next.add(ruleId);
+      return next;
+    });
+  }
 
   const byDimension = rules.reduce<Record<string, DQRule[]>>((acc, r) => {
     const arr = acc[r.dimension] ?? [];
@@ -128,6 +142,39 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
 
   return (
     <div className="space-y-2">
+      {selectedRuleIds.size > 0 && (
+        <div className="flex items-center justify-between rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5">
+          <p className="text-xs font-medium text-teal-800">
+            {selectedRuleIds.size} rule{selectedRuleIds.size !== 1 ? "s" : ""} selected
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedRuleIds(new Set())}
+              className="text-xs font-medium text-teal-700 hover:underline"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => setSaveAsWorkflowOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#1E3A5F] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+            >
+              <WorkflowIcon className="w-3.5 h-3.5" />
+              Save as Workflow
+            </button>
+          </div>
+        </div>
+      )}
+
+      <SaveAsWorkflowDialog
+        open={saveAsWorkflowOpen}
+        onOpenChange={setSaveAsWorkflowOpen}
+        ruleIds={Array.from(selectedRuleIds)}
+        sourceAssetId={assetId}
+        onSaved={() => setSelectedRuleIds(new Set())}
+      />
+
       {dimensions.map((dim) => {
         const dimRules = byDimension[dim];
         const isOpen = openDimensions.has(dim);
@@ -176,6 +223,15 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                         isOrphaned ? "bg-amber-50" : rule.is_active ? "" : "opacity-50"
                       }`}
                     >
+                      {/* Select for Save as Workflow */}
+                      <input
+                        type="checkbox"
+                        checked={selectedRuleIds.has(rule.id)}
+                        onChange={() => toggleSelected(rule.id)}
+                        className="mt-1.5 shrink-0 h-3.5 w-3.5 rounded border-slate-300 text-[#1E3A5F] focus:ring-[#1E3A5F]"
+                        aria-label="Select rule"
+                      />
+
                       {/* Toggle */}
                       <button
                         type="button"
@@ -213,6 +269,18 @@ export function DimensionGroupAccordion({ rules, assetId, orphanedRuleIds = [], 
                             <span className="inline-flex items-center rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
                               AI
                             </span>
+                          )}
+                          {rule.source_workflow_id && (
+                            <Tooltip content="Created by applying a Workflow">
+                              <Link
+                                href={`/dashboard/workflows/${rule.source_workflow_id}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700 hover:bg-sky-200"
+                              >
+                                <WorkflowIcon className="w-2.5 h-2.5" />
+                                From Workflow
+                              </Link>
+                            </Tooltip>
                           )}
                           {rule.scope_conditions.length > 0 && (
                             <Tooltip content={formatScopeConditions(rule.scope_conditions)}>
