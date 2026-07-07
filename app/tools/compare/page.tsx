@@ -6,15 +6,6 @@ export const metadata: Metadata = {
   title: "Compare Two CSV Files Online — Free Spreadsheet Diff Tool",
   description:
     "Drop two CSV or Excel files and instantly see what changed: added rows, removed rows, and modified cells. Match by any key column. Free, browser-based, nothing uploaded.",
-  keywords: [
-    "compare two csv files",
-    "compare two excel files",
-    "spreadsheet diff",
-    "reconcile two spreadsheets",
-    "find rows in one csv but not another",
-    "highlight differences between two csv files",
-    "match records between two spreadsheets",
-  ],
   openGraph: {
     title: "Compare Two CSV Files — Free Online Diff Tool",
     description: "See added, removed, and changed rows between two spreadsheets. Pick your match key. 100% browser-based.",

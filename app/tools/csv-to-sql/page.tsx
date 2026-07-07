@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free CSV to SQL INSERT Generator — MySQL, PostgreSQL, SQLite",
   description:
     "Convert CSV files to SQL INSERT statements online for free. Supports MySQL, PostgreSQL, SQLite, and MSSQL. Includes CREATE TABLE. Browser-based, no signup.",
-  keywords: [
-    "csv to sql",
-    "csv to sql insert statements",
-    "csv to sql generator online",
-    "csv to mysql insert",
-    "csv to postgresql insert",
-    "import csv to sql",
-  ],
   openGraph: {
     title: "Free CSV to SQL INSERT Generator — MySQL, PostgreSQL, SQLite",
     description: "Generate SQL INSERT statements from any CSV. Multi-dialect, CREATE TABLE included. Free, no signup.",

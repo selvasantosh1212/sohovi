@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free JSON to CSV Converter Online — Flatten Nested JSON",
   description:
     "Convert JSON to CSV online for free. Paste JSON or upload a .json file. Flattens nested objects automatically. Browser-based — nothing uploaded.",
-  keywords: [
-    "json to csv",
-    "convert json to csv online",
-    "json array to csv",
-    "flatten json to csv",
-    "json to spreadsheet",
-    "json to excel",
-  ],
   openGraph: {
     title: "Free JSON to CSV Converter — Paste or Upload JSON",
     description: "Convert any JSON array to CSV. Auto-flattens nested objects. Browser-based, no signup.",

@@ -5,11 +5,11 @@ interface Props {
 }
 
 export function BlogPostAuthor({ name, role, bio }: Props) {
-  const displayName = name ?? "Sohovi Team";
+  const displayName = name ?? "Selva Santosh";
   const displayRole = role ?? "Data quality, for people who ship";
   const displayBio =
     bio ??
-    "The Sohovi team writes practical guides on data quality, profiling, and governance to help teams ship better data.";
+    "Selva writes practical guides on data quality, profiling, and governance to help teams ship better data.";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (

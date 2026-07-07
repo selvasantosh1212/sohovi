@@ -6,16 +6,6 @@ export const metadata: Metadata = {
   title: "Free PII Scanner — Check Any File for Personal Data Before Sending",
   description:
     "Drag in a CSV or Excel file and instantly see every email, phone number, SSN, address, and API key it contains. 100% in your browser — nothing uploaded.",
-  keywords: [
-    "pii detector",
-    "pii scanner online",
-    "find personal data in file",
-    "check csv for personal information",
-    "detect ssn in excel",
-    "scan file for api keys",
-    "redact emails from csv online",
-    "find pii in spreadsheet",
-  ],
   openGraph: {
     title: "Free PII Scanner — Check Any File for Personal Data",
     description: "See every email, phone, SSN, address, and API key in your file before you send it. 100% browser-based.",

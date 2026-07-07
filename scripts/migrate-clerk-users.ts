@@ -4,12 +4,9 @@
  * OAuth users (Google, Microsoft) migrate fully and can sign in immediately.
  *
  * Usage:
- *   1. Fill in PROD_SECRET_KEY below (sk_live_... from Clerk Dashboard → API Keys)
+ *   1. Set CLERK_DEV_SECRET_KEY and CLERK_PROD_SECRET_KEY in your shell env (never hardcode keys here)
  *   2. npx ts-node --esm scripts/migrate-clerk-users.ts
  */
-
-const DEV_SECRET_KEY = "sk_test_flf6pPaMVlTPHGVYrYoPIoxcuWrpnJz3QBqjzYRjWS";
-const PROD_SECRET_KEY = "PASTE_YOUR_sk_live_KEY_HERE";
 
 const CLERK_API = "https://api.clerk.com/v1";
 
@@ -46,8 +43,10 @@ async function clerkPost(secretKey: string, path: string, body: object): Promise
 }
 
 async function migrate() {
-  if (PROD_SECRET_KEY === "PASTE_YOUR_sk_live_KEY_HERE") {
-    console.error("ERROR: Set PROD_SECRET_KEY in the script before running.");
+  const devSecretKey = process.env.CLERK_DEV_SECRET_KEY;
+  const prodSecretKey = process.env.CLERK_PROD_SECRET_KEY;
+  if (!devSecretKey || !prodSecretKey) {
+    console.error("ERROR: Set CLERK_DEV_SECRET_KEY and CLERK_PROD_SECRET_KEY env vars before running.");
     process.exit(1);
   }
 
@@ -57,7 +56,7 @@ async function migrate() {
   let skipped = 0;
 
   while (true) {
-    const users = await clerkGet(DEV_SECRET_KEY, `/users?limit=${limit}&offset=${offset}`);
+    const users = await clerkGet(devSecretKey, `/users?limit=${limit}&offset=${offset}`);
     if (!users.length) break;
 
     for (const user of users) {
@@ -78,7 +77,7 @@ async function migrate() {
       if (user.first_name) body.first_name = user.first_name;
       if (user.last_name) body.last_name = user.last_name;
 
-      const res = await clerkPost(PROD_SECRET_KEY, "/users", body);
+      const res = await clerkPost(prodSecretKey, "/users", body);
       if (res.ok) {
         console.log(`Migrated: ${primaryEmail}`);
         migrated++;

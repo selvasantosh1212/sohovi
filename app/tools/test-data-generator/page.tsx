@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free Random Test Data Generator — Generate Fake CSV Data Online",
   description:
     "Generate realistic fake CSV test data online for free. Define columns, set row count (up to 100k), download as CSV or JSON. No signup, no limits.",
-  keywords: [
-    "fake data generator csv",
-    "random test data generator",
-    "mock data generator",
-    "generate fake csv data",
-    "synthetic data generator",
-    "dummy data generator csv",
-  ],
   openGraph: {
     title: "Free Random Test Data Generator — Fake CSV Data",
     description: "Generate realistic fake CSV or JSON data for testing. Up to 100k rows. No signup, browser-based.",

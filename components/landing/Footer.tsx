@@ -43,10 +43,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               {[
-                { label: "Data Profiling", href: "/#features" },
-                { label: "DQ Rules Engine", href: "/#features" },
-                { label: "Score Tracking", href: "/#features" },
-                { label: "Pricing", href: "/#pricing" },
+                { label: "Data Profiling", href: "/features/data-profiling" },
+                { label: "Data Quality Scoring", href: "/features/data-quality-scoring" },
+                { label: "PII Detection", href: "/features/pii-detection" },
+                { label: "Pricing", href: "/pricing" },
                 { label: "FAQ", href: "/#faq" },
               ].map((link) => (
                 <li key={link.label}>
@@ -104,7 +104,7 @@ export function Footer() {
             <ul className="space-y-2.5">
               {[
                 { label: "Privacy Policy", href: "/privacy" },
-                { label: "Privacy Architecture", href: "/#privacy" },
+                { label: "Security & Privacy Architecture", href: "/security" },
                 { label: "Terms of Service", href: "/terms" },
               ].map((link) => (
                 <li key={link.label}>

@@ -32,7 +32,7 @@ export function FinalCTA() {
             Start for Free →
           </Link>
           <Link
-            href="/#pricing"
+            href="/pricing"
             className="inline-flex items-center justify-center font-semibold px-8 py-3 text-base transition-all"
             style={{ border: "1.5px solid rgba(10,10,10,0.25)", color: "#0A0A0A", background: "transparent", borderRadius: "12px" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(10,10,10,0.06)"; }}

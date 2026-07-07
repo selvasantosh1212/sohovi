@@ -408,7 +408,7 @@ export function BlogAdminForm({ post }: Props) {
       {/* Author */}
       <details className={sectionCls}>
         <summary className="text-sm font-semibold text-gray-700 cursor-pointer list-none">
-          Author <span className="text-xs font-normal text-gray-400">(defaults to &quot;Sohovi Team&quot; if blank)</span>
+          Author <span className="text-xs font-normal text-gray-400">(defaults to &quot;Selva Santosh&quot; if blank)</span>
         </summary>
         <div className="mt-3 space-y-3">
           <div className="grid grid-cols-2 gap-3">
@@ -419,7 +419,7 @@ export function BlogAdminForm({ post }: Props) {
                 className={inputCls}
                 value={authorName}
                 onChange={(e) => setAuthorName(e.target.value)}
-                placeholder="Sohovi Team"
+                placeholder="Selva Santosh"
               />
             </div>
             <div>

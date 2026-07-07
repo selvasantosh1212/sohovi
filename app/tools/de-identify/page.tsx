@@ -6,17 +6,6 @@ export const metadata: Metadata = {
   title: "Free Research Data De-Identifier — Anonymize CSV Datasets In-Browser",
   description:
     "Detect direct and quasi-identifiers, mask or generalize them, check k-anonymity, and export a de-identified dataset with a methods log. 100% in your browser — raw data never uploaded.",
-  keywords: [
-    "de-identify data",
-    "data anonymization tool",
-    "anonymize csv online",
-    "k-anonymity tool",
-    "remove pii from dataset",
-    "de-identify research data",
-    "anonymize survey data",
-    "de-identify health data hipaa safe harbor",
-    "prepare research data for open access",
-  ],
   openGraph: {
     title: "Free Research Data De-Identifier — Anonymize Datasets In-Browser",
     description: "Detect PII and quasi-identifiers, apply masking/generalization, check k-anonymity. Nothing uploaded.",

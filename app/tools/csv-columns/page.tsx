@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free CSV Column Picker — Select, Drop & Rename Columns Online",
   description:
     "Select, drop, reorder, and rename columns from any CSV file — then download the result. Free, browser-based, your data never leaves your device.",
-  keywords: [
-    "extract columns csv",
-    "select columns csv online",
-    "drop columns csv",
-    "csv column filter",
-    "rename csv columns online",
-    "reorder csv columns",
-  ],
   openGraph: {
     title: "Free CSV Column Picker — Select, Drop & Rename Columns",
     description: "Pick the columns you want, drop the ones you don't, rename them, reorder — then download. Free, no signup.",

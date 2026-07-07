@@ -25,33 +25,23 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://sohovi.com"),
   title: {
-    default: "Sohovi — Privacy-First Data Quality Platform",
+    default: "Data Quality Tool for CSV & Excel — Privacy-First | Sohovi",
     template: "%s | Sohovi",
   },
   description:
     "Stop spending 40% of your day fixing bad data. Sohovi profiles, scores, and helps you repair data quality — entirely in your browser. Your data never leaves your device.",
-  keywords: [
-    "data quality",
-    "data profiling",
-    "DQ rules",
-    "CSV analysis",
-    "Excel analysis",
-    "data governance",
-    "privacy-first",
-    "no upload",
-  ],
   alternates: { canonical: "https://sohovi.com" },
   openGraph: {
     type: "website",
     siteName: "Sohovi",
     url: "https://sohovi.com",
-    title: "Sohovi — Privacy-First Data Quality Platform",
+    title: "Data Quality Tool for CSV & Excel — Privacy-First | Sohovi",
     description:
       "Profile and score your CSV/Excel data entirely in the browser. Zero server upload. Enterprise-grade data quality for small teams.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sohovi — Privacy-First Data Quality Platform",
+    title: "Data Quality Tool for CSV & Excel — Privacy-First | Sohovi",
     description: "Your data never leaves your browser. Data quality made simple.",
   },
 };

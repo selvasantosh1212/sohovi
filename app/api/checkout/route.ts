@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   const params: CheckoutSessionCreateParams = {
     product_cart: [{ product_id: productId, quantity: 1 }],
     return_url: `${baseUrl}/dashboard?payment=success`,
-    cancel_url: `${baseUrl}/#pricing`,
+    cancel_url: `${baseUrl}/pricing`,
     metadata: { clerk_user_id: userId },
     allowed_payment_method_types: ["credit", "debit"],
     ...(plan === "business" ? { subscription_data: { trial_period_days: 7 } } : {}),

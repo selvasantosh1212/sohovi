@@ -1,6 +1,12 @@
+import { auth } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   let body: { code?: unknown; code_verifier?: unknown; redirect_uri?: unknown };
   try {
     body = await request.json();
@@ -16,6 +22,11 @@ export async function POST(request: NextRequest) {
     typeof redirect_uri !== "string"
   ) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+  if (new URL(redirect_uri, baseUrl).origin !== new URL(baseUrl).origin) {
+    return Response.json({ error: "Invalid redirect_uri" }, { status: 400 });
   }
 
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;

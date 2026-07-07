@@ -6,17 +6,6 @@ export const metadata: Metadata = {
   title: "Free Duplicate Row Remover for CSV — No Signup, No Limits",
   description:
     "Upload your CSV and instantly remove duplicate rows — exact match or by selected columns. Free, browser-based, your data never leaves your device.",
-  keywords: [
-    "remove duplicates csv",
-    "deduplicate csv online",
-    "find duplicate rows csv",
-    "csv duplicate remover free",
-    "remove duplicate rows excel",
-    "unique rows csv",
-    "excel deduplication",
-    "csv deduplication tool",
-    "normalize csv data",
-  ],
   openGraph: {
     title: "Free Duplicate Row Remover for CSV Files",
     description: "Remove exact duplicates or column-subset duplicates from any CSV. 100% browser-based — nothing uploaded.",

@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free CSV Merger — Combine Multiple CSV Files Online",
   description:
     "Merge or combine multiple CSV files into one download — stack rows or join by a shared column. Free, browser-based, no signup, no row limits.",
-  keywords: [
-    "merge csv files online",
-    "combine csv files",
-    "append csv files",
-    "join csv files online",
-    "stack csv files",
-    "merge multiple csv online free",
-  ],
   openGraph: {
     title: "Free CSV Merger — Combine Multiple CSV Files Online",
     description: "Stack rows from multiple CSVs or join them by a shared column. Free, browser-based, no limits.",

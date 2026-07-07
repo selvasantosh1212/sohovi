@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free Excel Formula Explainer — Understand Any Formula in Plain English",
   description:
     "Paste any Excel or Google Sheets formula and get a plain-English explanation instantly. Covers VLOOKUP, SUMIF, IF, INDEX/MATCH, and 50+ functions. Free, no signup.",
-  keywords: [
-    "explain excel formula",
-    "excel formula explainer",
-    "what does this excel formula do",
-    "excel formula translator",
-    "google sheets formula explainer",
-    "understand excel formula",
-  ],
   openGraph: {
     title: "Free Excel Formula Explainer — Plain English Formula Translator",
     description: "Paste any Excel or Google Sheets formula — get a clear plain-English explanation. Covers 50+ functions. Free, no signup.",

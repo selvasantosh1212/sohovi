@@ -19,7 +19,7 @@ export function HardCTA({
   bullets,
   primaryHref = "/sign-up",
   primaryLabel = "Start free in Sohovi",
-  secondaryHref = "/#pricing",
+  secondaryHref = "/pricing",
   secondaryLabel = "See pricing",
 }: HardCTAProps) {
   return (

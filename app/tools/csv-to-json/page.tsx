@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "Free CSV to JSON Converter Online — No Signup, No Limits",
   description:
     "Convert CSV files to JSON arrays online for free. Supports array of objects, array of arrays, or nested JSON. Browser-based — your data never leaves your device.",
-  keywords: [
-    "csv to json",
-    "convert csv to json online",
-    "csv to json array",
-    "csv to json converter free",
-    "convert csv to json python alternative",
-    "csv to json no upload",
-  ],
   openGraph: {
     title: "Free CSV to JSON Converter — No Signup, No Limits",
     description: "Convert any CSV to JSON instantly. Array of objects, arrays, or nested by key. 100% browser-based.",

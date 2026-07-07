@@ -7,6 +7,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync, readdirSync } from "fs";
 import { resolve, join } from "path";
+import { execFileSync } from "child_process";
 
 // ── Load .env.local ──────────────────────────────────────────────────────────
 function loadEnvLocal() {
@@ -38,6 +39,25 @@ const POSTS_DIR = resolve(process.cwd(), "app/blog/posts");
 
 function readTime(content: string): number {
   return Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200));
+}
+
+/**
+ * True publish date proxy: the date the post file was first committed to git.
+ * Stable across reseeds (unlike `new Date()`), so re-running this script never
+ * drifts every post's published_at to "today" again.
+ */
+function gitFirstCommitDate(filepath: string): string | null {
+  try {
+    const out = execFileSync(
+      "git",
+      ["log", "--diff-filter=A", "--format=%aI", "--", filepath],
+      { cwd: process.cwd(), encoding: "utf-8" }
+    );
+    const dates = out.trim().split("\n").filter(Boolean);
+    return dates.length ? dates[dates.length - 1] : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Parse YAML frontmatter. Handles quoted strings and string[] arrays. */
@@ -91,10 +111,18 @@ function makeExcerpt(body: string): string {
     inPara = true;
     if (paraLines.join(" ").length > 100) break;
   }
-  return paraLines.join(" ")
+  const text = paraLines.join(" ")
     .replace(/\*\*/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .slice(0, 300);
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+  return truncateAtWordBoundary(text, 300);
+}
+
+/** Truncate to maxLength without cutting a word in half; appends "…" if shortened. */
+function truncateAtWordBoundary(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  const cut = text.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -146,7 +174,7 @@ async function seed() {
       published: true,           // all seeded posts go live
       clerk_user_id: SEED_USER,
       read_time_min: readTime(body),
-      published_at: NOW,
+      published_at: gitFirstCommitDate(filepath) ?? NOW,
     };
 
     const { error } = await supabase

@@ -41,6 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const SITE_URL = "https://sohovi.com";
+
 export default async function CategoryArchivePage({ params }: Props) {
   const { category } = await params;
   const name = await resolveCategory(category);
@@ -48,8 +50,44 @@ export default async function CategoryArchivePage({ params }: Props) {
 
   if (posts.length === 0) notFound();
 
+  const categorySlug = slugifyCategory(name);
+  const pageUrl = `${SITE_URL}/blog/category/${categorySlug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+          { "@type": "ListItem", position: 3, name, item: pageUrl },
+        ],
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${pageUrl}#page`,
+        url: pageUrl,
+        name: `${name} — Sohovi Blog`,
+        isPartOf: { "@id": `${SITE_URL}/blog#collection` },
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: posts.map((post, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `${SITE_URL}/blog/${post.slug}`,
+          })),
+        },
+      },
+    ],
+  };
+
   return (
     <div className="bh-shell">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="bh-hero">
         <nav className="bh-hero__crumb" aria-label="Breadcrumb">
           <Link href="/" className="bh-hero__crumb">Home</Link>

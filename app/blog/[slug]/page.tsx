@@ -43,7 +43,6 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: post.tags,
     alternates: { canonical: canonicalUrl },
     openGraph: {
       title,
@@ -94,9 +93,8 @@ function buildJsonLd(post: Awaited<ReturnType<typeof getPostBySlug>>, slug: stri
       dateModified:
         post.updated_at > (post.published_at ?? "") ? post.updated_at : (post.published_at ?? post.updated_at),
       author: {
-        "@type": "Organization",
-        name: post.author_name ?? "Sohovi Team",
-        url: SITE_URL,
+        "@type": "Person",
+        name: post.author_name ?? "Selva Santosh",
       },
       publisher: {
         "@type": "Organization",
@@ -201,7 +199,7 @@ export default async function BlogPostPage({
           <div className="byline">
             <div className="byline__avatar" aria-hidden="true">{authorInitial}</div>
             <div className="byline__info">
-              <span className="byline__name">{post.author_name ?? "Sohovi Team"}</span>
+              <span className="byline__name">{post.author_name ?? "Selva Santosh"}</span>
               <span className="byline__role">{post.author_role ?? "Data quality, for people who ship"}</span>
             </div>
             <div className="byline__meta">
@@ -250,6 +248,9 @@ export default async function BlogPostPage({
             {(() => {
               const cleaned = cleanInternalLinkPlaceholders(
                 post.content
+                  // Strip a leading "# Title" line — the H1 above already renders the title,
+                  // and MDX would otherwise render it a second time.
+                  .replace(/^\s*#\s+.+(?:\r?\n)+/, "")
                   .replace(/<!--[\s\S]*?-->/g, "")
                   .replace(/<(?![a-zA-Z/!])/g, "&lt;")
               );

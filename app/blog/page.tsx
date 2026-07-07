@@ -9,29 +9,25 @@ export const revalidate = 3600;
 const SITE_URL = "https://sohovi.com";
 const PAGE_SIZE = 24;
 
-export const metadata: Metadata = {
-  title: "Blog — Data Quality Insights",
-  description:
-    "Tutorials, best practices, and real-world guides on data quality, profiling, PII detection, and CSV validation — from the Sohovi team.",
-  keywords: ["data quality", "data profiling", "CSV validation", "data governance", "PII detection"],
-  alternates: { canonical: `${SITE_URL}/blog` },
-  openGraph: {
-    title: "Sohovi Blog — Data Quality Insights",
-    description:
-      "Practical guides on data profiling, DQ scoring, PII detection, and more.",
-    url: `${SITE_URL}/blog`,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Sohovi Blog — Data Quality Insights",
-    description: "Practical guides on data profiling, DQ scoring, PII detection, and more.",
-  },
-};
-
 type Props = {
   searchParams: Promise<{ page?: string; category?: string }>;
 };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const canonical = page > 1 ? `${SITE_URL}/blog?page=${page}` : `${SITE_URL}/blog`;
+  const title = page > 1 ? `Blog — Data Quality Insights (Page ${page})` : "Blog — Data Quality Insights";
+  const description =
+    "Tutorials, best practices, and real-world guides on data quality, profiling, PII detection, and CSV validation — from the Sohovi team.";
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
 
 export default async function BlogListPage({ searchParams }: Props) {
   const { page: pageParam, category } = await searchParams;
@@ -52,5 +48,42 @@ export default async function BlogListPage({ searchParams }: Props) {
     getPublishedPostCount(),
   ]);
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  return <BlogHomeClient posts={posts} page={page} totalPages={totalPages} />;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${SITE_URL}/blog#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+        ],
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE_URL}/blog#collection`,
+        url: `${SITE_URL}/blog`,
+        name: "Sohovi Blog — Data Quality Insights",
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: posts.map((post, i) => ({
+            "@type": "ListItem",
+            position: (page - 1) * PAGE_SIZE + i + 1,
+            url: `${SITE_URL}/blog/${post.slug}`,
+          })),
+        },
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <BlogHomeClient posts={posts} page={page} totalPages={totalPages} />
+    </>
+  );
 }

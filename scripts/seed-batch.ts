@@ -7,6 +7,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { execFileSync } from "child_process";
 
 // Load .env.local without dotenv dependency
 function loadEnvLocal() {
@@ -35,6 +36,25 @@ const SEED_USER = "seed-admin";
 
 function readTime(content: string): number {
   return Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200));
+}
+
+/**
+ * True publish date proxy: the date the batch file was first committed to git.
+ * Stable across reseeds (unlike `new Date()`), so re-running this script never
+ * drifts every post's published_at to "today" again.
+ */
+function gitFirstCommitDate(filepath: string): string | null {
+  try {
+    const out = execFileSync(
+      "git",
+      ["log", "--diff-filter=A", "--format=%aI", "--", filepath],
+      { cwd: process.cwd(), encoding: "utf-8" }
+    );
+    const dates = out.trim().split("\n").filter(Boolean);
+    return dates.length ? dates[dates.length - 1] : null;
+  } catch {
+    return null;
+  }
 }
 
 // ── Import all written batches ──────────────────────────────────────────────
@@ -71,40 +91,45 @@ import { cat31 } from "./blog-data/cat-31";
 import { cat32 } from "./blog-data/cat-32";
 import { catBehavior } from "./blog-data/cat-behavior";
 
-const ALL_POSTS = [
-  ...cat01,
-  ...cat02,
-  ...cat0305,
-  ...cat06,
-  ...cat07,
-  ...cat08,
-  ...cat09,
-  ...cat10,
-  ...cat11,
-  ...cat12,
-  ...cat13,
-  ...cat14,
-  ...cat15,
-  ...cat16,
-  ...cat17,
-  ...cat18,
-  ...cat19,
-  ...cat20,
-  ...cat21,
-  ...cat22,
-  ...cat23,
-  ...cat24,
-  ...toolsCluster,
-  ...cat25,
-  ...cat26,
-  ...cat27,
-  ...cat28,
-  ...cat29,
-  ...cat30,
-  ...cat31,
-  ...cat32,
-  ...catBehavior,
+const BATCHES: { posts: typeof cat01; file: string }[] = [
+  { posts: cat01, file: "scripts/blog-data/cat-01.ts" },
+  { posts: cat02, file: "scripts/blog-data/cat-02.ts" },
+  { posts: cat0305, file: "scripts/blog-data/cat-03-05.ts" },
+  { posts: cat06, file: "scripts/blog-data/cat-06.ts" },
+  { posts: cat07, file: "scripts/blog-data/cat-07.ts" },
+  { posts: cat08, file: "scripts/blog-data/cat-08.ts" },
+  { posts: cat09, file: "scripts/blog-data/cat-09.ts" },
+  { posts: cat10, file: "scripts/blog-data/cat-10.ts" },
+  { posts: cat11, file: "scripts/blog-data/cat-11.ts" },
+  { posts: cat12, file: "scripts/blog-data/cat-12.ts" },
+  { posts: cat13, file: "scripts/blog-data/cat-13.ts" },
+  { posts: cat14, file: "scripts/blog-data/cat-14.ts" },
+  { posts: cat15, file: "scripts/blog-data/cat-15.ts" },
+  { posts: cat16, file: "scripts/blog-data/cat-16.ts" },
+  { posts: cat17, file: "scripts/blog-data/cat-17.ts" },
+  { posts: cat18, file: "scripts/blog-data/cat-18.ts" },
+  { posts: cat19, file: "scripts/blog-data/cat-19.ts" },
+  { posts: cat20, file: "scripts/blog-data/cat-20.ts" },
+  { posts: cat21, file: "scripts/blog-data/cat-21.ts" },
+  { posts: cat22, file: "scripts/blog-data/cat-22.ts" },
+  { posts: cat23, file: "scripts/blog-data/cat-23.ts" },
+  { posts: cat24, file: "scripts/blog-data/cat-24.ts" },
+  { posts: toolsCluster, file: "scripts/blog-data/tools-cluster.ts" },
+  { posts: cat25, file: "scripts/blog-data/cat-25.ts" },
+  { posts: cat26, file: "scripts/blog-data/cat-26.ts" },
+  { posts: cat27, file: "scripts/blog-data/cat-27.ts" },
+  { posts: cat28, file: "scripts/blog-data/cat-28.ts" },
+  { posts: cat29, file: "scripts/blog-data/cat-29.ts" },
+  { posts: cat30, file: "scripts/blog-data/cat-30.ts" },
+  { posts: cat31, file: "scripts/blog-data/cat-31.ts" },
+  { posts: cat32, file: "scripts/blog-data/cat-32.ts" },
+  { posts: catBehavior, file: "scripts/blog-data/cat-behavior.ts" },
 ];
+
+const ALL_POSTS = BATCHES.flatMap(({ posts, file }) => {
+  const publishedAt = gitFirstCommitDate(resolve(process.cwd(), file)) ?? NOW;
+  return posts.map((post) => ({ ...post, publishedAt }));
+});
 
 // ── Cover image mapping ──────────────────────────────────────────────────────
 function getCoverImage(category: string): string {
@@ -124,13 +149,13 @@ async function seed() {
   console.log(`\nSeeding ${ALL_POSTS.length} posts from batch files...\n`);
   let ok = 0, fail = 0;
 
-  for (const post of ALL_POSTS) {
+  for (const { publishedAt, ...post } of ALL_POSTS) {
     const { error } = await supabase.from("blog_posts").upsert(
       {
         ...post,
         clerk_user_id: SEED_USER,
         read_time_min: readTime(post.content),
-        published_at: NOW,
+        published_at: publishedAt,
         cover_image_url: post.cover_image_url ?? getCoverImage(post.category),
         og_image_url: post.og_image_url ?? getCoverImage(post.category),
       },

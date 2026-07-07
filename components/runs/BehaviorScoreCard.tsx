@@ -19,6 +19,15 @@ const METRIC_LABEL: Record<string, string> = {
   distribution: "Distribution",
 };
 
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const SEVERITY_COLOR = {
   high:   { bg: "bg-red-50",    border: "border-red-200",    badge: "bg-red-100 text-red-700",    dot: "bg-red-500"    },
   medium: { bg: "bg-amber-50",  border: "border-amber-200",  badge: "bg-amber-100 text-amber-700", dot: "bg-amber-400"  },
@@ -83,7 +92,7 @@ export function BehaviorScoreCard({ behaviorScore, flags, runsCompared }: Props)
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 mt-0.5 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: flag.message.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") }}
+                    dangerouslySetInnerHTML={{ __html: escapeHtml(flag.message).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") }}
                   />
                   {flag.z_score < 90 && (
                     <p className="text-[10px] text-slate-400 mt-0.5">
