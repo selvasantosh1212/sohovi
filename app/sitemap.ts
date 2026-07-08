@@ -6,6 +6,15 @@ export const revalidate = 3600;
 
 const BASE = "https://sohovi.com";
 
+const LABS_SLUGS: { slug: string; lastModified: string }[] = [
+  { slug: "snapback", lastModified: "2026-07-07" },
+  { slug: "encore", lastModified: "2026-07-07" },
+  { slug: "signsync", lastModified: "2026-07-07" },
+  { slug: "shopify-tools", lastModified: "2026-07-07" },
+  { slug: "reftrack", lastModified: "2026-07-07" },
+  { slug: "shipnotes", lastModified: "2026-07-07" },
+];
+
 const TOOL_SLUGS: { slug: string; lastModified: string }[] = [
   { slug: "pii-audit", lastModified: "2026-06-17" },
   { slug: "compare", lastModified: "2026-06-17" },
@@ -41,6 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE}/tools/${slug}`,
       priority: 0.9,
       changeFrequency: "monthly" as const,
+      lastModified: new Date(lastModified),
+    })),
+    ...LABS_SLUGS.map(({ slug, lastModified }) => ({
+      url: `${BASE}/labs/${slug}`,
+      priority: 0.6,
+      changeFrequency: "weekly" as const,
       lastModified: new Date(lastModified),
     })),
     ...categories.map((c) => ({

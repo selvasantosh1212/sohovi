@@ -300,6 +300,28 @@ create index idx_blog_fts on blog_posts
   using gin(to_tsvector('english', coalesce(title,'') || ' ' || coalesce(excerpt,'')));
 
 -- ============================================================
+-- NEWTOOLS FORM (pre-launch /labs/* validation pages)
+-- ============================================================
+create table if not exists newtools_form (
+  id                  uuid primary key default gen_random_uuid(),
+  tool_slug           text not null,
+  email               text not null,
+  name                text,
+  would_pay           text,
+  how_solve_today     text,
+  must_have_reason    text,
+  additional_feedback text,
+  tool_answers        jsonb not null default '{}'::jsonb,
+  survey_completed_at timestamptz,
+  referrer            text,
+  landing_query       text,
+  user_agent          text,
+  created_at          timestamptz not null default now()
+);
+create index if not exists idx_newtools_form_tool_slug  on newtools_form(tool_slug);
+create index if not exists idx_newtools_form_created_at on newtools_form(created_at desc);
+
+-- ============================================================
 -- ROW LEVEL SECURITY
 -- All writes go through Server Actions with service_role key.
 -- Enable RLS but allow all for now — restrict per table below.
@@ -317,6 +339,7 @@ alter table workflow_applications enable row level security;
 alter table alerts             enable row level security;
 alter table alert_events       enable row level security;
 alter table blog_posts         enable row level security;
+alter table newtools_form      enable row level security;
 
 -- Service role bypasses RLS automatically — no policy needed for server-side.
 -- Public read policy for published blog posts:

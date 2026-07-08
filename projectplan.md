@@ -635,9 +635,48 @@ Full step-by-step generation instructions (exact preset/column-type clicks, exac
 
 ---
 
+## Sohovi Labs — Pre-Launch Validation Pages (2026-07-07 to 2026-07-08)
+
+**Why:** The founder has 6 researched micro-SaaS ideas (`saas_ideas_claude.md`) — SnapBack (Supabase/Neon/Turso backups), Encore (music teacher booking), SignSync (email signature manager), Shopify Tools (one automated merchant workflow, niche TBD by visitor voting), RefTrack (flat-fee affiliate tracking), ShipNotes (changelog tool) — each a separate, unrelated future product, not a Sohovi DQ feature. Rather than build any blind, validate demand first: one SEO-indexed landing page per idea on sohovi.com (infra convenience only), pitching the pain point + planned solution + an honest comparison against the named incumbent, capturing interest and structured feedback into one shared table, emailing the founder on every submission. Originally briefed as "8 tools"; reconciled to the 6 actually in the source doc.
+
+**Key decisions:**
+- **Indexed/SEO-optimized, not hidden** — reversed from an initial "unlisted, noindex" choice once the founder clarified visitors arrive via Google (either the problem itself or "[incumbent] alternative" searches). Still **not linked from main nav/footer**, so it doesn't dilute the core DQ product's navigation — found via search + direct links only.
+- **Two-phase feedback flow**: Step 1 is a single low-friction "Let's build X" CTA revealing just email(+name) — the core "someone wants this" signal, inserted immediately with its own email. Step 2 is an optional "answer a few quick questions" progressive-disclosure step (4 shared + 1-2 tool-specific questions, 8-9 total after the later content pass) that UPDATEs the same row and fires a second email. Nothing navigates away or scroll-jumps.
+- **Explicit "us vs. named incumbent" comparison section** on every page (Exclaimer, Rewardful/FirstPromoter, Beamer/Canny, MyMusicStaff, DIY pg_dump scripts) — this is what actually converts a comparison-shopping searcher.
+- **New minimal `LabsHeader`/`LabsFooter`**, not the site's `PublicNav`/`Footer` — those are hardcoded with DQ-product nav links (Pricing, Features) that would confuse a visitor who searched "Supabase backup."
+- **One shared `newtools_form` table**, discriminated by `tool_slug`, fixed columns for shared questions + a `tool_answers jsonb` column for per-tool questions (no migration needed to change a page's questions later).
+- **Resend for email** — first email integration in this repo (none existed before). Sends fire via Next.js `after()` so a Resend outage can never fail the user-facing submission; the row is already saved by the time the send runs.
+
+**Files created:**
+- `supabase/migrations/006_newtools_form.sql` (+ matching block in `supabase/schema.sql`) — the shared table, RLS enabled, no policy needed (service-role-only writes, matches existing convention)
+- `lib/validation/newtools-form.ts` — zod schemas for both phases
+- `lib/email/notify.ts` — `sendNewToolNotification()`, branches lead/survey
+- `app/actions/newtools-form.ts` — `startNewToolLead()` (insert + honeypot/time-trap guard), `completeNewToolSurvey()` (guarded update-by-id, blocks double-submit and forged ids)
+- `app/labs/layout.tsx`, `components/labs/{LabsHeader,LabsFooter,LabsHero,PainPointSection,ComparisonSection,SolutionSection,PricingPreview,FeedbackForm}.tsx` — shell + shared prop-driven sections; `FeedbackForm` is the two-phase state machine (`cta → step1 → step1-done → step2 → done`)
+- `app/labs/{snapback,encore,signsync,shopify-tools,reftrack,shipnotes}/{page.tsx,*Client.tsx}` — one metadata+JSON-LD `page.tsx` + one content `*Client.tsx` per idea, mirroring the existing `/tools/[slug]` page-pair convention; reuses `components/tools/ToolFAQ.tsx` as-is for FAQ + auto-generated `FAQPage` schema
+
+**Files modified:** `proxy.ts` (added `"/labs(.*)"` to public routes), `app/sitemap.ts` (added `LABS_SLUGS`), `package.json`/`package-lock.json` (added `resend`), `.env.local` (added `RESEND_API_KEY`, `NOTIFY_EMAIL`, `RESEND_FROM_ADDRESS` — not committed, gitignored).
+
+**Verification:** `npx tsc --noEmit` clean; `npm run build` succeeds, all 6 `/labs/*` routes statically prerendered. Fixed a real build-blocking bug (`LabsHero`, a Server Component, initially had JS `onMouseEnter`/`onMouseLeave` handlers copied from a client component — moved to a CSS-only `hover:` class). **Pipeline validated against live infrastructure**, not just inspected: a throwaway script exercised the real Supabase table (insert, update, the double-submit guard) and sent a real email through the real Resend account, then deleted the test row — all passed. That test surfaced a second real bug: the Resend SDK returns `{ data, error }` on failure rather than throwing, so `notify.ts` originally would have silently swallowed a real send failure with no log; fixed to check and log the `error` field explicitly. Confirmed `proxy.ts` change didn't regress `/dashboard` gating or `/tools/*`. **Not verified**: actual visual/interactive review in a real browser — no browser tool was available this session.
+
+**Content deep-dive pass** (2026-07-08, after founder review flagged missing data/keywords): expanded every page's FAQ from 5 to 8-9 questions targeting real long-tail search phrases; closed keyword gaps against the source doc's named GTM queries (SignSync needed "generator" not just "manager"; RefTrack needed "affiliate program for small SaaS"; Shopify Tools needed "order tagging"/"supplier CSV import" in title, not just body); added conversion details that existed in the source doc but were missing from the pages — SnapBack's 14-day free trial, Encore's "first 10 teachers free for life" + 2-months-free annual, Shopify Tools' "first 50 stores free," RefTrack's "free until your first affiliate sale," ShipNotes' "your changelog page ranks in Google" selling point. Re-verified clean build after.
+
+**Remaining manual steps (founder-only):**
+1. ~~Run the migration in Supabase SQL editor~~ — done, confirmed live via REST query.
+2. ~~Set `RESEND_API_KEY` locally~~ — done, confirmed via a real send to `selvaganapathypari@gmail.com`.
+3. **Add `RESEND_API_KEY`/`NOTIFY_EMAIL`/`RESEND_FROM_ADDRESS` to Vercel Production env** — `.env.local` never deploys, so production email won't work until these are set there too.
+4. Optional later: verify the `sohovi.com` domain in Resend for a `labs@sohovi.com` sender instead of the `onboarding@resend.dev` sandbox address.
+5. A real click-through in a browser before sharing links publicly, to sanity-check visual design (not verified this session — no browser tool available).
+
+**Production URLs** (once Vercel env vars are set, per step 3 above): `sohovi.com/labs/{snapback,encore,signsync,shopify-tools,reftrack,shipnotes}` — not linked from site navigation by design, reachable by direct URL and, once Google crawls them, by search.
+
+---
+
 ## Current Session Status
 
 Sessions 1–8 complete. Session 9a–9d (DQ Rule Enhancements: description, scope filters, breaking records, profiling narrative) is **fully complete and closed out as of 2026-06-25** — `npm run build`/`npm run lint` pass clean, the post-implementation audit found and fixed 2 real issues (see Build notes above), and the user ran `supabase/migrations/002_dq_rules_description_and_scope.sql` in the Supabase SQL Editor, unblocking persistence. Post-migration live verification confirmed: a real rule with `description` + `scope_conditions` now saves successfully; the new "Scoped" badge renders with the correct tooltip (`status == Approved AND state == TamilNadu`) in `DimensionGroupAccordion`; the live Scoring Dashboard BREAKING popup works against a real persisted rule alongside the always-visible third-column panel. (Sandbox's "Save Rule" and the `runs/[runId]` historical-label check were exercised earlier pre-migration and via the original browser pass — not re-run post-migration since the same code paths were already confirmed correct; low marginal value to re-test given the migration only affects what columns exist, not the rendering logic.)
 Session 9e (Business Glossary) remains designed but **not started** — deferred as its own follow-up. Sessions 10–15 are planned and ready to build after that — say **"proceed"** to start any session.
 
 The Marketing & Training Video Content Strategy work (above) is **complete as of 2026-06-28** — `video_tutorials.md` grew from 147 to 155 scripts, plan-tier gating was audited and corrected for 7 videos, and 3 new Domain Vertical datasets (Banking/Supply Chain/Healthcare) were specified. The 4 numbered follow-ups in that section (PII video correction, remaining Pro-tier labels, unused plan-limit flags, stale "Weight" UI references) are open and unscheduled.
+
+The Sohovi Labs — Pre-Launch Validation Pages work (above) is **code-complete and pipeline-verified as of 2026-07-08**, and pushed to GitHub. All 6 `/labs/*` pages build clean and are wired into `sitemap.xml`/`proxy.ts`. Both founder-only setup steps (Supabase migration, Resend API key) are done and were verified against live infrastructure, not just assumed. **Still open**: add the Resend env vars to Vercel Production (local `.env.local` doesn't deploy) — until that's done, production pages will save form submissions fine but won't send the notification email. Also still open: a real browser click-through for visual QA (no browser tool was available in any session so far). This is a standalone initiative, not part of the numbered Session 10-15 roadmap below — those remain unstarted and unaffected by this work.
