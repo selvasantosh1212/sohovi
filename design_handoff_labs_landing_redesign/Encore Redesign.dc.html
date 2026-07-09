@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; background: #F8FAFC; }
+    body { font-family: 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1A1A2E; text-decoration: none; }
+    a:hover { color: #0D0D1A; }
+    button { font-family: inherit; }
+    input, textarea { font-family: inherit; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseRing { 0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); } 50% { box-shadow: 0 0 0 6px rgba(245,158,11,0); } }
+    @keyframes sendBob { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; min-height: 100vh; background: #F8FAFC; color: #1A1A2E;">
+
+  <!-- Honesty strip -->
+  <div style="background: #1A1A2E; color: rgba(255,255,255,0.85); font-size: 12.5px; text-align: center; padding: 8px 24px; line-height: 1.5;">
+    <strong style="color: #FFFFFF;">This tool isn't built yet.</strong> This page validates demand — if enough people raise a hand, we build it and email you first.
+  </div>
+
+  <!-- Header -->
+  <header style="background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 40;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;">
+      <a href="#" style="display: inline-flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: #1A1A2E;">sohovi</span>
+        <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; padding: 3px 9px; border-radius: 9999px; background: rgba(0,201,167,0.08); color: #007A66; border: 1px solid rgba(0,201,167,0.25);">Labs</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="#how-it-works" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">How It Works</a>
+        <a href="#pricing" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">Pricing</a>
+        <a href="#build-this" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-size: 13.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">Join the List →</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1;">
+    <!-- Hero -->
+    <section data-screen-label="Hero" style="background: #F8FAFC; padding: 72px 0 80px;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 6px 14px; border-radius: 9999px; font-size: 12.5px; font-weight: 600; background: #FFFFFF; border: 1px solid #E2E8F0; color: #475569;">
+            <i data-lucide="music" style="width: 14px; height: 14px; color: #00C9A7;"></i>
+            For private &amp; studio music teachers
+          </div>
+          <h1 style="margin: 0; font-weight: 800; line-height: 1.06; font-size: clamp(36px, 4.6vw, 56px); letter-spacing: -0.03em; color: #1A1A2E; text-wrap: balance;">
+            Your students, schedule, and billing live in <span style="color: {{ accent }};">three different apps</span>.
+          </h1>
+          <p style="margin: 22px 0 0; font-size: 17.5px; line-height: 1.6; color: #475569; max-width: 480px; text-wrap: pretty;">
+            Encore brings recurring lessons, attendance, practice assignments, and parent billing into <strong style="color: #1A1A2E;">one place</strong> — built for how music teachers actually teach, not generic business scheduling.
+          </p>
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap;">
+            <a href="#build-this" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">{{ ctaLabel }} →</a>
+            <a href="#how-it-works" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #1A1A2E; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; transition: background-color 150ms;" style-hover="background: #F1F5F9;">See How It Works</a>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 13px; color: #64748B; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="calendar-check" style="width: 14px; height: 14px; color: #00C9A7;"></i>Makeups tracked automatically</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="users" style="width: 14px; height: 14px; color: #00C9A7;"></i>Parent portal, no passwords</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="badge-dollar-sign" style="width: 14px; height: 14px; color: #00C9A7;"></i>From $19/mo</span>
+          </div>
+        </div>
+
+        <!-- Product mockup: weekly studio schedule -->
+        <sc-if value="{{ showHeroMockup }}" hint-placeholder-val="{{ true }}">
+        <div aria-hidden="true" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; box-shadow: 0 8px 30px rgba(26,26,46,0.08); overflow: hidden; animation: fadeUp 0.6s ease both;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i data-lucide="calendar" style="width: 16px; height: 16px; color: #1A1A2E;"></i>
+              <span style="font-size: 13.5px; font-weight: 600; color: #1A1A2E;">Tuesday · 4 lessons</span>
+            </div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 9999px; background: rgba(245,158,11,0.08); color: #B45309; border: 1px solid rgba(245,158,11,0.25); animation: pulseRing 2s ease-in-out infinite;">2 makeup credits owed</span>
+          </div>
+          <div style="padding: 8px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.1s;">
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #475569; width: 62px;">3:30 PM</span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E;">Maya R.</span>
+              <span style="font-size: 12.5px; color: #64748B; flex: 1;">Piano · Grade 3</span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #059669;"><i data-lucide="check" style="width: 12px; height: 12px;"></i>Attended</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.2s;">
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #475569; width: 62px;">4:15 PM</span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E;">Leo T.</span>
+              <span style="font-size: 12.5px; color: #64748B; flex: 1;">Guitar · Beginner</span>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: rgba(245,158,11,0.08); color: #B45309; border: 1px solid rgba(245,158,11,0.25);">Makeup credit</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; animation: fadeUp 0.5s ease both; animation-delay: 0.3s;">
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #475569; width: 62px;">5:00 PM</span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E;">Ava S.</span>
+              <span style="font-size: 12.5px; color: #64748B; flex: 1;">Voice · Grade 5</span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #059669;"><i data-lucide="receipt" style="width: 12px; height: 12px;"></i>Invoice paid</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
+            <span style="font-size: 12px; color: #64748B;">Practice assignments auto-emailed after each lesson</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #007A66;"><i data-lucide="send" style="width: 13px; height: 13px; animation: sendBob 1.4s ease-in-out infinite;"></i>Sent to 3 parents</span>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" data-screen-label="How it works" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it works</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">From spreadsheet chaos to a running studio in an afternoon</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">No new habits to learn. Encore mirrors how lessons already work — weekly slots, makeups, monthly billing.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+          <sc-for list="{{ steps }}" as="step" hint-placeholder-count="3">
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 28px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                <span style="font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 600; color: {{ accent }};">{{ step.num }}</span>
+                <span style="height: 1px; flex: 1; background: #E2E8F0;"></span>
+                <i data-lucide="{{ step.icon }}" style="width: 20px; height: 20px; color: #1A1A2E;"></i>
+              </div>
+              <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 700; color: #1A1A2E;">{{ step.title }}</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ step.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section data-screen-label="Problem" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: start;">
+          <div style="position: sticky; top: 96px;">
+            <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">The problem</p>
+            <h2 style="margin: 0 0 14px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Generic scheduling tools don't understand lessons</h2>
+            <p style="margin: 0; font-size: 16px; line-height: 1.65; color: #64748B; text-wrap: pretty;">Calendly plus a spreadsheet plus a payment app can just barely work — until you have 20 students and need to track makeups.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <sc-for list="{{ pains }}" as="pain" hint-placeholder-count="3">
+              <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; display: flex; gap: 18px; align-items: flex-start; box-shadow: 0 1px 2px rgba(26,26,46,0.04); transition: box-shadow 150ms;" style-hover="box-shadow: 0 4px 12px rgba(26,26,46,0.08);">
+                <div style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);">
+                  <i data-lucide="{{ pain.icon }}" style="width: 18px; height: 18px; color: #EF4444;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0 0 6px; font-size: 16.5px; font-weight: 700; color: #1A1A2E;">{{ pain.title }}</h3>
+                  <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ pain.body }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section data-screen-label="Solution" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">What we'd build</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">Everything a lesson studio needs — nothing else</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">Encore isn't another all-purpose booking tool. It's built around the weekly rhythm of teaching: lessons, makeups, practice, billing.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
+            <div style="border: 1px solid #E2E8F0; border-radius: 14px; padding: 22px;">
+              <i data-lucide="{{ f.icon }}" style="width: 20px; height: 20px; color: #00C9A7; margin-bottom: 14px;"></i>
+              <h3 style="margin: 0 0 6px; font-size: 15.5px; font-weight: 700; color: #1A1A2E;">{{ f.title }}</h3>
+              <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: #64748B;">{{ f.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison -->
+    <section data-screen-label="Comparison" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 880px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it compares</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Encore vs. what teachers use today</h2>
+        <p style="margin: 0 0 36px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">The honest alternatives are MyMusicStaff — the dated incumbent — or duct-taping Calendly to a spreadsheet. Here's the difference.</p>
+        <div style="overflow-x: auto; border-radius: 16px; border: 1px solid #E2E8F0; background: #FFFFFF; box-shadow: 0 1px 2px rgba(26,26,46,0.04);">
+          <div style="min-width: 600px;">
+            <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr;">
+              <div style="padding: 18px 20px;"></div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 700; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: center; gap: 8px;">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{ accent }};"></span>Encore
+              </div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 600; color: #64748B;">MyMusicStaff / Calendly + spreadsheet</div>
+            </div>
+            <sc-for list="{{ compareRows }}" as="row" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; border-top: 1px solid #F1F5F9;">
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">{{ row.feature }}</div>
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: flex-start; gap: 8px;">
+                  <i data-lucide="check" style="width: 14px; height: 14px; color: {{ accent }}; flex-shrink: 0; margin-top: 2px;"></i>{{ row.us }}
+                </div>
+                <div style="padding: 16px 20px; font-size: 13.5px; color: #64748B;">{{ row.them }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <p style="margin: 18px 0 0; font-size: 13px; color: #64748B;">MyMusicStaff is the established incumbent — functional, but the UX hasn't kept up. That gap is the opening.</p>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" data-screen-label="Pricing" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 880px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Planned pricing</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Simple, honest pricing</h2>
+        <p style="margin: 0 0 40px; font-size: 15px; color: #64748B;">2 months free on annual billing. Not final: tell us below if this works for your studio.</p>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; align-items: stretch; max-width: 640px;">
+          <sc-for list="{{ plans }}" as="p" hint-placeholder-count="2">
+            <div style="border-radius: 16px; padding: 26px; display: flex; flex-direction: column; background: {{ p.bg }}; border: 1px solid {{ p.border }}; box-shadow: {{ p.shadow }};">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <p style="margin: 0; font-size: 14px; font-weight: 700; color: {{ p.nameColor }};">{{ p.name }}</p>
+                <sc-if value="{{ p.highlight }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 10px; border-radius: 9999px; background: {{ accent }}; color: #FFFFFF;">Most Popular</span>
+                </sc-if>
+              </div>
+              <p style="margin: 0 0 4px;"><span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: {{ p.priceColor }};">{{ p.price }}</span><span style="font-size: 13px; margin-left: 4px; color: {{ p.mutedColor }};">{{ p.period }}</span></p>
+              <p style="margin: 0 0 18px; font-size: 12.5px; color: {{ p.mutedColor }};">{{ p.tagline }}</p>
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+                <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="3">
+                  <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: {{ p.featureColor }};">
+                    <i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>{{ f }}
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 24px 0 0; font-size: 13px; color: #64748B; max-width: 60ch;">The first 10 teachers who sign up below get lifetime free access in exchange for feedback while we build.</p>
+      </div>
+    </section>
+
+    <!-- Waitlist / feedback (dark) -->
+    <section id="build-this" data-screen-label="Waitlist" style="background: #1A1A2E; padding: 88px 0;">
+      <div style="max-width: 640px; margin: 0 auto; padding: 0 24px;">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Raise your hand</p>
+          <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #FFFFFF;">Want Encore to exist?</h2>
+          <p style="margin: 0 auto; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,0.65); max-width: 44ch;">Takes 10 seconds, no commitment. No product yet, no spam — one email when it ships, and your answers shape what we build.</p>
+        </div>
+        <div style="border-radius: 20px; padding: 32px; background: #FFFFFF; border: 1px solid #E2E8F0;">
+          <sc-if value="{{ phaseCta }}" hint-placeholder-val="{{ true }}">
+            <div style="text-align: center;">
+              <h3 style="margin: 0 0 8px; font-weight: 700; font-size: 21px; color: #1A1A2E;">Count me in</h3>
+              <p style="margin: 0 0 22px; font-size: 14px; color: #64748B;">We'll email you the moment it's ready — nothing else.</p>
+              <button type="button" onClick="{{ goStep1 }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">{{ ctaLabel }} →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 19px; color: #1A1A2E;">{{ ctaLabel }}</h3>
+              <p style="margin: -8px 0 0; font-size: 13.5px; color: #64748B;">Just your email — we'll let you know the moment it launches.</p>
+              <div>
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Email</label>
+                <input type="email" placeholder="you@studio.com" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;" style-focus="border-color: {{ accent }};">
+              </div>
+              <div>
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Name <span style="font-weight: 400; color: #64748B;">(optional)</span></label>
+                <input type="text" placeholder="Jane Doe" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;" style-focus="border-color: {{ accent }};">
+              </div>
+              <button type="button" onClick="{{ goStep1Done }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Count Me In →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1Done }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="check-circle-2" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">You're on the list</p>
+              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B;">We'll email you the moment Encore is ready.</p>
+              <div style="padding-top: 20px; border-top: 1px solid #E2E8F0;">
+                <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #1A1A2E;">Got a minute? Help us build this right.</p>
+                <button type="button" onClick="{{ goStep2 }}" style="font-size: 13.5px; font-weight: 600; padding: 10px 22px; border-radius: 9999px; background: #F8FAFC; border: 1px solid #E2E8F0; color: #1A1A2E; cursor: pointer; transition: background-color 150ms;" style-hover="background: #F1F5F9;">Answer a Few Quick Questions</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 18px; color: #1A1A2E;">A few quick questions</h3>
+              <div>
+                <p style="margin: 0 0 8px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">Would you pay for this if it worked exactly as described?</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ wouldPayOptions }}" as="opt" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ opt.onClick }}" style="font-size: 13px; font-weight: 500; padding: 8px 15px; border-radius: 9999px; background: {{ opt.bg }}; color: {{ opt.color }}; border: 1px solid {{ opt.border }}; cursor: pointer; transition: background-color 150ms;">{{ opt.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">How do you handle this today?</label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">What would make this a must-have for you?</label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <div>
+                <p style="margin: 0 0 8px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">How many students do you currently teach?</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ toolOptions }}" as="opt" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ opt.onClick }}" style="font-size: 13px; font-weight: 500; padding: 8px 15px; border-radius: 9999px; background: {{ opt.bg }}; color: {{ opt.color }}; border: 1px solid {{ opt.border }}; cursor: pointer; transition: background-color 150ms;">{{ opt.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">What do you use today to manage lessons and billing?</label>
+                <input type="text" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Anything else you'd want it to do? <span style="font-weight: 400; color: #64748B;">(optional)</span></label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <button type="button" onClick="{{ goDone }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Send My Answers →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseDone }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="heart-handshake" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">Thank you — this genuinely helps.</p>
+              <p style="margin: 0; font-size: 13.5px; color: #64748B;">We read every answer. You'll hear from us as Encore takes shape.</p>
+            </div>
+          </sc-if>
+        </div>
+        <p style="margin: 18px 0 0; text-align: center; font-size: 12.5px; color: rgba(255,255,255,0.45);">Your email is used for exactly one thing: telling you when Encore exists.</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section data-screen-label="FAQ" style="background: #F8FAFC; padding: 88px 0;">
+      <div style="max-width: 820px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Questions</p>
+        <h2 style="margin: 0 0 32px; font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Frequently asked questions</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ faqs }}" as="faq" hint-placeholder-count="9">
+            <div style="border-radius: 12px; border: 1px solid #E2E8F0; background: #FFFFFF; overflow: hidden;">
+              <button type="button" onClick="{{ faq.toggle }}" style="width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 20px; background: none; border: none; cursor: pointer;">
+                <span style="font-size: 14.5px; font-weight: 600; color: #1A1A2E;">{{ faq.q }}</span>
+                <i data-lucide="chevron-down" style="width: 16px; height: 16px; flex-shrink: 0; color: #64748B; transition: transform 150ms; transform: {{ faq.chevron }};"></i>
+              </button>
+              <div style="padding: 0 20px 17px; font-size: 13.5px; line-height: 1.65; color: #64748B; display: {{ faq.display }};">{{ faq.a }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 36px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <p style="margin: 0; font-size: 13px; color: #64748B;">An early-stage concept from the <a href="#" style="color: #1A1A2E; font-weight: 600;">Sohovi</a> team — not a live product yet.</p>
+      <div style="display: flex; align-items: center; gap: 18px; font-size: 13px;">
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Privacy</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Terms</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#6D5BA8&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#6D5BA8&quot;, &quot;#E07150&quot;, &quot;#00C9A7&quot;], &quot;section&quot;: &quot;Visual direction&quot; },
+  &quot;ctaLabel&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Let's Build Encore&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Copy&quot; },
+  &quot;showHeroMockup&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Layout&quot; }
+}">
+class Component extends DCLogic {
+  state = { phase: "cta", wouldPay: null, toolAnswer: null, openFaq: 0 };
+
+  componentDidMount() { this.renderIcons(); }
+  componentDidUpdate() { this.renderIcons(); }
+  renderIcons() { if (window.lucide) window.lucide.createIcons(); }
+
+  renderVals() {
+    const { phase, wouldPay, toolAnswer, openFaq } = this.state;
+    const accent = this.props.accent ?? "#6D5BA8";
+    const darken = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      const f = (v) => Math.max(0, Math.round(v * 0.82));
+      return "#" + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, "0")).join("");
+    };
+    const tint = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},0.06)`;
+    };
+    const set = (p) => () => this.setState({ phase: p });
+    const pill = (active) => ({
+      bg: active ? accent : "#FFFFFF",
+      color: active ? "#fff" : "#1A1A2E",
+      border: active ? accent : "#E2E8F0",
+    });
+
+    const wouldPayRaw = [
+      { value: "yes", label: "Yes, definitely" },
+      { value: "maybe", label: "Maybe, depends on price" },
+      { value: "no", label: "No" },
+    ];
+    const toolRaw = [
+      { value: "<15", label: "Fewer than 15" },
+      { value: "15-30", label: "15–30" },
+      { value: "30+", label: "30+" },
+    ];
+
+    const plansRaw = [
+      { name: "Solo Teacher", price: "$19", period: "/mo", tagline: "For up to 30 students", features: ["Up to 30 students", "Recurring scheduling", "Parent portal"], highlight: false },
+      { name: "Studio", price: "$29", period: "/mo", tagline: "For growing studios", features: ["Unlimited students", "Recurring scheduling", "Parent portal"], highlight: true },
+    ];
+
+    const faqsRaw = [
+      { q: "Is Encore live yet?", a: "Not yet — this page exists to gauge interest before we build it. If enough teachers want this, we'll build it next and email everyone who signed up." },
+      { q: "How is this different from MyMusicStaff?", a: "Same core idea — lessons, students, and billing in one place — but rebuilt with a modern interface and a parent portal that doesn't require a password or app download." },
+      { q: "Will it handle group lessons?", a: "The first version focuses on 1-on-1 recurring lessons, the most common setup for private and studio teachers. Group lessons are a likely fast-follow if there's demand." },
+      { q: "Do parents need to create an account?", a: "No. Parents get a magic link by email that opens a read-only view of upcoming lessons, assignments, and invoices — no password required." },
+      { q: "Can I take payments through Encore?", a: "Yes, planned via Stripe invoicing for teachers who want online payment, with a simple 'mark as paid' option for teachers who collect cash or bank transfer." },
+      { q: "Can I import my existing student list?", a: "Yes — a CSV import for your current roster is planned so switching from a spreadsheet, Calendly, or MyMusicStaff doesn't mean re-entering every student by hand." },
+      { q: "Does Encore work for any instrument, or just piano?", a: "Any instrument — piano, guitar, voice, violin, drums, and so on. Instrument is just a field on each student's profile, not a separate product." },
+      { q: "Is there a mobile app?", a: "The first version is a mobile-friendly web app that works well on a phone browser for both teachers and parents. A dedicated app is a possible fast-follow if there's demand." },
+      { q: "How much does Encore cost?", a: "Planned pricing is $19/month for a solo teacher with up to 30 students, or $29/month for unlimited students — with 2 months free on annual billing. The first 10 teachers who sign up get lifetime free access." },
+    ];
+
+    return {
+      accent,
+      accentDark: darken(accent),
+      accentTint: tint(accent),
+      ctaLabel: this.props.ctaLabel ?? "Let's Build Encore",
+      showHeroMockup: this.props.showHeroMockup ?? true,
+
+      steps: [
+        { num: "01", icon: "users", title: "Add your roster", body: "Import your students from a CSV or add them by hand — instrument, level, rate, parent contact, and notes all live on one profile." },
+        { num: "02", icon: "calendar-clock", title: "Set recurring lessons", body: "Weekly slots with drag-to-reschedule. Attendance and makeup credits are tracked automatically — no more mental bookkeeping." },
+        { num: "03", icon: "receipt", title: "Bill from lessons taught", body: "Monthly invoices generate themselves from actual lessons. Stripe for online payment, or mark-paid for cash — parents see it all via magic link." },
+      ],
+      pains: [
+        { icon: "calendar-x", title: "Makeup lessons fall through the cracks", body: "Recurring weekly slots, cancellations, and makeup credits need real tracking. A shared calendar just shows an event — not who owes a makeup and who doesn't." },
+        { icon: "users", title: "Per-student progress lives in your head", body: "Instrument, level, notes, and practice assignments for each student rarely live anywhere a parent can actually see them." },
+        { icon: "circle-dollar-sign", title: "Billing means chasing parents manually", body: "Without lesson-based invoicing, billing means remembering who paid, who didn't, and sending awkward reminder texts every month." },
+      ],
+      features: [
+        { icon: "users", title: "Student roster", body: "Instrument, level, parent contact, notes, and rate — one profile per student, everything in one place." },
+        { icon: "calendar-clock", title: "Recurring scheduling", body: "Weekly lesson slots with drag-to-reschedule. Built for the rhythm of teaching, not one-off bookings." },
+        { icon: "check-check", title: "Attendance & makeup credits", body: "Cancellations become makeup credits automatically. Always know exactly who's owed what." },
+        { icon: "send", title: "Practice assignments", body: "Auto-emailed to students and parents after each lesson — the follow-through that usually gets skipped." },
+        { icon: "receipt", title: "Invoicing from lessons taught", body: "Monthly invoices generated from the actual schedule. Stripe, or mark-paid-manually for cash and transfers." },
+        { icon: "link", title: "Parent portal via magic link", body: "Read-only view of lessons, assignments, and invoices. No passwords, no app to download." },
+      ],
+      compareRows: [
+        { feature: "Built for music lessons", us: "Instrument, level & makeups built in", them: "MyMusicStaff: yes, dated UX. Calendly: no, it's generic" },
+        { feature: "Parent visibility", us: "Read-only portal via magic link", them: "Email chains, or nothing at all" },
+        { feature: "Practice assignments", us: "Auto-emailed after every lesson", them: "Manual text or email, if it happens" },
+        { feature: "Setup & feel", us: "Minutes, modern interface", them: "MyMusicStaff feels like it hasn't changed since 2010" },
+      ],
+      plans: plansRaw.map((p) => ({
+        ...p,
+        bg: p.highlight ? "#1A1A2E" : "#FFFFFF",
+        border: p.highlight ? "#1A1A2E" : "#E2E8F0",
+        shadow: p.highlight ? "0 8px 30px rgba(26,26,46,0.18)" : "0 1px 2px rgba(26,26,46,0.04)",
+        nameColor: p.highlight ? "#FFFFFF" : "#1A1A2E",
+        priceColor: p.highlight ? "#FFFFFF" : "#1A1A2E",
+        mutedColor: p.highlight ? "rgba(255,255,255,0.55)" : "#64748B",
+        featureColor: p.highlight ? "rgba(255,255,255,0.85)" : "#475569",
+      })),
+
+      phaseCta: phase === "cta",
+      phaseStep1: phase === "step1",
+      phaseStep1Done: phase === "step1-done",
+      phaseStep2: phase === "step2",
+      phaseDone: phase === "done",
+      goStep1: set("step1"),
+      goStep1Done: set("step1-done"),
+      goStep2: set("step2"),
+      goDone: set("done"),
+      wouldPayOptions: wouldPayRaw.map((o) => ({
+        label: o.label,
+        onClick: () => this.setState({ wouldPay: o.value }),
+        ...pill(wouldPay === o.value),
+      })),
+      toolOptions: toolRaw.map((o) => ({
+        label: o.label,
+        onClick: () => this.setState({ toolAnswer: o.value }),
+        ...pill(toolAnswer === o.value),
+      })),
+      faqs: faqsRaw.map((f, i) => ({
+        q: f.q,
+        a: f.a,
+        toggle: () => this.setState({ openFaq: openFaq === i ? null : i }),
+        chevron: openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
+        display: openFaq === i ? "block" : "none",
+      })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

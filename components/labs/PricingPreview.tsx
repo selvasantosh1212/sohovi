@@ -1,79 +1,105 @@
+import { Check } from "lucide-react";
+
 interface PricingPlan {
   name: string;
   price: string;
   period?: string;
+  tagline: string;
   features: string[];
   highlight?: boolean;
+  badge?: string; // e.g. "Most Popular" or "One Plan"
 }
 
 interface PricingPreviewProps {
-  plans: PricingPlan[];
+  headline?: string;
+  intro: string;
   accent: string;
-  note?: string;
+  plans: PricingPlan[];
+  footnote?: string;
 }
 
-const GRID_CLASS_BY_COUNT: Record<number, string> = {
-  1: "grid gap-4 grid-cols-1 max-w-[260px]",
-  2: "grid gap-4 grid-cols-1 sm:grid-cols-2",
-  3: "grid gap-4 grid-cols-1 sm:grid-cols-3",
-};
-
-export function PricingPreview({ plans, accent, note }: PricingPreviewProps) {
-  const gridClass = GRID_CLASS_BY_COUNT[plans.length] ?? GRID_CLASS_BY_COUNT[3];
+function PlanCard({ plan, accent }: { plan: PricingPlan; accent: string }) {
+  const dark = !!plan.highlight;
   return (
-    <section className="py-14" style={{ borderTop: "1px solid var(--hair)" }}>
-      <div className="mx-auto max-w-[820px] px-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: "var(--ink-soft)" }}>
-          Planned pricing
-        </p>
-        <h2
-          className="font-bold mb-2"
-          style={{ fontSize: "clamp(26px, 3.4vw, 38px)", letterSpacing: "-0.02em", lineHeight: 1.15, color: "var(--ink)" }}
-        >
-          Simple, honest pricing
-        </h2>
-        <p className="mb-8 text-[14px]" style={{ color: "var(--ink-soft)" }}>
-          Not final — tell us below if this works for you.
-        </p>
-        <div className={gridClass}>
-          {plans.map((p) => (
-            <div
-              key={p.name}
-              className="rounded-2xl p-5"
-              style={{
-                background: p.highlight ? "var(--ink)" : "var(--paper)",
-                border: `1px solid ${p.highlight ? "var(--ink)" : "var(--hair-strong)"}`,
-              }}
-            >
-              <p className="text-[13px] font-bold mb-2" style={{ color: p.highlight ? accent : "var(--ink)" }}>
-                {p.name}
-              </p>
-              <p className="mb-3">
-                <span className="text-2xl font-bold" style={{ color: p.highlight ? "#fff" : "var(--ink)" }}>
-                  {p.price}
-                </span>
-                {p.period && (
-                  <span className="text-[12px] ml-1" style={{ color: p.highlight ? "rgba(255,255,255,0.6)" : "var(--ink-soft)" }}>
-                    {p.period}
-                  </span>
-                )}
-              </p>
-              <ul className="space-y-1.5">
-                {p.features.map((f) => (
-                  <li key={f} className="text-[12.5px]" style={{ color: p.highlight ? "rgba(255,255,255,0.8)" : "var(--ink-soft)" }}>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        {note && (
-          <p className="mt-6 text-[12px]" style={{ color: "var(--ink-soft)", opacity: 0.8 }}>
-            {note}
-          </p>
+    <div
+      style={{
+        borderRadius: "16px",
+        padding: dark ? "30px" : "26px",
+        display: "flex",
+        flexDirection: "column",
+        background: dark ? "#1A1A2E" : "#FFFFFF",
+        border: dark ? "1px solid #1A1A2E" : "1px solid #E2E8F0",
+        boxShadow: dark ? "0 8px 30px rgba(26,26,46,0.18)" : "0 1px 2px rgba(26,26,46,0.04)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+        <p style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: dark ? "#FFFFFF" : "#1A1A2E" }}>{plan.name}</p>
+        {plan.badge && (
+          <span
+            style={{
+              fontSize: "10.5px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              padding: "3px 10px",
+              borderRadius: "9999px",
+              background: accent,
+              color: "#FFFFFF",
+            }}
+          >
+            {plan.badge}
+          </span>
         )}
       </div>
+      <p style={{ margin: "0 0 4px" }}>
+        <span style={{ fontSize: "34px", fontWeight: 800, letterSpacing: "-0.02em", color: dark ? "#FFFFFF" : "#1A1A2E" }}>{plan.price}</span>
+        {plan.period && (
+          <span style={{ fontSize: "13px", marginLeft: "4px", color: dark ? "rgba(255,255,255,0.55)" : "#64748B" }}>{plan.period}</span>
+        )}
+      </p>
+      <p style={{ margin: "0 0 18px", fontSize: "12.5px", color: dark ? "rgba(255,255,255,0.55)" : "#64748B" }}>{plan.tagline}</p>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "9px" }}>
+        {plan.features.map((f) => (
+          <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "13.5px", color: dark ? "rgba(255,255,255,0.85)" : "#475569" }}>
+            <Check style={{ width: "14px", height: "14px", flexShrink: 0, marginTop: "2px", color: "#00C9A7" }} />
+            {f}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function PricingPreview({ intro, accent, plans, footnote }: PricingPreviewProps) {
+  const maxWidth = plans.length >= 3 ? "880px" : "640px";
+  const gridClass = plans.length === 3 ? "labs-pricing-3" : plans.length === 2 ? "labs-pricing-2" : "";
+
+  return (
+    <section id="pricing" style={{ background: "#FFFFFF", borderTop: "1px solid #E2E8F0", padding: "88px 0" }}>
+      <div style={{ maxWidth, margin: "0 auto", padding: "0 24px" }}>
+        <p style={{ margin: "0 0 14px", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: accent }}>
+          Planned pricing
+        </p>
+        <h2 style={{ margin: "0 0 12px", fontWeight: 700, fontSize: "clamp(28px, 3.6vw, 40px)", letterSpacing: "-0.02em", lineHeight: 1.12, color: "#1A1A2E" }}>
+          Simple, honest pricing
+        </h2>
+        <p style={{ margin: "0 0 40px", fontSize: "15px", color: "#64748B" }}>{intro}</p>
+
+        {plans.length === 1 ? (
+          <PlanCard plan={plans[0]} accent={accent} />
+        ) : (
+          <div className={gridClass} style={{ display: "grid", gridTemplateColumns: `repeat(${plans.length}, 1fr)`, gap: "20px", alignItems: "stretch" }}>
+            {plans.map((p) => (
+              <PlanCard key={p.name} plan={p} accent={accent} />
+            ))}
+          </div>
+        )}
+
+        {footnote && (
+          <p style={{ margin: "24px 0 0", fontSize: "13px", color: "#64748B", maxWidth: "60ch" }}>{footnote}</p>
+        )}
+      </div>
+      <style>{`@media (max-width: 640px) { .labs-pricing-3, .labs-pricing-2 { grid-template-columns: 1fr !important; } }`}</style>
     </section>
   );
 }

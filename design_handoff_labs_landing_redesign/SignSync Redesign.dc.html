@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; background: #F8FAFC; }
+    body { font-family: 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1A1A2E; text-decoration: none; }
+    a:hover { color: #0D0D1A; }
+    button { font-family: inherit; }
+    input, textarea, select { font-family: inherit; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes barGrow { from { width: 6%; } to { width: 95%; } }
+    @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; min-height: 100vh; background: #F8FAFC; color: #1A1A2E;">
+
+  <div style="background: #1A1A2E; color: rgba(255,255,255,0.85); font-size: 12.5px; text-align: center; padding: 8px 24px; line-height: 1.5;">
+    <strong style="color: #FFFFFF;">This tool isn't built yet.</strong> This page validates demand — if enough people raise a hand, we build it and email you first.
+  </div>
+
+  <header style="background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 40;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;">
+      <a href="#" style="display: inline-flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: #1A1A2E;">sohovi</span>
+        <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; padding: 3px 9px; border-radius: 9999px; background: rgba(0,201,167,0.08); color: #007A66; border: 1px solid rgba(0,201,167,0.25);">Labs</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="#how-it-works" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">How It Works</a>
+        <a href="#pricing" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">Pricing</a>
+        <a href="#build-this" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-size: 13.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">Join the List →</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1;">
+    <!-- Hero -->
+    <section data-screen-label="Hero" style="background: #F8FAFC; padding: 72px 0 80px;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 6px 14px; border-radius: 9999px; font-size: 12.5px; font-weight: 600; background: #FFFFFF; border: 1px solid #E2E8F0; color: #475569;">
+            <i data-lucide="building-2" style="width: 14px; height: 14px; color: #00C9A7;"></i>
+            For teams of 20–200 people
+          </div>
+          <h1 style="margin: 0; font-weight: 800; line-height: 1.06; font-size: clamp(36px, 4.6vw, 56px); letter-spacing: -0.03em; color: #1A1A2E; text-wrap: balance;">
+            Enterprise signature tools want <span style="color: {{ accent }};">100 seats minimum</span>. You have 40.
+          </h1>
+          <p style="margin: 22px 0 0; font-size: 17.5px; line-height: 1.6; color: #475569; max-width: 480px; text-wrap: pretty;">
+            SignSync deploys brand-consistent email signatures to every Gmail user on your team in <strong style="color: #1A1A2E;">one click</strong> — priced per seat, with no enterprise minimum.
+          </p>
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap;">
+            <a href="#build-this" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">{{ ctaLabel }} →</a>
+            <a href="#how-it-works" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #1A1A2E; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; transition: background-color 150ms;" style-hover="background: #F1F5F9;">See How It Works</a>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 13px; color: #64748B; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="mouse-pointer-click" style="width: 14px; height: 14px; color: #00C9A7;"></i>One-click Gmail deploy</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="users" style="width: 14px; height: 14px; color: #00C9A7;"></i>No seat minimum</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="badge-dollar-sign" style="width: 14px; height: 14px; color: #00C9A7;"></i>$1/user/mo</span>
+          </div>
+        </div>
+
+        <!-- Product mockup: signature deploy status -->
+        <sc-if value="{{ showHeroMockup }}" hint-placeholder-val="{{ true }}">
+        <div aria-hidden="true" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; box-shadow: 0 8px 30px rgba(26,26,46,0.08); overflow: hidden; animation: fadeUp 0.6s ease both;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i data-lucide="mail" style="width: 16px; height: 16px; color: #1A1A2E;"></i>
+              <span style="font-size: 13.5px; font-weight: 600; color: #1A1A2E;">Deploy: Q3 rebrand template</span>
+            </div>
+            <span style="font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 9999px; background: rgba(0,201,167,0.08); color: #007A66; border: 1px solid rgba(0,201,167,0.25);">38/40 synced</span>
+          </div>
+          <div style="padding: 16px 18px; border-bottom: 1px solid #F1F5F9;">
+            <div style="height: 8px; border-radius: 9999px; background: #F1F5F9; overflow: hidden;">
+              <div style="height: 100%; border-radius: 9999px; background: {{ accent }}; animation: barGrow 3.5s ease-out both;"></div>
+            </div>
+          </div>
+          <div style="padding: 8px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.1s;">
+              <span style="width: 26px; height: 26px; border-radius: 9999px; background: #E2E8F0; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">Sales team · 12 people</span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #059669;"><i data-lucide="check" style="width: 12px; height: 12px;"></i>Deployed</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.2s;">
+              <span style="width: 26px; height: 26px; border-radius: 9999px; background: #E2E8F0; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">Support team · 18 people</span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #059669;"><i data-lucide="check" style="width: 12px; height: 12px;"></i>Deployed</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; animation: fadeUp 0.5s ease both; animation-delay: 0.3s;">
+              <span style="width: 26px; height: 26px; border-radius: 9999px; background: #E2E8F0; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">Leadership · 10 people</span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: rgba(245,158,11,0.08); color: #B45309; border: 1px solid rgba(245,158,11,0.25);"><i data-lucide="loader-2" style="width: 11px; height: 11px; animation: spinSlow 1s linear infinite;"></i>Syncing…</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
+            <span style="font-size: 12px; color: #64748B;">Deployed via Google Workspace Admin</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #007A66;"><i data-lucide="shield-check" style="width: 13px; height: 13px;"></i>Never reads email content</span>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" data-screen-label="How it works" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it works</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">One template, deployed to every inbox in minutes</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">No IT ticket, no emailing an HTML file around. Set it once, push it everywhere, keep it current.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+          <sc-for list="{{ steps }}" as="step" hint-placeholder-count="3">
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 28px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                <span style="font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 600; color: {{ accent }};">{{ step.num }}</span>
+                <span style="height: 1px; flex: 1; background: #E2E8F0;"></span>
+                <i data-lucide="{{ step.icon }}" style="width: 20px; height: 20px; color: #1A1A2E;"></i>
+              </div>
+              <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 700; color: #1A1A2E;">{{ step.title }}</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ step.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section data-screen-label="Problem" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: start;">
+          <div style="position: sticky; top: 96px;">
+            <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">The problem</p>
+            <h2 style="margin: 0 0 14px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">The SMB signature gap nobody serves</h2>
+            <p style="margin: 0; font-size: 16px; line-height: 1.65; color: #64748B; text-wrap: pretty;">Companies with 20-200 employees need consistent signatures but don't fit enterprise tools built for 1,000-person orgs.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <sc-for list="{{ pains }}" as="pain" hint-placeholder-count="3">
+              <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; display: flex; gap: 18px; align-items: flex-start; box-shadow: 0 1px 2px rgba(26,26,46,0.04); transition: box-shadow 150ms;" style-hover="box-shadow: 0 4px 12px rgba(26,26,46,0.08);">
+                <div style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);">
+                  <i data-lucide="{{ pain.icon }}" style="width: 18px; height: 18px; color: #EF4444;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0 0 6px; font-size: 16.5px; font-weight: 700; color: #1A1A2E;">{{ pain.title }}</h3>
+                  <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ pain.body }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section data-screen-label="Solution" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">What we'd build</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">Set it once, deploy everywhere, stays current</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">SignSync isn't an all-purpose email tool — it does one job: keep every signature in your company on-brand, without chasing anyone.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
+            <div style="border: 1px solid #E2E8F0; border-radius: 14px; padding: 22px;">
+              <i data-lucide="{{ f.icon }}" style="width: 20px; height: 20px; color: #00C9A7; margin-bottom: 14px;"></i>
+              <h3 style="margin: 0 0 6px; font-size: 15.5px; font-weight: 700; color: #1A1A2E;">{{ f.title }}</h3>
+              <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: #64748B;">{{ f.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison -->
+    <section data-screen-label="Comparison" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 880px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it compares</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">SignSync vs. Exclaimer</h2>
+        <p style="margin: 0 0 36px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">WiseStamp is also enterprise-tilted. The 20-200 employee company is underserved by both.</p>
+        <div style="overflow-x: auto; border-radius: 16px; border: 1px solid #E2E8F0; background: #FFFFFF; box-shadow: 0 1px 2px rgba(26,26,46,0.04);">
+          <div style="min-width: 600px;">
+            <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr;">
+              <div style="padding: 18px 20px;"></div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 700; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: center; gap: 8px;">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{ accent }};"></span>SignSync
+              </div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 600; color: #64748B;">Exclaimer</div>
+            </div>
+            <sc-for list="{{ compareRows }}" as="row" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; border-top: 1px solid #F1F5F9;">
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">{{ row.feature }}</div>
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: flex-start; gap: 8px;">
+                  <i data-lucide="check" style="width: 14px; height: 14px; color: {{ accent }}; flex-shrink: 0; margin-top: 2px;"></i>{{ row.us }}
+                </div>
+                <div style="padding: 16px 20px; font-size: 13.5px; color: #64748B;">{{ row.them }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" data-screen-label="Pricing" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 640px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Planned pricing</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Simple, honest pricing</h2>
+        <p style="margin: 0 0 40px; font-size: 15px; color: #64748B;">$1/user/month undercuts Exclaimer's $2/user with no seat minimum. Not final — tell us below if this works for you.</p>
+        <div style="border-radius: 16px; padding: 30px; background: #1A1A2E; border: 1px solid #1A1A2E; box-shadow: 0 8px 30px rgba(26,26,46,0.18);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #FFFFFF;">Any team size</p>
+            <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 10px; border-radius: 9999px; background: {{ accent }}; color: #FFFFFF;">One Plan</span>
+          </div>
+          <p style="margin: 0 0 4px;"><span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF;">$1</span><span style="font-size: 13px; margin-left: 4px; color: rgba(255,255,255,0.55);">/user/mo</span></p>
+          <p style="margin: 0 0 18px; font-size: 12.5px; color: rgba(255,255,255,0.55);">$19/mo minimum spend</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>No seat minimum</li>
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>One-click Gmail deploy</li>
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>Campaign banners</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Waitlist / feedback (dark) -->
+    <section id="build-this" data-screen-label="Waitlist" style="background: #1A1A2E; padding: 88px 0;">
+      <div style="max-width: 640px; margin: 0 auto; padding: 0 24px;">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Raise your hand</p>
+          <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #FFFFFF;">Want SignSync to exist?</h2>
+          <p style="margin: 0 auto; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,0.65); max-width: 44ch;">Takes 10 seconds, no commitment. No product yet, no spam — one email when it ships, and your answers shape what we build.</p>
+        </div>
+        <div style="border-radius: 20px; padding: 32px; background: #FFFFFF; border: 1px solid #E2E8F0;">
+          <sc-if value="{{ phaseCta }}" hint-placeholder-val="{{ true }}">
+            <div style="text-align: center;">
+              <h3 style="margin: 0 0 8px; font-weight: 700; font-size: 21px; color: #1A1A2E;">Count me in</h3>
+              <p style="margin: 0 0 22px; font-size: 14px; color: #64748B;">We'll email you the moment it's ready — nothing else.</p>
+              <button type="button" onClick="{{ goStep1 }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">{{ ctaLabel }} →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 19px; color: #1A1A2E;">{{ ctaLabel }}</h3>
+              <p style="margin: -8px 0 0; font-size: 13.5px; color: #64748B;">Just your email — we'll let you know the moment it launches.</p>
+              <div>
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Email</label>
+                <input type="email" placeholder="you@company.com" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;" style-focus="border-color: {{ accent }};">
+              </div>
+              <div>
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Company size</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ teamSizeOptions }}" as="opt" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ opt.onClick }}" style="font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: 9999px; background: {{ opt.bg }}; color: {{ opt.color }}; border: 1px solid {{ opt.border }}; cursor: pointer;">{{ opt.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <button type="button" onClick="{{ goStep1Done }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Count Me In →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1Done }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="check-circle-2" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">You're on the list</p>
+              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B;">We'll email you the moment SignSync is ready.</p>
+              <div style="padding-top: 20px; border-top: 1px solid #E2E8F0;">
+                <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #1A1A2E;">Got a minute? Help us build this right.</p>
+                <button type="button" onClick="{{ goStep2 }}" style="font-size: 13.5px; font-weight: 600; padding: 10px 22px; border-radius: 9999px; background: #F8FAFC; border: 1px solid #E2E8F0; color: #1A1A2E; cursor: pointer; transition: background-color 150ms;" style-hover="background: #F1F5F9;">Answer a Few Quick Questions</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 18px; color: #1A1A2E;">A few quick questions</h3>
+              <div>
+                <p style="margin: 0 0 8px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">Google Workspace or Microsoft 365?</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ platformOptions }}" as="opt" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ opt.onClick }}" style="font-size: 13px; font-weight: 500; padding: 8px 15px; border-radius: 9999px; background: {{ opt.bg }}; color: {{ opt.color }}; border: 1px solid {{ opt.border }}; cursor: pointer;">{{ opt.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">How do you handle signatures today?</label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Anything else you'd want it to do? <span style="font-weight: 400; color: #64748B;">(optional)</span></label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <button type="button" onClick="{{ goDone }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Send My Answers →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseDone }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="heart-handshake" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">Thank you — this genuinely helps.</p>
+              <p style="margin: 0; font-size: 13.5px; color: #64748B;">We read every answer. You'll hear from us as SignSync takes shape.</p>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section data-screen-label="FAQ" style="background: #F8FAFC; padding: 88px 0;">
+      <div style="max-width: 820px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Questions</p>
+        <h2 style="margin: 0 0 32px; font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Frequently asked questions</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ faqs }}" as="faq" hint-placeholder-count="9">
+            <div style="border-radius: 12px; border: 1px solid #E2E8F0; background: #FFFFFF; overflow: hidden;">
+              <button type="button" onClick="{{ faq.toggle }}" style="width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 20px; background: none; border: none; cursor: pointer;">
+                <span style="font-size: 14.5px; font-weight: 600; color: #1A1A2E;">{{ faq.q }}</span>
+                <i data-lucide="chevron-down" style="width: 16px; height: 16px; flex-shrink: 0; color: #64748B; transition: transform 150ms; transform: {{ faq.chevron }};"></i>
+              </button>
+              <div style="padding: 0 20px 17px; font-size: 13.5px; line-height: 1.65; color: #64748B; display: {{ faq.display }};">{{ faq.a }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 36px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <p style="margin: 0; font-size: 13px; color: #64748B;">An early-stage concept from the <a href="#" style="color: #1A1A2E; font-weight: 600;">Sohovi</a> team — not a live product yet.</p>
+      <div style="display: flex; align-items: center; gap: 18px; font-size: 13px;">
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Privacy</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Terms</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#1B63E6&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#1B63E6&quot;, &quot;#E07150&quot;, &quot;#00C9A7&quot;], &quot;section&quot;: &quot;Visual direction&quot; },
+  &quot;ctaLabel&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Let's Build SignSync&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Copy&quot; },
+  &quot;showHeroMockup&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Layout&quot; }
+}">
+class Component extends DCLogic {
+  state = { phase: "cta", teamSize: null, platform: null, openFaq: 0 };
+
+  componentDidMount() { this.renderIcons(); }
+  componentDidUpdate() { this.renderIcons(); }
+  renderIcons() { if (window.lucide) window.lucide.createIcons(); }
+
+  renderVals() {
+    const { phase, teamSize, platform, openFaq } = this.state;
+    const accent = this.props.accent ?? "#1B63E6";
+    const darken = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      const f = (v) => Math.max(0, Math.round(v * 0.82));
+      return "#" + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, "0")).join("");
+    };
+    const tint = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},0.06)`;
+    };
+    const set = (p) => () => this.setState({ phase: p });
+    const pill = (active) => ({
+      bg: active ? accent : "#FFFFFF",
+      color: active ? "#fff" : "#1A1A2E",
+      border: active ? accent : "#E2E8F0",
+    });
+
+    const teamSizeRaw = [
+      { value: "<20", label: "Under 20" },
+      { value: "20-50", label: "20–50" },
+      { value: "50-100", label: "50–100" },
+      { value: "100-200", label: "100–200" },
+      { value: "200+", label: "200+" },
+    ];
+    const platformRaw = [
+      { value: "workspace", label: "Google Workspace" },
+      { value: "365", label: "Microsoft 365" },
+      { value: "both", label: "Both" },
+      { value: "neither", label: "Neither" },
+    ];
+
+    const faqsRaw = [
+      { q: "Is SignSync live yet?", a: "Not yet — this page exists to gauge interest before we build it. If enough teams want this, we'll build it next and email everyone who signed up." },
+      { q: "How is this cheaper than Exclaimer?", a: "Exclaimer is built for large enterprise rollouts and prices accordingly, with a seat minimum around 100. SignSync targets 20-200 person teams specifically, at $1/user/month with no minimum beyond $19/mo." },
+      { q: "Does it work with Microsoft 365 / Outlook?", a: "The one-click auto-deploy is Gmail-first via the Google Workspace Admin API. Outlook/365 teams get a self-serve 'copy my signature' link as a fallback in the first version — full Microsoft Graph auto-deploy is a likely next step." },
+      { q: "Can different departments have different signatures?", a: "Yes — department overrides let sales show a booking link, support show a help-center link, and so on, all from the same base template." },
+      { q: "Will you have access to our email content?", a: "No. SignSync only manages the signature block via Google's official Admin/Gmail APIs — it never reads, sends, or stores email content." },
+      { q: "Can I use our own logo and brand colors?", a: "Yes — the template editor is built around your logo, brand colors, and fonts from the start, with 8-10 prebuilt layouts to choose from rather than a blank canvas." },
+      { q: "How long does setup take?", a: "Minutes for the template itself. The one-time Google Workspace Admin connection (domain-wide delegation) is a guided, step-by-step wizard — designed to be the easiest part, not the blocker." },
+      { q: "What happens to everyone's signature if we cancel?", a: "Signatures already deployed to Gmail stay exactly as they are — cancelling just stops future template changes and campaign banner updates from pushing out." },
+      { q: "How much does a team email signature tool like this cost?", a: "Planned at $1/user/month with a $19/month minimum — meaningfully less than Exclaimer's $2/user/month, and with no roughly-100-seat minimum that locks out smaller teams." },
+    ];
+
+    return {
+      accent,
+      accentDark: darken(accent),
+      accentTint: tint(accent),
+      ctaLabel: this.props.ctaLabel ?? "Let's Build SignSync",
+      showHeroMockup: this.props.showHeroMockup ?? true,
+
+      steps: [
+        { num: "01", icon: "upload", title: "Import your team", body: "CSV or Google Workspace directory sync — names, titles, phone, and department flow straight into per-employee variables." },
+        { num: "02", icon: "layout-template", title: "Design the template", body: "Drag-block editor with 8-10 prebuilt layouts, live-previewed with real employee data. Department overrides for sales vs. support links." },
+        { num: "03", icon: "mouse-pointer-click", title: "Deploy in one click", body: "Push to every Gmail account via Google Workspace Admin. Swap a campaign banner across the whole company whenever you need to." },
+      ],
+      pains: [
+        { icon: "building-2", title: "Exclaimer's pricing assumes you're huge", body: "$2/user/month sounds fine until you hit the roughly 100-seat minimum — a wall for exactly the companies that need this most." },
+        { icon: "image-off", title: "Rebrands never fully roll out", body: "Someone updates the logo or tagline, and half the company is still sending emails with the old signature six months later." },
+        { icon: "mail", title: "Today it's an HTML file and a hope", body: "Without a deploy mechanism, 'updating the signature' means emailing a file to 40 people and hoping everyone follows the instructions." },
+      ],
+      features: [
+        { icon: "upload", title: "Team import", body: "CSV or Google Workspace directory sync — no manual re-entry of a roster you already have." },
+        { icon: "layout-template", title: "Drag-block editor", body: "8-10 prebuilt templates with live preview using real employee data, not lorem ipsum." },
+        { icon: "user-cog", title: "Per-employee variables", body: "Name, title, phone, and department fill in automatically from the imported roster." },
+        { icon: "git-branch", title: "Department overrides", body: "Sales gets a booking link, support gets a help-center link — all from one base template." },
+        { icon: "mouse-pointer-click", title: "One-click Gmail deploy", body: "Push to every account via Google Workspace Admin — the actual magic moment." },
+        { icon: "megaphone", title: "Campaign banners", body: "Swap a promo banner across every signature in the company at once, then revert just as easily." },
+      ],
+      compareRows: [
+        { feature: "Price", us: "$1/user/month", them: "$2/user/month" },
+        { feature: "Minimum seats", us: "None — $19/mo minimum spend", them: "~100 seats" },
+        { feature: "Deploy to Gmail", us: "One click via Google Workspace Admin", them: "Yes, but built for IT-managed rollouts" },
+        { feature: "Campaign banners", us: "Swap across all signatures at once", them: "Yes, enterprise tier only" },
+      ],
+
+      phaseCta: phase === "cta",
+      phaseStep1: phase === "step1",
+      phaseStep1Done: phase === "step1-done",
+      phaseStep2: phase === "step2",
+      phaseDone: phase === "done",
+      goStep1: set("step1"),
+      goStep1Done: set("step1-done"),
+      goStep2: set("step2"),
+      goDone: set("done"),
+      teamSizeOptions: teamSizeRaw.map((o) => ({
+        label: o.label,
+        onClick: () => this.setState({ teamSize: o.value }),
+        ...pill(teamSize === o.value),
+      })),
+      platformOptions: platformRaw.map((o) => ({
+        label: o.label,
+        onClick: () => this.setState({ platform: o.value }),
+        ...pill(platform === o.value),
+      })),
+      faqs: faqsRaw.map((f, i) => ({
+        q: f.q,
+        a: f.a,
+        toggle: () => this.setState({ openFaq: openFaq === i ? null : i }),
+        chevron: openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
+        display: openFaq === i ? "block" : "none",
+      })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

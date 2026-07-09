@@ -36,6 +36,7 @@ export async function startNewToolLead(
       tool_slug: data.toolSlug,
       email: data.email,
       name: data.name || null,
+      tool_answers: data.toolAnswers ?? {},
       referrer: data.referrer || null,
       landing_query: data.landingQuery || null,
     })

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; background: #F8FAFC; }
+    body { font-family: 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1A1A2E; text-decoration: none; }
+    a:hover { color: #0D0D1A; }
+    button { font-family: inherit; }
+    input, textarea { font-family: inherit; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseRing { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,201,167,0.4); } 50% { box-shadow: 0 0 0 6px rgba(0,201,167,0); } }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; min-height: 100vh; background: #F8FAFC; color: #1A1A2E;">
+
+  <div style="background: #1A1A2E; color: rgba(255,255,255,0.85); font-size: 12.5px; text-align: center; padding: 8px 24px; line-height: 1.5;">
+    <strong style="color: #FFFFFF;">This tool isn't built yet.</strong> This page validates demand — if enough people raise a hand, we build it and email you first.
+  </div>
+
+  <header style="background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 40;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;">
+      <a href="#" style="display: inline-flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: #1A1A2E;">sohovi</span>
+        <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; padding: 3px 9px; border-radius: 9999px; background: rgba(0,201,167,0.08); color: #007A66; border: 1px solid rgba(0,201,167,0.25);">Labs</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="#how-it-works" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">How It Works</a>
+        <a href="#pricing" style="font-size: 13.5px; font-weight: 500; color: #475569;" style-hover="color: #1A1A2E;">Pricing</a>
+        <a href="#build-this" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; font-size: 13.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">Join the List →</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1;">
+    <!-- Hero -->
+    <section data-screen-label="Hero" style="background: #F8FAFC; padding: 72px 0 80px;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 6px 14px; border-radius: 9999px; font-size: 12.5px; font-weight: 600; background: #FFFFFF; border: 1px solid #E2E8F0; color: #475569;">
+            <i data-lucide="handshake" style="width: 14px; height: 14px; color: #00C9A7;"></i>
+            For bootstrapped SaaS founders
+          </div>
+          <h1 style="margin: 0; font-weight: 800; line-height: 1.06; font-size: clamp(36px, 4.6vw, 56px); letter-spacing: -0.03em; color: #1A1A2E; text-wrap: balance;">
+            Rewardful can cost <span style="color: {{ accent }};">more than your MRR</span>.
+          </h1>
+          <p style="margin: 22px 0 0; font-size: 17.5px; line-height: 1.6; color: #475569; max-width: 480px; text-wrap: pretty;">
+            RefTrack is flat-fee affiliate tracking for the founder with 5-20 affiliates who doesn't need PartnerStack-scale complexity — <strong style="color: #1A1A2E;">just links, tracking, and commission math.</strong>
+          </p>
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap;">
+            <a href="#build-this" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; transition: background-color 150ms;" style-hover="background: {{ accentDark }}; color: #FFFFFF;">{{ ctaLabel }} →</a>
+            <a href="#how-it-works" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; font-size: 15.5px; font-weight: 600; color: #1A1A2E; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; transition: background-color 150ms;" style-hover="background: #F1F5F9;">See How It Works</a>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 13px; color: #64748B; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="percent" style="width: 14px; height: 14px; color: #00C9A7;"></i>No revenue share</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="link-2" style="width: 14px; height: 14px; color: #00C9A7;"></i>Stripe-native</span>
+            <span aria-hidden="true">·</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="badge-dollar-sign" style="width: 14px; height: 14px; color: #00C9A7;"></i>$19/mo flat</span>
+          </div>
+        </div>
+
+        <!-- Product mockup: affiliate dashboard -->
+        <sc-if value="{{ showHeroMockup }}" hint-placeholder-val="{{ true }}">
+        <div aria-hidden="true" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; box-shadow: 0 8px 30px rgba(26,26,46,0.08); overflow: hidden; animation: fadeUp 0.6s ease both;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E2E8F0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i data-lucide="users" style="width: 16px; height: 16px; color: #1A1A2E;"></i>
+              <span style="font-size: 13.5px; font-weight: 600; color: #1A1A2E;">Affiliates · 12 active</span>
+            </div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 9999px; background: rgba(0,201,167,0.08); color: #007A66; border: 1px solid rgba(0,201,167,0.25);"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #00C9A7; animation: pulseRing 2s ease-in-out infinite;"></span>$1,240 owed this month</span>
+          </div>
+          <div style="padding: 8px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.1s;">
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">@dana_builds</span>
+              <span style="font-size: 12.5px; color: #64748B;">14 clicks</span>
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; font-weight: 600; color: #059669;">$420</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #F1F5F9; animation: fadeUp 0.5s ease both; animation-delay: 0.2s;">
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">@saas_sam</span>
+              <span style="font-size: 12.5px; color: #64748B;">9 clicks</span>
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; font-weight: 600; color: #059669;">$280</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; animation: fadeUp 0.5s ease both; animation-delay: 0.3s;">
+              <span style="font-size: 13px; font-weight: 600; color: #1A1A2E; flex: 1;">@indiehacker_lee</span>
+              <span style="font-size: 12.5px; color: #64748B;">6 clicks</span>
+              <span style="font-family: 'Geist Mono', monospace; font-size: 12.5px; font-weight: 600; color: #059669;">$180</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
+            <span style="font-size: 12px; color: #64748B;">Synced live from Stripe webhooks</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #007A66;"><i data-lucide="download" style="width: 13px; height: 13px;"></i>CSV payout ready</span>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" data-screen-label="How it works" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it works</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">From Stripe key to your first affiliate payout</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">No enterprise integration. Connect Stripe, invite affiliates, pay them at month end.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+          <sc-for list="{{ steps }}" as="step" hint-placeholder-count="3">
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 28px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                <span style="font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 600; color: {{ accent }};">{{ step.num }}</span>
+                <span style="height: 1px; flex: 1; background: #E2E8F0;"></span>
+                <i data-lucide="{{ step.icon }}" style="width: 20px; height: 20px; color: #1A1A2E;"></i>
+              </div>
+              <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 700; color: #1A1A2E;">{{ step.title }}</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ step.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section data-screen-label="Problem" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: start;">
+          <div style="position: sticky; top: 96px;">
+            <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">The problem</p>
+            <h2 style="margin: 0 0 14px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Affiliate tools price for scale you don't have yet</h2>
+            <p style="margin: 0; font-size: 16px; line-height: 1.65; color: #64748B; text-wrap: pretty;">You want a handful of affiliates driving signups — not an enterprise partner program.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <sc-for list="{{ pains }}" as="pain" hint-placeholder-count="3">
+              <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; display: flex; gap: 18px; align-items: flex-start; box-shadow: 0 1px 2px rgba(26,26,46,0.04); transition: box-shadow 150ms;" style-hover="box-shadow: 0 4px 12px rgba(26,26,46,0.08);">
+                <div style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);">
+                  <i data-lucide="{{ pain.icon }}" style="width: 18px; height: 18px; color: #EF4444;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0 0 6px; font-size: 16.5px; font-weight: 700; color: #1A1A2E;">{{ pain.title }}</h3>
+                  <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #64748B;">{{ pain.body }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section data-screen-label="Solution" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 1140px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">What we'd build</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E; max-width: 22ch;">What RefTrack actually does</h2>
+        <p style="margin: 0 0 48px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">A flat-fee affiliate tool sized for 5-20 affiliates, not 500 — connected directly to the Stripe you already use.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
+            <div style="border: 1px solid #E2E8F0; border-radius: 14px; padding: 22px;">
+              <i data-lucide="{{ f.icon }}" style="width: 20px; height: 20px; color: #00C9A7; margin-bottom: 14px;"></i>
+              <h3 style="margin: 0 0 6px; font-size: 15.5px; font-weight: 700; color: #1A1A2E;">{{ f.title }}</h3>
+              <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: #64748B;">{{ f.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison -->
+    <section data-screen-label="Comparison" style="background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 880px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">How it compares</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">RefTrack vs. Rewardful / FirstPromoter</h2>
+        <p style="margin: 0 0 36px; font-size: 16px; line-height: 1.6; color: #64748B; max-width: 58ch;">PartnerStack and Impact serve 100+ affiliate programs — a different, much larger problem than most micro-SaaS founders have.</p>
+        <div style="overflow-x: auto; border-radius: 16px; border: 1px solid #E2E8F0; background: #FFFFFF; box-shadow: 0 1px 2px rgba(26,26,46,0.04);">
+          <div style="min-width: 600px;">
+            <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr;">
+              <div style="padding: 18px 20px;"></div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 700; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: center; gap: 8px;">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{ accent }};"></span>RefTrack
+              </div>
+              <div style="padding: 18px 20px; font-size: 13.5px; font-weight: 600; color: #64748B;">Rewardful / FirstPromoter</div>
+            </div>
+            <sc-for list="{{ compareRows }}" as="row" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; border-top: 1px solid #F1F5F9;">
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E;">{{ row.feature }}</div>
+                <div style="padding: 16px 20px; font-size: 13.5px; font-weight: 600; color: #1A1A2E; background: {{ accentTint }}; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; display: flex; align-items: flex-start; gap: 8px;">
+                  <i data-lucide="check" style="width: 14px; height: 14px; color: {{ accent }}; flex-shrink: 0; margin-top: 2px;"></i>{{ row.us }}
+                </div>
+                <div style="padding: 16px 20px; font-size: 13.5px; color: #64748B;">{{ row.them }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" data-screen-label="Pricing" style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 88px 0;">
+      <div style="max-width: 640px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Planned pricing</p>
+        <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Simple, honest pricing</h2>
+        <p style="margin: 0 0 40px; font-size: 15px; color: #64748B;">No % of your revenue, no per-affiliate fees. Possibly free until your first affiliate-driven sale.</p>
+        <div style="border-radius: 16px; padding: 30px; background: #1A1A2E; border: 1px solid #1A1A2E; box-shadow: 0 8px 30px rgba(26,26,46,0.18);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #FFFFFF;">Everyone</p>
+            <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 10px; border-radius: 9999px; background: {{ accent }}; color: #FFFFFF;">One Plan</span>
+          </div>
+          <p style="margin: 0 0 4px;"><span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF;">$19</span><span style="font-size: 13px; margin-left: 4px; color: rgba(255,255,255,0.55);">/mo</span></p>
+          <p style="margin: 0 0 18px; font-size: 12.5px; color: rgba(255,255,255,0.55);">Flat, no revenue share, unlimited affiliates</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>Unlimited affiliates</li>
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>No revenue share</li>
+            <li style="display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: rgba(255,255,255,0.85);"><i data-lucide="check" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: #00C9A7;"></i>CSV payout export</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Waitlist / feedback (dark) -->
+    <section id="build-this" data-screen-label="Waitlist" style="background: #1A1A2E; padding: 88px 0;">
+      <div style="max-width: 640px; margin: 0 auto; padding: 0 24px;">
+        <div style="text-align: center; margin-bottom: 36px;">
+          <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Raise your hand</p>
+          <h2 style="margin: 0 0 12px; font-weight: 700; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; line-height: 1.12; color: #FFFFFF;">Want RefTrack to exist?</h2>
+          <p style="margin: 0 auto; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,0.65); max-width: 44ch;">Takes 10 seconds, no commitment. No product yet, no spam — one email when it ships, and your answers shape what we build.</p>
+        </div>
+        <div style="border-radius: 20px; padding: 32px; background: #FFFFFF; border: 1px solid #E2E8F0;">
+          <sc-if value="{{ phaseCta }}" hint-placeholder-val="{{ true }}">
+            <div style="text-align: center;">
+              <h3 style="margin: 0 0 8px; font-weight: 700; font-size: 21px; color: #1A1A2E;">Count me in</h3>
+              <p style="margin: 0 0 22px; font-size: 14px; color: #64748B;">We'll email you the moment it's ready — nothing else.</p>
+              <button type="button" onClick="{{ goStep1 }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 15.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">{{ ctaLabel }} →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 19px; color: #1A1A2E;">{{ ctaLabel }}</h3>
+              <p style="margin: -8px 0 0; font-size: 13.5px; color: #64748B;">Just your email — we'll let you know the moment it launches.</p>
+              <div>
+                <label style="display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Email</label>
+                <input type="email" placeholder="you@startup.com" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;" style-focus="border-color: {{ accent }};">
+              </div>
+              <div>
+                <p style="margin: 0 0 8px; font-size: 12.5px; font-weight: 600; color: #1A1A2E;">How many affiliates do you have or want?</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ affiliateOptions }}" as="opt" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ opt.onClick }}" style="font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: 9999px; background: {{ opt.bg }}; color: {{ opt.color }}; border: 1px solid {{ opt.border }}; cursor: pointer;">{{ opt.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <button type="button" onClick="{{ goStep1Done }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Count Me In →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep1Done }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="check-circle-2" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">You're on the list</p>
+              <p style="margin: 0 0 24px; font-size: 13.5px; color: #64748B;">We'll email you the moment RefTrack is ready.</p>
+              <div style="padding-top: 20px; border-top: 1px solid #E2E8F0;">
+                <p style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #1A1A2E;">Got a minute? Help us build this right.</p>
+                <button type="button" onClick="{{ goStep2 }}" style="font-size: 13.5px; font-weight: 600; padding: 10px 22px; border-radius: 9999px; background: #F8FAFC; border: 1px solid #E2E8F0; color: #1A1A2E; cursor: pointer; transition: background-color 150ms;" style-hover="background: #F1F5F9;">Answer a Few Quick Questions</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <h3 style="margin: 0; font-weight: 700; font-size: 18px; color: #1A1A2E;">A few quick questions</h3>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">What do you use today, if anything?</label>
+                <input type="text" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: #1A1A2E;">Anything else you'd want it to do? <span style="font-weight: 400; color: #64748B;">(optional)</span></label>
+                <textarea rows="2" style="width: 100%; border-radius: 8px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #1A1A2E; padding: 11px 13px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+              </div>
+              <button type="button" onClick="{{ goDone }}" style="width: 100%; text-align: center; padding: 13px; font-size: 14.5px; font-weight: 600; color: #FFFFFF; background: {{ accent }}; border-radius: 8px; border: none; cursor: pointer; transition: background-color 150ms;" style-hover="background: {{ accentDark }};">Send My Answers →</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ phaseDone }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center;">
+              <i data-lucide="heart-handshake" style="width: 28px; height: 28px; color: #00C9A7; margin-bottom: 10px;"></i>
+              <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1A1A2E;">Thank you — this genuinely helps.</p>
+              <p style="margin: 0; font-size: 13.5px; color: #64748B;">We read every answer. You'll hear from us as RefTrack takes shape.</p>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section data-screen-label="FAQ" style="background: #F8FAFC; padding: 88px 0;">
+      <div style="max-width: 820px; margin: 0 auto; padding: 0 24px;">
+        <p style="margin: 0 0 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: {{ accent }};">Questions</p>
+        <h2 style="margin: 0 0 32px; font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -0.02em; line-height: 1.12; color: #1A1A2E;">Frequently asked questions</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ faqs }}" as="faq" hint-placeholder-count="9">
+            <div style="border-radius: 12px; border: 1px solid #E2E8F0; background: #FFFFFF; overflow: hidden;">
+              <button type="button" onClick="{{ faq.toggle }}" style="width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 20px; background: none; border: none; cursor: pointer;">
+                <span style="font-size: 14.5px; font-weight: 600; color: #1A1A2E;">{{ faq.q }}</span>
+                <i data-lucide="chevron-down" style="width: 16px; height: 16px; flex-shrink: 0; color: #64748B; transition: transform 150ms; transform: {{ faq.chevron }};"></i>
+              </button>
+              <div style="padding: 0 20px 17px; font-size: 13.5px; line-height: 1.65; color: #64748B; display: {{ faq.display }};">{{ faq.a }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 36px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <p style="margin: 0; font-size: 13px; color: #64748B;">An early-stage concept from the <a href="#" style="color: #1A1A2E; font-weight: 600;">Sohovi</a> team — not a live product yet.</p>
+      <div style="display: flex; align-items: center; gap: 18px; font-size: 13px;">
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Privacy</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Terms</a>
+        <a href="#" style="color: #64748B;" style-hover="color: #1A1A2E;">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#15803D&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#15803D&quot;, &quot;#00C9A7&quot;, &quot;#1B63E6&quot;], &quot;section&quot;: &quot;Visual direction&quot; },
+  &quot;ctaLabel&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Let's Build RefTrack&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Copy&quot; },
+  &quot;showHeroMockup&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Layout&quot; }
+}">
+class Component extends DCLogic {
+  state = { phase: "cta", affiliates: null, openFaq: 0 };
+
+  componentDidMount() { this.renderIcons(); }
+  componentDidUpdate() { this.renderIcons(); }
+  renderIcons() { if (window.lucide) window.lucide.createIcons(); }
+
+  renderVals() {
+    const { phase, affiliates, openFaq } = this.state;
+    const accent = this.props.accent ?? "#15803D";
+    const darken = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      const f = (v) => Math.max(0, Math.round(v * 0.82));
+      return "#" + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, "0")).join("");
+    };
+    const tint = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},0.06)`;
+    };
+    const set = (p) => () => this.setState({ phase: p });
+    const pill = (active) => ({
+      bg: active ? accent : "#FFFFFF",
+      color: active ? "#fff" : "#1A1A2E",
+      border: active ? accent : "#E2E8F0",
+    });
+
+    const affiliateRaw = [
+      { value: "0", label: "None yet" },
+      { value: "1-5", label: "1–5" },
+      { value: "5-20", label: "5–20" },
+      { value: "20+", label: "20+" },
+    ];
+
+    const faqsRaw = [
+      { q: "Is RefTrack live yet?", a: "Not yet — this page exists to gauge interest before we build it. If enough founders want this, we'll build it next and email everyone who signed up." },
+      { q: "Do you take a cut of my revenue?", a: "No. RefTrack is a flat $19/mo regardless of how much your affiliates drive — unlike platforms that add a percentage on top of a base fee." },
+      { q: "How does tracking work without cookies causing problems?", a: "A first-party cookie plus localStorage, with the referral code passed server-side into Stripe checkout metadata — robust for most cases, though Safari's tracking prevention has known limitations we'll document honestly rather than oversell." },
+      { q: "Can affiliates see their own stats?", a: "Yes — a magic-link mini-dashboard shows each affiliate their link, clicks, conversions, and earnings. No password to manage." },
+      { q: "What happens if a referred customer gets a refund?", a: "The commission is automatically clawed back when RefTrack sees the matching Stripe refund event." },
+      { q: "How do affiliates actually get paid?", a: "RefTrack calculates what's owed and exports a monthly CSV formatted for PayPal Mass Pay — you review and send the payout yourself. RefTrack never touches your money or your affiliates' payment details directly." },
+      { q: "Can different affiliates have different commission rates?", a: "Per-campaign commission rates are the initial design, so you can run different campaigns (e.g. a higher rate for a launch partner) rather than one flat rate for everyone." },
+      { q: "Is there a contract or can I cancel anytime?", a: "Month-to-month, cancel anytime — no annual lock-in planned. It's meant to be as low-commitment as the price suggests." },
+      { q: "Does RefTrack work with Paddle or Lemon Squeezy, not just Stripe?", a: "Stripe is the initial integration since it's the most common billing setup for early-stage SaaS. Paddle and Lemon Squeezy support would depend on demand — tell us in the form above if that's what you use." },
+    ];
+
+    return {
+      accent,
+      accentDark: darken(accent),
+      accentTint: tint(accent),
+      ctaLabel: this.props.ctaLabel ?? "Let's Build RefTrack",
+      showHeroMockup: this.props.showHeroMockup ?? true,
+
+      steps: [
+        { num: "01", icon: "key", title: "Connect Stripe", body: "Paste a restricted API key or webhook — no complex integration, no engineering project." },
+        { num: "02", icon: "settings-2", title: "Set up your campaign", body: "Commission %, cookie window, recurring vs. first-payment-only. Different rates per campaign if you need them." },
+        { num: "03", icon: "banknote", title: "Pay affiliates monthly", body: "Export a CSV formatted for PayPal Mass Pay. Refunds automatically claw back commission — no manual math." },
+      ],
+      pains: [
+        { icon: "dollar-sign", title: "$49-59/mo before you've made a sale from it", body: "Rewardful and FirstPromoter's pricing barely notices whether you're a $500 MRR founder with 5 affiliates or a funded team with 50." },
+        { icon: "layers", title: "PartnerStack and Impact are built for 100+ affiliates", body: "Enterprise affiliate platforms bring enterprise complexity — none of it useful when a handful of people are sharing your link." },
+        { icon: "calculator", title: "Commission math by hand doesn't scale", body: "Tracking who referred what, handling refunds, and calculating payouts in a spreadsheet gets error-prone fast." },
+      ],
+      features: [
+        { icon: "key", title: "Stripe-native setup", body: "Paste a restricted API key or webhook — connected in minutes, no custom integration work." },
+        { icon: "settings-2", title: "Flexible campaigns", body: "Commission %, cookie window, recurring vs. first-payment-only, all configurable per campaign." },
+        { icon: "link-2", title: "Attribution engine", body: "Tracking snippet matched to Stripe webhook events — accurate attribution without a heavy SDK." },
+        { icon: "user-check", title: "Affiliate mini-dashboard", body: "Magic-link access to their link, clicks, conversions, and earnings. No password to manage." },
+        { icon: "undo-2", title: "Automatic refund clawback", body: "Commissions adjust automatically the moment a customer refunds — no manual bookkeeping." },
+        { icon: "file-down", title: "CSV payout export", body: "Formatted for PayPal Mass Pay every month — review, send, done." },
+      ],
+      compareRows: [
+        { feature: "Price", us: "$19/mo flat", them: "$49–59/mo starting" },
+        { feature: "Fees", us: "No % of revenue, no per-affiliate fee", them: "Some plans take a revenue cut" },
+        { feature: "Built for", us: "5–20 affiliates", them: "Scaling programs, 50+" },
+        { feature: "Setup", us: "Paste a Stripe key or webhook", them: "Similar integration, higher price tag" },
+      ],
+
+      phaseCta: phase === "cta",
+      phaseStep1: phase === "step1",
+      phaseStep1Done: phase === "step1-done",
+      phaseStep2: phase === "step2",
+      phaseDone: phase === "done",
+      goStep1: set("step1"),
+      goStep1Done: set("step1-done"),
+      goStep2: set("step2"),
+      goDone: set("done"),
+      affiliateOptions: affiliateRaw.map((o) => ({
+        label: o.label,
+        onClick: () => this.setState({ affiliates: o.value }),
+        ...pill(affiliates === o.value),
+      })),
+      faqs: faqsRaw.map((f, i) => ({
+        q: f.q,
+        a: f.a,
+        toggle: () => this.setState({ openFaq: openFaq === i ? null : i }),
+        chevron: openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
+        display: openFaq === i ? "block" : "none",
+      })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
