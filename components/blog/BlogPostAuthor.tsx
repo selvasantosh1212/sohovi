@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Props {
   name: string | null;
   role: string | null;
@@ -11,6 +13,7 @@ export function BlogPostAuthor({ name, role, bio }: Props) {
     bio ??
     "Selva writes practical guides on data quality, profiling, and governance to help teams ship better data.";
   const initial = displayName.charAt(0).toUpperCase();
+  const isDefaultAuthor = displayName === "Selva Santosh";
 
   return (
     <div className="author-block article-wrap" style={{ maxWidth: 820 }}>
@@ -18,7 +21,13 @@ export function BlogPostAuthor({ name, role, bio }: Props) {
         {initial}
       </div>
       <div>
-        <p className="author-block__name">{displayName}</p>
+        <p className="author-block__name">
+          {isDefaultAuthor ? (
+            <Link href="/blog/author/selva-santosh">{displayName}</Link>
+          ) : (
+            displayName
+          )}
+        </p>
         <p className="author-block__role">{displayRole}</p>
         <p className="author-block__bio">{displayBio}</p>
       </div>

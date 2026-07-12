@@ -40,6 +40,12 @@ const aboutJsonLd = {
     url: SITE_URL,
     email: "hello@sohovi.com",
     logo: { "@type": "ImageObject", url: `${SITE_URL}/sohovi.svg` },
+    founder: {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person-selva-santosh`,
+      name: "Selva Santosh",
+      url: `${SITE_URL}/blog/author/selva-santosh`,
+    },
   },
 };
 
@@ -137,6 +143,22 @@ export default function AboutPage() {
                 >
                   hello@sohovi.com
                 </a>
+                . Sohovi was built by{" "}
+                <Link
+                  href="/blog/author/selva-santosh"
+                  className="underline hover:no-underline transition-all"
+                  style={{ color: "#0A0A0A" }}
+                >
+                  Selva Santosh
+                </Link>
+                , who also writes the{" "}
+                <Link
+                  href="/blog"
+                  className="underline hover:no-underline transition-all"
+                  style={{ color: "#0A0A0A" }}
+                >
+                  Sohovi blog
+                </Link>
                 .
               </p>
             </div>

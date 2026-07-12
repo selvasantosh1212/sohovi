@@ -97,6 +97,7 @@ function buildJsonLd(post: Awaited<ReturnType<typeof getPostBySlug>>, slug: stri
       author: {
         "@type": "Person",
         name: post.author_name ?? "Selva Santosh",
+        ...(post.author_name ? {} : { url: `${SITE_URL}/blog/author/selva-santosh` }),
       },
       publisher: {
         "@type": "Organization",

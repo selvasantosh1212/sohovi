@@ -45,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/features/pii-detection`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE}/about`, priority: 0.6, changeFrequency: "monthly" },
     { url: `${BASE}/blog`, priority: 0.8, changeFrequency: "weekly" },
+    { url: `${BASE}/blog/author/selva-santosh`, priority: 0.5, changeFrequency: "weekly" },
     { url: `${BASE}/tools`, priority: 0.9, changeFrequency: "monthly" },
     ...TOOL_SLUGS.map(({ slug, lastModified }) => ({
       url: `${BASE}/tools/${slug}`,
