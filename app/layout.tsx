@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -60,6 +61,7 @@ export default function RootLayout({
         <body className="min-h-full flex flex-col bg-background text-foreground">
           {children}
           <Toaster richColors position="top-right" />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
