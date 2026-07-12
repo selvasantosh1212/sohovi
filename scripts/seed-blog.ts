@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { execFileSync } from "child_process";
 
 // Load .env.local without requiring dotenv
 function loadEnvLocal() {
@@ -33,6 +34,27 @@ const NOW = new Date().toISOString();
 function readTime(content: string): number {
   return Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200));
 }
+
+/**
+ * True publish date proxy: the date this file was first committed to git.
+ * Stable across reseeds (unlike `new Date()`), so re-running this script never
+ * drifts every post's published_at to "today" again.
+ */
+function gitFirstCommitDate(filepath: string): string | null {
+  try {
+    const out = execFileSync(
+      "git",
+      ["log", "--diff-filter=A", "--format=%aI", "--", filepath],
+      { cwd: process.cwd(), encoding: "utf-8" }
+    );
+    const dates = out.trim().split("\n").filter(Boolean);
+    return dates.length ? dates[dates.length - 1] : null;
+  } catch {
+    return null;
+  }
+}
+
+const PUBLISHED_AT = gitFirstCommitDate(resolve(process.cwd(), "scripts/seed-blog.ts")) ?? NOW;
 
 // ---------------------------------------------------------------------------
 // POST CONTENT
@@ -523,7 +545,7 @@ async function seed() {
         ...post,
         clerk_user_id: SEED_USER,
         read_time_min: readTime(post.content),
-        published_at: NOW,
+        published_at: PUBLISHED_AT,
       },
       { onConflict: "slug" }
     );

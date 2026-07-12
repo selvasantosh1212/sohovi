@@ -98,6 +98,23 @@ export async function getAllPublishedSlugs(): Promise<string[]> {
   return (data ?? []).map((r: { slug: string }) => r.slug);
 }
 
+export async function getAllPublishedSlugsWithDates(): Promise<
+  { slug: string; lastModified: string }[]
+> {
+  // Use service client — called from sitemap generation where cookies() is unavailable
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from("blog_posts")
+    .select("slug, published_at, updated_at, created_at")
+    .eq("published", true);
+  return (data ?? []).map(
+    (r: { slug: string; published_at: string | null; updated_at: string | null; created_at: string }) => ({
+      slug: r.slug,
+      lastModified: r.updated_at ?? r.published_at ?? r.created_at,
+    })
+  );
+}
+
 export async function incrementViewCount(postId: string): Promise<void> {
   try {
     const supabase = createServiceClient();

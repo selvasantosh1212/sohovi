@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllPublishedSlugs, getAllCategories } from "@/app/actions/blog";
+import { getAllPublishedSlugsWithDates, getAllCategories } from "@/app/actions/blog";
 import { slugifyCategory } from "@/lib/blog-utils";
 
 export const revalidate = 3600;
@@ -32,7 +32,7 @@ const TOOL_SLUGS: { slug: string; lastModified: string }[] = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [blogSlugs, categories] = await Promise.all([
-    getAllPublishedSlugs(),
+    getAllPublishedSlugsWithDates(),
     getAllCategories(),
   ]);
 
@@ -63,10 +63,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
       changeFrequency: "weekly" as const,
     })),
-    ...blogSlugs.map((s) => ({
-      url: `${BASE}/blog/${s}`,
+    ...blogSlugs.map(({ slug, lastModified }) => ({
+      url: `${BASE}/blog/${slug}`,
       priority: 0.7,
       changeFrequency: "yearly" as const,
+      lastModified: new Date(lastModified),
     })),
   ];
 }
