@@ -14,7 +14,13 @@ function estimateReadTime(content: string): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-// ---- Public reads (anon key, published only) ------------------------------
+// ---- Public reads (anon key, published + release-date only) ---------------
+//
+// `published_at` doubles as a release gate: a row can be `published = true`
+// with a future `published_at` to schedule it for later without a separate
+// "scheduled" state. Every public read below excludes those until their date
+// arrives — admin reads (further down) intentionally skip this filter so
+// scheduled posts stay visible/manageable in the admin UI.
 
 export async function getPublishedPosts(limit = 20, offset = 0): Promise<BlogPost[]> {
   try {
@@ -23,6 +29,7 @@ export async function getPublishedPosts(limit = 20, offset = 0): Promise<BlogPos
       .from("blog_posts")
       .select("*")
       .eq("published", true)
+      .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false })
       .range(offset, offset + limit - 1);
     if (error) return [];
@@ -39,6 +46,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     .select("*")
     .eq("slug", slug)
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .single();
   if (error) return null;
   return data as BlogPost;
@@ -50,7 +58,8 @@ export async function getPublishedPostCount(): Promise<number> {
     const { count } = await supabase
       .from("blog_posts")
       .select("*", { count: "exact", head: true })
-      .eq("published", true);
+      .eq("published", true)
+      .lte("published_at", new Date().toISOString());
     return count ?? 0;
   } catch {
     return 0;
@@ -64,6 +73,7 @@ export async function getAllCategories(): Promise<string[]> {
       .from("blog_posts")
       .select("category")
       .eq("published", true)
+      .lte("published_at", new Date().toISOString())
       .not("category", "is", null);
     const cats = (data ?? []).map((r: { category: string }) => r.category).filter(Boolean);
     return Array.from(new Set(cats)).sort();
@@ -79,6 +89,7 @@ export async function getPostsByCategory(category: string): Promise<BlogPost[]> 
       .from("blog_posts")
       .select("*")
       .eq("published", true)
+      .lte("published_at", new Date().toISOString())
       .eq("category", category)
       .order("published_at", { ascending: false });
     if (error) return [];
@@ -94,7 +105,8 @@ export async function getAllPublishedSlugs(): Promise<string[]> {
   const { data } = await supabase
     .from("blog_posts")
     .select("slug")
-    .eq("published", true);
+    .eq("published", true)
+    .lte("published_at", new Date().toISOString());
   return (data ?? []).map((r: { slug: string }) => r.slug);
 }
 
@@ -107,6 +119,7 @@ export async function getAllPublishedSlugsWithDates(): Promise<
     .from("blog_posts")
     .select("slug, published_at, updated_at, created_at, redirect_to, noindex")
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .is("redirect_to", null)
     .eq("noindex", false);
   return (data ?? []).map(
@@ -242,11 +255,13 @@ export async function getRelatedPosts(
   limit = 3
 ): Promise<BlogPost[]> {
   const supabase = createServiceClient();
+  const nowIso = new Date().toISOString();
   if (category) {
     const { data } = await supabase
       .from("blog_posts")
       .select("*")
       .eq("published", true)
+      .lte("published_at", nowIso)
       .eq("category", category)
       .neq("id", currentId)
       .order("published_at", { ascending: false })
@@ -258,6 +273,7 @@ export async function getRelatedPosts(
     .from("blog_posts")
     .select("*")
     .eq("published", true)
+    .lte("published_at", nowIso)
     .neq("id", currentId)
     .order("published_at", { ascending: false })
     .limit(limit);
