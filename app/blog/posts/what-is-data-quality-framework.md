@@ -7,7 +7,7 @@ supportingKeywords: ["data quality framework definition", "data quality framewor
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "business owners, ops managers, data teams looking to systematize their data quality approach"
-status: "draft"
+status: "published"
 seo_title: "What Is a Data Quality Framework? How to Choose the Right One"
 seo_description: "A data quality framework defines how you measure, assess, and improve data quality in your organization. Here's what frameworks exist and how to pick the right one."
 ---
@@ -61,6 +61,16 @@ Most businesses don't adopt a published framework verbatim. They build their own
 5. Define the process for measuring (how often, using what tools), reporting, and remediation
 
 [IMAGE: Diagram of a simple data quality framework showing dimensions → measurement → thresholds → owners → process as a cycle]
+
+### A Lightweight Framework for Small Organizations
+
+If a five-step build-your-own process still feels heavier than you need, here's a minimal version that runs on about 4-8 hours a month:
+
+- **Monthly**: profile your most important dataset and record the scores for your chosen dimensions
+- **Weekly**: triage anything a monitoring check flagged — don't let issues queue up unaddressed
+- **Quarterly**: a short retrospective — are scores trending up or down, and does the dimension list still match what actually breaks things?
+
+You don't need enterprise governance software to run this. Open-source and low-cost tools cover most of it: Great Expectations or Soda.io for automated checks, a Jira or Linear board for triage and ownership, and a Looker Studio dashboard (or even a shared spreadsheet) for tracking scores over time.
 
 ## Choosing the Right Framework for Your Business
 

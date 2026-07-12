@@ -171,7 +171,7 @@ async function seed() {
       tags,
       seo_title: (fm.seo_title as string) || title,
       seo_description: (fm.seo_description as string) || "",
-      published: true,           // all seeded posts go live
+      published: (fm.status as string)?.trim() !== "draft",
       clerk_user_id: SEED_USER,
       read_time_min: readTime(body),
       published_at: gitFirstCommitDate(filepath) ?? NOW,

@@ -274,6 +274,8 @@ export interface BlogPost {
   read_time_min: number | null;
   created_at: string;
   updated_at: string;
+  redirect_to: string | null;
+  noindex: boolean;
 }
 
 // ============================================================

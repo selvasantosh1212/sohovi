@@ -7,7 +7,7 @@ supportingKeywords: ["data conformity definition", "data conformity examples", "
 searchIntent: "informational"
 wordCountTarget: 900
 audience: "ops managers, analysts, anyone managing data that needs to follow consistent formats"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Conformity? Definition and Examples"
 seo_description: "Data conformity measures whether data values follow agreed-upon formats, standards, and naming conventions. Here's what it means and how to measure it."
 ---

@@ -7,7 +7,7 @@ supportingKeywords: ["data precision definition", "data precision vs accuracy", 
 searchIntent: "informational"
 wordCountTarget: 900
 audience: "analysts, business owners, ops managers working with numeric or scientific data"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Precision in Data Quality? Definition and Examples"
 seo_description: "Data precision measures the level of detail and granularity in your data values. Here's what it means, how it differs from accuracy, and when imprecision causes real problems."
 ---
@@ -34,6 +34,10 @@ The classic illustration:
 - **Accurate and precise**: "The package weighs 1.987 kg." Correct value, full detail.
 
 [IMAGE: A target diagram showing four scenarios: accurate/precise (shots clustered at center), accurate/imprecise (shots spread around center), inaccurate/precise (shots clustered but off-center), inaccurate/imprecise (shots scattered and off-center)]
+
+## The False Precision Problem
+
+Precision failures usually mean too little detail, but the opposite mistake causes just as much damage: reporting more precision than the underlying data can support. "Customer satisfaction is 87.3%" sounds authoritative — but if that figure comes from a survey of 20 people, the decimal point implies a level of statistical reliability the sample size can't back up. The honest number is "about 87%, based on a small sample." False precision doesn't just mislead readers; it makes genuinely precise numbers elsewhere in the same report harder to trust.
 
 ## When Precision Matters Most
 

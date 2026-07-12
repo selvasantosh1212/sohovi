@@ -7,7 +7,7 @@ supportingKeywords: ["data accuracy definition", "data accuracy vs data quality"
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "business owners, ops managers, analysts who need to understand what data accuracy means and how to improve it"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Accuracy in Data Quality? A Business Guide"
 seo_description: "Data accuracy measures whether your data correctly reflects the real-world entities it describes. Here's what it means, how to measure it, and why it's harder to fix than other dimensions."
 ---
@@ -26,7 +26,7 @@ Data accuracy failures come in two types:
 
 **Stale values (formerly accurate)**: The value was correct when recorded but is no longer true. A contact's email address changed when they switched employers. A company's billing address moved after an office relocation. A product was discontinued, but the record still shows it as available.
 
-Both produce inaccurate data — the first because the information was entered incorrectly, the second because the world changed and the data wasn't updated.
+Both produce inaccurate data — the first because the information was entered incorrectly, the second because the world changed and the data wasn't updated. Manual entry is a major source of the first type: most environments see error rates of roughly 1-4% on hand-typed fields, which compounds quickly across a database of any size.
 
 ## Data Accuracy vs. Data Validity
 
@@ -84,6 +84,8 @@ Industry estimates suggest that data quality problems, of which accuracy failure
 **Make correction easy**: When customers interact with your records (checkout, profile update, form submission), make it easy for them to correct their information. Self-service correction is the most cost-effective way to improve accuracy at scale.
 
 **Source from authoritative records**: Where possible, populate fields from authoritative sources rather than manual entry. An auto-populated address from a validated address lookup is more accurate than a manually typed address.
+
+**Log the collection method**: Tag each value with how it was captured — self-reported, verified against a third-party source, or system-generated. When an accuracy problem shows up later, knowing the source narrows down where to look instead of re-verifying the whole dataset. As a rough target, aim for 90%+ verified accuracy on email fields and 80%+ on phone fields before relying on them for outbound campaigns.
 
 Sohovi's profiling surfaces format validity and outlier detection — the checks that proxy for accuracy. High format failure rates on a field often correlate with accuracy problems; outlier values frequently indicate data entry errors.
 

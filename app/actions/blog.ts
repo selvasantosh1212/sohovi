@@ -105,8 +105,10 @@ export async function getAllPublishedSlugsWithDates(): Promise<
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("blog_posts")
-    .select("slug, published_at, updated_at, created_at")
-    .eq("published", true);
+    .select("slug, published_at, updated_at, created_at, redirect_to, noindex")
+    .eq("published", true)
+    .is("redirect_to", null)
+    .eq("noindex", false);
   return (data ?? []).map(
     (r: { slug: string; published_at: string | null; updated_at: string | null; created_at: string }) => ({
       slug: r.slug,

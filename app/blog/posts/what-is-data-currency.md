@@ -7,7 +7,7 @@ supportingKeywords: ["data currency definition", "data currency vs timeliness", 
 searchIntent: "informational"
 wordCountTarget: 900
 audience: "business owners, analysts, ops managers maintaining data that needs to stay current"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Currency? The Data Quality Dimension Explained"
 seo_description: "Data currency measures how up-to-date your data is — whether it reflects the current state of the world. Here's what it means and how it differs from data timeliness."
 ---
@@ -33,7 +33,7 @@ These two dimensions are closely related and often confused. The distinction:
 | **What causes failure** | Process delays, system latency, scheduling gaps | Natural change in the real world — people move, change jobs, update contact info |
 | **How to fix** | Improve pipeline speed, reporting schedules | Regular data refresh, re-verification campaigns, decay processes |
 
-Some frameworks treat timeliness and currency as a single dimension. Others separate them because the causes and fixes are different.
+Some frameworks treat timeliness and currency as a single dimension. Others separate them because the causes and fixes are different — see [What Is Data Timeliness?](/blog/what-is-data-timeliness) for the latency side of this.
 
 ## Why Data Currency Matters
 

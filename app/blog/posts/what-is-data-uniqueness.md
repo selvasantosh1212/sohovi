@@ -7,7 +7,7 @@ supportingKeywords: ["data uniqueness definition", "duplicate records data quali
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "ops managers, CRM users, analysts dealing with duplicate records"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Uniqueness in Data Quality? Definition and Examples"
 seo_description: "Data uniqueness measures whether records that should be distinct are actually distinct. Here's what it means, how to measure it, and why duplicates are the costliest data quality failure."
 ---
@@ -46,6 +46,16 @@ The operational consequences:
 
 Industry estimates suggest that CRM databases average 10–30% duplicate record rates in organizations without active deduplication processes. Marketing data tends to accumulate duplicates faster than operational data because list imports from multiple sources produce overlapping records.
 
+## The Business Impact Formula
+
+Duplicate rate translates directly into wasted spend and inflated numbers, which makes it one of the few data quality problems you can put a dollar figure on before you fix it:
+
+- `Duplicate rate × communication volume` = wasted sends (emails, mailers, invoices going to the same person twice)
+- `Duplicate rate × conversion rate` = overstated conversions (the same converted customer counted more than once)
+- `Duplicate rate × customer count` = overstated addressable market (your "10,000 customers" might really be 8,500)
+
+A 15% duplicate rate on a 50,000-contact list isn't just an untidy database — it's roughly 7,500 wasted sends per campaign and a customer count that's meaningfully wrong in every report that cites it.
+
 ## How to Measure Data Uniqueness
 
 For field-level uniqueness:
@@ -67,6 +77,8 @@ For record-level duplicates, the measurement is more complex — you need to def
 **Fuzzy duplicates**: Records that represent the same real-world entity but don't match exactly. "John Smith" and "J. Smith." "john.smith@company.com" and "jsmith@company.com." Different phone numbers for the same person because one was a mobile and one was an office line.
 
 Fuzzy duplicates require more sophisticated detection — using similarity algorithms (Levenshtein distance, phonetic matching, Jaro-Winkler) that catch near-matches rather than requiring exact equality.
+
+**Logical duplicates**: A third, easy-to-miss category — records that are technically distinct and were created intentionally, but represent the same underlying person or account in a way the system doesn't know about. A customer who signs up twice under two different email addresses, unaware they already have an account, isn't a data entry error or a fuzzy-match problem; the records themselves are each internally correct. Catching these usually requires a business rule (matching on billing details, device fingerprint, or phone number) rather than a name/email similarity score.
 
 ## How to Find and Remove Duplicates
 

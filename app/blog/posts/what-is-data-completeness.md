@@ -7,7 +7,7 @@ supportingKeywords: ["data completeness definition", "measure data completeness"
 searchIntent: "informational"
 wordCountTarget: 1200
 audience: "business owners, ops managers, analysts who need to understand and measure data completeness"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Completeness? Definition, Measurement, and Examples"
 seo_description: "Data completeness measures what percentage of required fields have a value. Here's a full definition, how to measure it, what a good score looks like, and how to improve it."
 ---
@@ -79,6 +79,16 @@ Set thresholds based on business risk: what's the minimum completeness for this 
 **Third-party data sources**: Vendor or partner data files often have lower completeness than internally collected data — they weren't designed to collect the same fields you need.
 
 **Bulk imports without validation**: Imports that don't enforce required fields let incomplete records through.
+
+## Common Completeness Patterns to Watch
+
+A few patterns show up often enough to check for directly, rather than waiting for an aggregate score to flag a problem:
+
+**Right-skewed completeness drop**: Recent records are less complete than older ones. This usually means a form field, integration, or process changed recently — check what shipped around the date completeness started declining.
+
+**Source-specific incompleteness**: One import source or channel is consistently worse than others. If leads from a particular partner feed are missing phone numbers at twice the rate of your own signup form, the gap is in that source's collection process, not your database.
+
+**Field-level incompleteness clusters**: Certain fields tend to go missing together — often because they sit next to each other in a form and users abandon partway through, or because they're populated by the same downstream integration step. Clustered gaps point to a single root cause rather than several unrelated ones.
 
 ## How to Improve Completeness
 

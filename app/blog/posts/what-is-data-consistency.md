@@ -7,7 +7,7 @@ supportingKeywords: ["data consistency definition", "data consistency examples",
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "business owners, analysts, ops managers whose reports produce contradictory numbers"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Consistency? The Dimension That Breaks Reports"
 seo_description: "Data consistency measures whether the same information is represented the same way across your dataset and systems. Here's what it means, what causes inconsistency, and how to fix it."
 ---
@@ -82,6 +82,19 @@ A dataset can be consistent but inaccurate: every record says "Active" (consiste
 **Audit regularly**: Check field-level value frequency distributions on a regular schedule. A field that should have 5 values but shows 20 distinct values has a consistency problem that needs investigation.
 
 Sohovi surfaces value distribution for categorical fields in your CSV — letting you immediately see how many variants exist in each field and which ones are outliers.
+
+## Consistency Within a Single Dataset
+
+Not all consistency problems involve multiple systems or format variants — some are logical relationships between fields in the same record that should always hold true:
+
+- `order_date` should never be later than `ship_date`, which should never be later than `delivery_date`
+- `revenue` should equal `units × price` — if it doesn't, one of the three values is wrong
+
+Measure this the same way you'd measure any consistency rate:
+
+`Consistency Rate = Records passing the rule / Total records × 100`
+
+Run it separately for cross-system consistency (does the CRM agree with billing?) and internal-rule consistency (do the fields within one record agree with each other?) — a dataset can score well on one and poorly on the other.
 
 ## Consistency Between Systems
 

@@ -7,7 +7,7 @@ supportingKeywords: ["data validity definition", "data validity examples", "vali
 searchIntent: "informational"
 wordCountTarget: 1000
 audience: "ops managers, analysts, business owners setting up data validation rules"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Validity in Data Quality? Definition and Examples"
 seo_description: "Data validity measures whether data values conform to defined business rules and format requirements. Here's what it means, how it differs from accuracy, and how to measure it."
 ---
@@ -33,6 +33,16 @@ Validity rules vary by field type:
 **Numeric range fields**: Must fall within an acceptable range. An age field should be between 0 and 120. A negative order quantity is invalid. A percentage field should be between 0 and 100.
 
 **Referential fields**: Must contain a value that exists in a related table. An order record's customer_id must match a real customer in the customers table.
+
+## Three Kinds of Validity Rule
+
+Most field-level rules fall into one of three categories, and it's worth knowing which one you're writing:
+
+- **Syntactic validity**: does the value match a required pattern or structure? (an email containing "@", a date matching YYYY-MM-DD)
+- **Range validity**: does the value fall within an acceptable numeric or date range? (age between 0 and 120, order quantity greater than 0)
+- **Business-rule validity**: does the value satisfy a rule specific to how your business works? (a status of "Shipped" requires a non-null ship_date)
+
+Syntactic and range rules are portable across most businesses. Business-rule validity is where your own domain knowledge has to go — no generic library will know that a "Shipped" order without a ship date is invalid for you.
 
 ## Validity vs. Accuracy: An Important Distinction
 
@@ -88,6 +98,8 @@ You need to define the rules before you can measure validity. "Email must be val
 **Evolving business rules**: Rules that were redefined after existing data was entered — old records no longer conform to new standards.
 
 ## How to Improve Data Validity
+
+Catching an invalid value at the point of entry is roughly 10x cheaper than finding and cleaning it after it has already spread into reports, exports, or downstream systems — which is why the first fix below matters more than the rest combined.
 
 **Enforce rules at entry**: Use dropdowns for categorical fields. Require formats with field masks (phone input that only accepts digits). Validate email format on the form before submission.
 

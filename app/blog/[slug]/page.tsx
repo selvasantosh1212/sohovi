@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getRelatedPosts } from "@/app/actions/blog";
@@ -31,6 +31,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+  if (post.redirect_to) return {};
 
   const title = post.seo_title ?? post.title;
   const description = post.seo_description ?? post.excerpt ?? undefined;
@@ -44,6 +45,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical: canonicalUrl },
+    robots: post.noindex ? { index: false, follow: true } : undefined,
     openGraph: {
       title,
       description,
@@ -135,6 +137,7 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
+  if (post.redirect_to) permanentRedirect(`/blog/${post.redirect_to}`);
   const related = await getRelatedPosts(post.id, post.category);
 
   const toc = extractToc(post.content);

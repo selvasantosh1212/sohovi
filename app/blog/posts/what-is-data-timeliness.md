@@ -7,7 +7,7 @@ supportingKeywords: ["data timeliness definition", "data timeliness examples", "
 searchIntent: "informational"
 wordCountTarget: 1000
 audience: "business owners, ops managers, analysts who rely on data for time-sensitive decisions"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Timeliness? Why Fresh Data Beats Complete Data"
 seo_description: "Data timeliness measures whether data is available when it's needed for decisions. Here's the definition, how to measure it, and why stale data is worse than missing data."
 ---
@@ -47,6 +47,17 @@ This context-dependence makes timeliness harder to measure universally but equal
 `Timeliness Rate = (Records meeting the recency threshold / Total records) × 100`
 
 The threshold is business-defined. For a real-time trading system, "timely" means seconds. For a quarterly planning report, "timely" might mean data from the past 30 days.
+
+### How "Timely Enough" Changes by Use Case
+
+| Use Case | Acceptable Lag |
+|---|---|
+| Financial/market prices | Seconds to minutes |
+| Real-time inventory counts | Minutes to hours |
+| CRM contact updates | Days |
+| Demographic/firmographic data | Months |
+
+For pipeline latency specifically, measure it directly: `Latency = Reporting datetime − Event datetime`. If a sale happens at 2:00pm and doesn't appear in the dashboard until 6:00pm, latency is 4 hours — acceptable for a weekly demand-planning report, not for a real-time inventory system. When latency is the bottleneck, reduce batch-processing intervals, or move to change data capture (CDC), which streams row-level changes as they happen instead of waiting for the next scheduled batch job.
 
 [IMAGE: Timeline showing a customer event (address change) on the left, the data update in the system in the middle, and the decision point on the right — illustrating the timeliness gap]
 

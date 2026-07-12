@@ -7,7 +7,7 @@ supportingKeywords: ["MDM definition", "master data management example", "MDM fo
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "business owners, ops managers, IT teams dealing with inconsistent data across systems"
-status: "draft"
+status: "published"
 seo_title: "What Is Master Data Management (MDM)? A Plain-English Guide"
 seo_description: "Master data management (MDM) creates a single authoritative source for key business data like customers, products, and suppliers. Here's what it is and when you need it."
 ---
@@ -76,6 +76,17 @@ There are different approaches to where the master record lives:
 **Federated:** Different business units own their own master data, but standards are shared. Common in large organizations with distinct divisions.
 
 For most small and mid-size businesses, a centralized approach — even if the "hub" is a well-maintained CRM or spreadsheet — is the most practical.
+
+## MDM Maturity: How Far Along Are You?
+
+Styles describe where the golden record lives; maturity describes how far a business has actually progressed toward having one. It's a useful way to figure out what your next step should be, rather than jumping straight to a "style":
+
+- **Level 0 — No MDM**: Each system has its own version of the truth, and nobody's reconciling them.
+- **Level 1 — Registry**: A cross-reference exists linking the same entity across systems, even though the underlying data still lives (and can still diverge) in each one.
+- **Level 2 — Consolidated**: Records are pulled into one place, deduplicated, and standardized, but the golden record isn't yet pushed back out to the source systems.
+- **Level 3 — Hub-and-spoke**: The golden record is authoritative and actively distributed — source systems sync to it rather than drifting independently.
+
+Most small businesses that think they "don't have MDM" are actually sitting at Level 0 or 1 without realizing it. Moving from 0 to 1 (just building the cross-reference) already resolves the majority of reporting discrepancies.
 
 ## Do Small Businesses Need MDM?
 

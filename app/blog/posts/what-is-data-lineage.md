@@ -7,7 +7,7 @@ supportingKeywords: ["data lineage definition", "data lineage example", "data pr
 searchIntent: "informational"
 wordCountTarget: 1100
 audience: "business owners, ops managers, analysts who need to understand where their data comes from"
-status: "draft"
+status: "published"
 seo_title: "What Is Data Lineage? A Plain-English Business Guide"
 seo_description: "Data lineage tracks where your data came from, how it was transformed, and where it went. Here's what it means and why it matters for data quality and compliance."
 ---
@@ -45,7 +45,7 @@ Data lineage is especially valuable when data quality problems surface. Without 
 
 **Impact on trust:** Teams that can't explain where their numbers come from lose credibility with stakeholders. Lineage documentation lets analysts say: "This revenue figure comes from X source, transformed by Y rule, and verified at Z step."
 
-**Impact on compliance:** Regulations like GDPR and CCPA require organizations to know where personal data came from and where it flows. Data lineage is the mechanism for demonstrating that compliance. If a regulator asks "where did this customer record come from and where was it shared?" — lineage documentation provides the answer.
+**Impact on compliance:** Regulations like GDPR and CCPA require organizations to know where personal data came from and where it flows. Data lineage is the mechanism for demonstrating that compliance. If a regulator asks "where did this customer record come from and where was it shared?" — lineage documentation provides the answer. In banking specifically, BCBS 239 (the Basel Committee's risk-data-aggregation standard) makes traceable lineage a regulatory requirement for risk reporting, not just a best practice.
 
 **Impact on change management:** When you update a data process — change a formula, update an import mapping, modify a field definition — lineage tells you which downstream reports and systems will be affected. Without it, changes cause unexpected breakages.
 
