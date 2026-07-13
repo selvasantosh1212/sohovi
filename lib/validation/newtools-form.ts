@@ -8,6 +8,11 @@ export const TOOL_SLUGS = [
   "reftrack",
   "shipnotes",
   "kickoffbox",
+  "thumblab",
+  "categorly",
+  "quotenudge",
+  "seenly",
+  "clearbrief",
 ] as const;
 
 export type ToolSlug = (typeof TOOL_SLUGS)[number];

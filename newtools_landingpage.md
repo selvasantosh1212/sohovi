@@ -1,6 +1,6 @@
 # New Tools — Landing Pages
 
-Pre-launch validation pages for 7 unreleased micro-SaaS ideas, hosted on sohovi.com. Not linked from the main site nav/footer (deliberately unlisted) — reachable only by direct URL or organic search. Full build details in `projectplan.md`.
+Pre-launch validation pages for 12 unreleased micro-SaaS ideas, hosted on sohovi.com. Not linked from the main site nav/footer (deliberately unlisted) — reachable only by direct URL, organic search, or sitemap.xml. Full build details in `projectplan.md`.
 
 | Idea | URL |
 |---|---|
@@ -11,6 +11,13 @@ Pre-launch validation pages for 7 unreleased micro-SaaS ideas, hosted on sohovi.
 | RefTrack — flat-fee affiliate tracking for micro-SaaS | https://sohovi.com/labs/reftrack |
 | ShipNotes — GitHub-release-to-changelog tool | https://sohovi.com/labs/shipnotes |
 | KickoffBox — client content collection for web designers | https://sohovi.com/labs/kickoffbox |
+| ThumbLab — AI thumbnail testing + Shorts auto-crop for creators | https://sohovi.com/labs/thumblab |
+| Categorly — client transaction-categorization portal for bookkeepers | https://sohovi.com/labs/categorly |
+| QuoteNudge — quote + invoice follow-up for trades/contractors | https://sohovi.com/labs/quotenudge |
+| Seenly — AI brand visibility monitor (GEO / "SEO for ChatGPT") | https://sohovi.com/labs/seenly |
+| ClearBrief — client brief & content collection for any freelance niche | https://sohovi.com/labs/clearbrief |
+
+**2026-07-13 addition:** the 5 newest pages (ThumbLab, Categorly, QuoteNudge, Seenly, ClearBrief) were built from `newmicrosaas_ideas.md`'s top-5 research-backed idea list, following the same shared-component pattern and requirements below. ClearBrief overlaps conceptually with KickoffBox (both are client-brief/content-collection tools) but is deliberately positioned differently: any freelance niche rather than web design specifically, fully custom reusable checklists rather than fixed templates, and an AI-ambiguity-detection differentiator KickoffBox doesn't have — compared against Content Snare rather than against KickoffBox itself.
 
 Every page ends in a two-step waitlist + feedback form. Submissions write to the shared `newtools_form` table in Supabase and email a notification to selvaganapathypari@gmail.com.
 

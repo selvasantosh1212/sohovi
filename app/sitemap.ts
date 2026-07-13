@@ -14,6 +14,11 @@ const LABS_SLUGS: { slug: string; lastModified: string }[] = [
   { slug: "reftrack", lastModified: "2026-07-07" },
   { slug: "shipnotes", lastModified: "2026-07-07" },
   { slug: "kickoffbox", lastModified: "2026-07-13" },
+  { slug: "thumblab", lastModified: "2026-07-13" },
+  { slug: "categorly", lastModified: "2026-07-13" },
+  { slug: "quotenudge", lastModified: "2026-07-13" },
+  { slug: "seenly", lastModified: "2026-07-13" },
+  { slug: "clearbrief", lastModified: "2026-07-13" },
 ];
 
 const TOOL_SLUGS: { slug: string; lastModified: string }[] = [
