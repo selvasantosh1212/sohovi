@@ -22,6 +22,7 @@ const TOOL_NAMES: Record<string, string> = {
   "shopify-tools": "Shopify Tools",
   reftrack: "RefTrack",
   shipnotes: "ShipNotes",
+  kickoffbox: "KickoffBox",
 };
 
 function escapeHtml(value: string): string {

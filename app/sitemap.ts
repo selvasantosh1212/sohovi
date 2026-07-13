@@ -13,6 +13,7 @@ const LABS_SLUGS: { slug: string; lastModified: string }[] = [
   { slug: "shopify-tools", lastModified: "2026-07-07" },
   { slug: "reftrack", lastModified: "2026-07-07" },
   { slug: "shipnotes", lastModified: "2026-07-07" },
+  { slug: "kickoffbox", lastModified: "2026-07-13" },
 ];
 
 const TOOL_SLUGS: { slug: string; lastModified: string }[] = [

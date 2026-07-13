@@ -7,6 +7,7 @@ export const TOOL_SLUGS = [
   "shopify-tools",
   "reftrack",
   "shipnotes",
+  "kickoffbox",
 ] as const;
 
 export type ToolSlug = (typeof TOOL_SLUGS)[number];
