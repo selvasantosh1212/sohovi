@@ -42,7 +42,7 @@ const toolSchema = {
   name: "KickoffBox",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  offers: { "@type": "Offer", price: "9", priceCurrency: "USD", availability: "https://schema.org/PreOrder" },
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/PreOrder" },
   description:
     "A client content collection tool built for web designers — send one link, get logos, copy, images, and logins back automatically with polite, automatic reminders.",
   url: "https://sohovi.com/labs/kickoffbox",

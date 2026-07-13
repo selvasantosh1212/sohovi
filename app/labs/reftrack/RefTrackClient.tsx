@@ -97,6 +97,7 @@ export function RefTrackClient() {
         plans={[
           { name: "Everyone", price: "$19", period: "/mo", tagline: "Flat, no revenue share, unlimited affiliates", features: ["Unlimited affiliates", "No revenue share", "CSV payout export"], highlight: true, badge: "One Plan" },
         ]}
+        footnote="The first 20 founders who join the waitlist lock in $19/mo flat for life, even if pricing changes later."
       />
 
       <FeedbackForm
@@ -115,7 +116,9 @@ export function RefTrackClient() {
           options: [{ value: "0", label: "None yet" }, { value: "1-5", label: "1–5" }, { value: "5-20", label: "5–20" }, { value: "20+", label: "20+" }],
         }}
         step2Fields={[
-          { kind: "text", key: "currentTool", label: "What do you use today, if anything?" },
+          { kind: "pills", key: "wouldPay", label: "Would you pay for this if it worked exactly as described?", options: [{ value: "yes", label: "Yes, definitely" }, { value: "maybe", label: "Maybe, depends on price" }, { value: "no", label: "No" }] },
+          { kind: "text", key: "howSolveToday", label: "What do you use today, if anything?" },
+          { kind: "textarea", key: "mustHaveReason", label: "What would make this a must-have for you?" },
           { kind: "textarea", key: "additionalFeedback", label: "Anything else you'd want it to do?", optional: true },
         ]}
       />
@@ -133,6 +136,10 @@ export function RefTrackClient() {
             { q: "Can different affiliates have different commission rates?", a: "Per-campaign commission rates are the initial design, so you can run different campaigns (e.g. a higher rate for a launch partner) rather than one flat rate for everyone." },
             { q: "Is there a contract or can I cancel anytime?", a: "Month-to-month, cancel anytime — no annual lock-in planned. It's meant to be as low-commitment as the price suggests." },
             { q: "Does RefTrack work with Paddle or Lemon Squeezy, not just Stripe?", a: "Stripe is the initial integration since it's the most common billing setup for early-stage SaaS. Paddle and Lemon Squeezy support would depend on demand — tell us in the form above if that's what you use." },
+            { q: "Do I have to approve affiliates before they can start earning?", a: "Yes — affiliates join via your invite or a signup link you control, so nobody starts earning commission without you knowing who they are first." },
+            { q: "How do affiliates get set up to receive payout?", a: "They add their own PayPal email in their magic-link dashboard. RefTrack calculates what's owed and hands you a CSV formatted for PayPal Mass Pay — it never touches your money or theirs directly." },
+            { q: "Is there a minimum payout threshold?", a: "A configurable minimum (so you're not cutting a $1.50 payout) is planned — you'll set the threshold that makes sense for your program." },
+            { q: "Can I see which specific customers each affiliate referred?", a: "Yes — the affiliate's referral link is matched to the resulting Stripe customer via checkout metadata, so you can see exactly who came from whom, not just an aggregate count." },
           ]}
         />
       </div>

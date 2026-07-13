@@ -121,6 +121,9 @@ export function ShopifyToolsClient() {
           ],
         }}
         step2Fields={[
+          { kind: "pills", key: "wouldPay", label: "Would you pay for this if it worked exactly as described?", options: [{ value: "yes", label: "Yes, definitely" }, { value: "maybe", label: "Maybe, depends on price" }, { value: "no", label: "No" }] },
+          { kind: "textarea", key: "howSolveToday", label: "How do you handle this today?" },
+          { kind: "textarea", key: "mustHaveReason", label: "What would make this a must-have for you?" },
           { kind: "pills", key: "catalog", label: "How many products/variants do you manage?", options: [{ value: "<100", label: "Under 100" }, { value: "100-1000", label: "100–1,000" }, { value: "1000+", label: "1,000+" }] },
           { kind: "textarea", key: "additionalFeedback", label: "Anything else you'd want it to do?", optional: true },
         ]}
@@ -138,6 +141,9 @@ export function ShopifyToolsClient() {
             { q: "Will it conflict with my other Shopify apps?", a: "It's built to do one job — pricing, CSV import, stock alerts, or order tagging — through Shopify's standard Admin API, the same way any well-behaved app integrates. It shouldn't need exclusive access to anything another app already uses." },
             { q: "Do I need to be a developer to use it?", a: "No. It's a normal Shopify App Store install with a guided setup — no code, no CSV command-line tools, no custom scripts." },
             { q: "What's a supplier CSV product import mapper?", a: "A tool that remembers exactly how your specific supplier's spreadsheet columns map to Shopify's product fields, so re-importing updated stock or pricing from that supplier is a repeatable one-click job instead of manual reformatting every time." },
+            { q: "When will you decide which workflow to build, and how will I know?", a: "Once a clear front-runner emerges from responses to the question above, we build that one first and email everyone on the waitlist — both when the decision is made and again when it ships." },
+            { q: "What if my biggest pain isn't one of the four listed?", a: "Pick 'Something else' and tell us in the form — it's a real input into what gets built, not a dead end. Enough votes for an unlisted pain point can change what we prioritize." },
+            { q: "Will it work for Shopify Plus or multi-location stores?", a: "Yes — it's built on Shopify's standard Admin and Bulk Operations APIs, which support Plus and multi-location setups the same way as any other store." },
           ]}
         />
       </div>

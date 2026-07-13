@@ -157,6 +157,10 @@ export function KickoffboxClient() {
             { q: "What's included in the Website Kickoff template?", a: "Logo and brand files, brand colors and fonts, page copy, an image library, and competitor links — the core assets almost every website project needs before design can start." },
             { q: "How much will KickoffBox cost?", a: "Planned pricing is a flat $12/month for unlimited projects and clients — no per-user or per-request fees. Early waitlist signups lock in $9/month forever. The free plan covers your first active project." },
             { q: "When does it launch?", a: "We're building it now. Joining the waitlist gets you first access and founder pricing when it ships." },
+            { q: "Can I customize a template beyond the built-in checklist items?", a: "Yes — the prebuilt templates are meant as a fast starting point, not a fixed list. Adding, removing, or renaming checklist items for your own process is planned from day one." },
+            { q: "What file types and sizes can clients upload?", a: "Standard project assets — images, PDFs, common document and vector formats — with a per-file size limit generous enough for logo files and image libraries. Exact limits will be published once pricing finalizes." },
+            { q: "Can I preview what the client will see before I send the link?", a: "Yes — seeing the exact checklist your client is about to receive, before it goes out, is part of the send flow so there are no surprises on their end." },
+            { q: "Does it integrate with the project management tool I already use?", a: "Not directly in the first version — KickoffBox is focused on the content-collection step itself. A completed project's files and answers are exportable, and direct integrations with tools like Asana or Trello would depend on demand." },
           ]}
         />
       </div>

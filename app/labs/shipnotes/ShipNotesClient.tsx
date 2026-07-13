@@ -99,6 +99,7 @@ export function ShipNotesClient() {
           { name: "Pro", price: "$15", period: "/mo", tagline: "For your own domain", features: ["Custom domain", "Email subscribers", "GitHub drafts"], highlight: true, badge: "Most Popular" },
           { name: "Team", price: "$29", period: "/mo", tagline: "For multiple products", features: ["5 projects", "Everything in Pro"] },
         ]}
+        footnote="The first 30 signups get 6 months of Pro free once ShipNotes ships."
       />
 
       <FeedbackForm
@@ -117,7 +118,9 @@ export function ShipNotesClient() {
           options: [{ value: "yes", label: "Yes" }, { value: "no", label: "No, I'll write it myself" }, { value: "unsure", label: "Not sure what that means" }],
         }}
         step2Fields={[
-          { kind: "text", key: "hasChangelog", label: "Do you publish a changelog today, and where?" },
+          { kind: "pills", key: "wouldPay", label: "Would you pay for this if it worked exactly as described?", options: [{ value: "yes", label: "Yes, definitely" }, { value: "maybe", label: "Maybe, depends on price" }, { value: "no", label: "No" }] },
+          { kind: "text", key: "howSolveToday", label: "Do you publish a changelog today, and where?" },
+          { kind: "textarea", key: "mustHaveReason", label: "What would make this a must-have for you?" },
           { kind: "textarea", key: "additionalFeedback", label: "Anything else you'd want it to do?", optional: true },
         ]}
       />
@@ -135,6 +138,9 @@ export function ShipNotesClient() {
             { q: "Can I use this alongside my existing blog?", a: "Yes — a changelog and a blog serve different purposes (what shipped vs. longer-form writing) and commonly live side by side, often cross-linked to each other." },
             { q: "Does a public changelog page actually help with SEO?", a: 'Yes — a fast, indexable changelog page tends to rank for "[your product] changelog" and "what\'s new in [your product]" searches, which is free, ongoing marketing you don\'t have to write separately.' },
             { q: "How much does ShipNotes cost?", a: "Free for one project with the ShipNotes badge. Pro is a planned $15/month for a custom domain, email subscribers, and GitHub-drafted entries. Team is $29/month for up to 5 projects." },
+            { q: "Can I filter out noisy or internal PRs from the auto-drafted entries?", a: "Yes — the plan is to draft from PRs/releases you choose (e.g. by label or branch), not every merged PR, so internal chores and refactors don't need to be manually deleted from every draft." },
+            { q: "Can I schedule an entry to publish later instead of immediately?", a: "Scheduled publishing is planned, so you can line up a changelog entry with a launch or announcement instead of it going live the moment you finish writing it." },
+            { q: "If I have staging and production repos, will draft entries leak early?", a: "Entries stay as private drafts until you hit publish, regardless of which environment triggered the GitHub release — nothing reaches the public page or widget until you approve it." },
           ]}
         />
       </div>

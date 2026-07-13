@@ -100,6 +100,7 @@ export function SnapbackClient() {
           { name: "Pro", price: "$19", period: "/mo", tagline: "For your startup's production data", features: ["5 databases", "Every-12h schedule", "Priority support"], highlight: true, badge: "Most Popular" },
           { name: "Agency", price: "$39", period: "/mo", tagline: "For client work across projects", features: ["15 databases", "Every-12h schedule", "Priority support"] },
         ]}
+        footnote="The first 20 people who join the waitlist lock in these prices for life, even after launch pricing changes."
       />
 
       <FeedbackForm
@@ -133,6 +134,10 @@ export function SnapbackClient() {
             { q: "How do I restore a database from a SnapBack backup?", a: "SnapBack generates the exact restore command for your specific backup file — copy it, run it, done. Fully automated one-click restore (no command line) is planned as a fast-follow once the core backup engine ships." },
             { q: "How is this different from writing my own pg_dump backup script?", a: "A DIY pg_dump + cron + cloud-upload script works fine — until you forget to check whether it's still running. SnapBack is that same idea, hosted, scheduled, monitored, and alerting you the moment a backup actually fails." },
             { q: "Does SnapBack support MySQL or only Postgres?", a: "Postgres-compatible databases (Supabase, Neon, self-hosted Postgres) and Turso/SQLite are the initial scope. MySQL support would depend on demand — mention it in the form above if that's what you need." },
+            { q: "What database permissions does SnapBack need?", a: "Just enough to run a read-only dump — a connection with SELECT-level access, not a superuser or admin role. The exact minimum-privilege setup instructions ship with the product." },
+            { q: "What format are the backups in — can I restore without SnapBack?", a: "Standard pg_dump-format archives (or Turso/SQLite's native export), stored as plain files in your own bucket. You can restore them with ordinary Postgres tooling even if you never touch SnapBack again — that's the point of it living in storage you own." },
+            { q: "How do I know the failure alerts themselves are actually working?", a: "Every backup run updates a status you can see in the dashboard, and the weekly 'all healthy' digest doubles as a heartbeat — if that digest stops arriving, something's wrong even if the failure alert didn't fire." },
+            { q: "Will backup storage get expensive for a large database?", a: "You're billing your own S3/R2/B2 bucket directly at their storage rates — SnapBack doesn't mark it up. Automatic retention also prunes older backups so you're never paying to store more copies than you configured." },
           ]}
         />
       </div>

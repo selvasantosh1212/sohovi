@@ -135,6 +135,10 @@ export function EncoreClient() {
             { q: "Does Encore work for any instrument, or just piano?", a: "Any instrument — piano, guitar, voice, violin, drums, and so on. Instrument is just a field on each student's profile, not a separate product." },
             { q: "Is there a mobile app?", a: "The first version is a mobile-friendly web app that works well on a phone browser for both teachers and parents. A dedicated app is a possible fast-follow if there's demand." },
             { q: "How much does Encore cost?", a: "Planned pricing is $19/month for a solo teacher with up to 30 students, or $29/month for unlimited students — with 2 months free on annual billing. The first 10 teachers who sign up get lifetime free access." },
+            { q: "What happens to my existing Stripe payment links if I switch to Encore?", a: "Encore's own Stripe invoicing is separate from whatever you use today — you can move students over gradually and keep collecting from existing payment links until every parent is migrated, rather than a hard cutover." },
+            { q: "Can I set different rates per student or per lesson length?", a: "Yes — rate lives on each student's profile, so a 30-minute beginner and a 60-minute advanced student can be billed differently without any workaround." },
+            { q: "How is a no-show different from a teacher-cancelled lesson for makeup credit?", a: "A student no-show doesn't generate a makeup credit by default (your policy, your call), while a teacher-initiated cancellation automatically does — the distinction that a generic shared calendar can't track." },
+            { q: "Can a studio with several teachers share one account?", a: "The Studio plan removes the per-student cap for growing operations. Multiple teacher logins under one studio account is a likely next step if there's demand — tell us in the form above if that's how your studio is set up." },
           ]}
         />
       </div>
