@@ -8,7 +8,8 @@ import { RelatedTools } from "@/components/tools/RelatedTools";
 import { UseCases, type UseCase } from "@/components/tools/UseCases";
 import { Plus, Trash2, Download, Loader2, AlertCircle } from "lucide-react";
 
-type ColType = "firstName" | "lastName" | "fullName" | "email" | "phone" | "uuid" | "integer" | "float" | "boolean" | "date" | "country" | "city" | "company" | "url" | "lorem" | "incrementId";
+type ColType = "firstName" | "lastName" | "fullName" | "email" | "phone" | "uuid" | "integer" | "float" | "boolean" | "date" | "country" | "city" | "company" | "url" | "lorem" | "incrementId"
+  | "sku" | "trackingNumber" | "jobTitle" | "department" | "currencyCode" | "status" | "productName" | "refNumber" | "planTier" | "birthDate" | "money" | "salary";
 
 interface ColDef { name: string; type: ColType; }
 
@@ -18,6 +19,11 @@ const COL_TYPE_LABELS: Record<ColType, string> = {
   integer: "Integer (1–10000)", float: "Float (0.00–100.00)", boolean: "Boolean (true/false)",
   date: "Date (2020–2025)", country: "Country", city: "City",
   company: "Company name", url: "URL", lorem: "Lorem ipsum (2–4 sentences)", incrementId: "Auto-increment ID",
+  sku: "SKU", trackingNumber: "Tracking number", jobTitle: "Job title",
+  department: "Department", currencyCode: "Currency code (ISO)", status: "Status",
+  productName: "Product name", refNumber: "Reference number", planTier: "Plan tier",
+  birthDate: "Date of birth (1950–2010)", money: "Money amount ($10–$15,000)",
+  salary: "Annual salary ($35k–$185k)",
 };
 
 const FIRST_NAMES = ["Alice","Bob","Charlie","Diana","Eve","Frank","Grace","Hank","Iris","Jack","Kate","Liam","Mia","Noah","Olivia","Paul","Quinn","Rachel","Sam","Tina","Uma","Victor","Wendy","Xander","Yara","Zoe","Aiden","Bella","Carlos","Daisy","Ethan","Fiona","George","Hannah","Ian","Julia","Kevin","Laura","Marcus","Nina","Oscar","Priya","Ravi","Sofia","Tomas","Ursula","Vikram","Wei","Ximena","Yusuf","Zara","Amir","Bianca","Chen","Deepa","Elena","Felix","Gita","Hiro","Ingrid","Jamal","Keiko","Leo","Maya","Nasser","Olga","Pedro","Qiang","Rosa","Stefan","Tara","Ulysses","Valentina","Wolfgang","Ximing","Yolanda","Zane","Aisha","Bruno","Camille","Dmitri","Elif","Fatima","Gabriel","Hana","Ivan","Jasmine","Kenji","Lucia","Mohammed","Natasha","Omar","Petra","Quentin","Rania","Sven","Tanvir","Vera","Wanda","Xiomara","Yasmin","Zoltan","Anders","Beatrice","Cyrus","Delphine","Esteban","Farah","Giulia","Henrik","Imani","Joaquin"];
@@ -27,10 +33,37 @@ const COUNTRIES = ["United States","United Kingdom","Canada","Australia","German
 const CITIES = ["New York","London","Toronto","Sydney","Berlin","Paris","Mumbai","São Paulo","Tokyo","Mexico City","Madrid","Milan","Amsterdam","Singapore","Stockholm","Oslo","Copenhagen","Seoul","Auckland","Zurich","Los Angeles","Chicago","Houston","Miami","San Francisco","Boston","Vancouver","Montreal","Melbourne","Brisbane","Munich","Hamburg","Frankfurt","Lyon","Marseille","Barcelona","Valencia","Rome","Naples","Rotterdam","The Hague","Gothenburg","Bergen","Aarhus","Busan","Wellington","Geneva","Basel","Vienna","Brussels","Antwerp","Santiago","Bogota","Lima","Buenos Aires","Rio de Janeiro","Brasilia","Delhi","Bangalore","Chennai","Hyderabad","Kolkata","Osaka","Kyoto","Nagoya","Shanghai","Beijing","Shenzhen","Guangzhou","Hong Kong","Taipei","Manila","Jakarta","Bangkok","Kuala Lumpur","Ho Chi Minh City","Hanoi","Cairo","Lagos","Nairobi","Cape Town","Johannesburg","Casablanca","Dubai","Abu Dhabi","Riyadh","Doha","Istanbul","Warsaw","Prague","Budapest","Dublin","Lisbon","Athens"];
 const DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","proton.me","company.io","business.com","enterprise.co","aol.com","live.com","msn.com","zoho.com","mail.com","fastmail.com","corp.net","work.io"];
 const LOREM = ["The quick brown fox jumps over the lazy dog.","Lorem ipsum dolor sit amet, consectetur adipiscing elit.","Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.","Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.","Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia.","Nulla pariatur at vero eos et accusamus et iusto odio dignissimos.","Nam libero tempore cum soluta nobis est eligendi optio cumque.","The team reviewed the quarterly report before the meeting began.","A gentle breeze carried the scent of rain across the valley.","Every dataset tells a story if you know how to read it.","The old lighthouse stood silent against the darkening sky.","Innovation often starts with a simple question nobody else asked.","The recipe called for three eggs and a pinch of salt.","Markets fluctuated wildly after the announcement was made public.","She spent the afternoon sketching the skyline from her window.","The engineers debated the tradeoffs of the new architecture.","A distant train whistle echoed through the quiet countryside.","The library was unusually crowded during exam week.","He planted rows of tomatoes along the garden fence.","The conference attracted researchers from over forty countries.","Rain tapped softly against the windowpane all night long.","The startup pivoted twice before finding product-market fit.","Children laughed as they chased kites across the open field.","The committee postponed its decision until further notice.","A single candle flickered in the otherwise dark room.","The algorithm sorted the records in under two seconds.","Travelers lined up early to catch the first ferry.","The museum unveiled a new exhibit on ancient trade routes.","Sunlight filtered through the canopy of tall pine trees.","The negotiations continued well past midnight without resolution.","Her presentation covered three years of customer feedback data.","The bridge was closed for repairs following the storm.","Local farmers gathered at the market to sell fresh produce.","The software update fixed several long-standing bugs.","A curious cat wandered into the open bakery door.","The professor assigned a lengthy reading for the weekend.","Waves crashed steadily against the rocky shoreline.","The company reported strong earnings for the third quarter.","Volunteers spent the weekend cleaning up the riverbank.","The orchestra rehearsed the symphony one final time.","New regulations require additional disclosures from vendors.","The hikers reached the summit just before sunset.","A faint aroma of coffee drifted from the kitchen.","The city council approved funding for the new park.","Researchers published their findings in a peer-reviewed journal.","The bakery sold out of croissants before nine in the morning.","Traffic slowed to a crawl near the downtown exit."];
+const JOB_TITLES = ["Software Engineer","Product Manager","Sales Representative","Marketing Specialist","Operations Manager","Financial Analyst","Registered Nurse","Warehouse Associate","Customer Support Specialist","HR Generalist","Data Analyst","Account Executive","Supply Chain Analyst","Claims Adjuster","Physician","Procurement Specialist","UX Designer","DevOps Engineer","Recruiter","Controller"];
+const DEPARTMENTS = ["Engineering","Sales","Marketing","Human Resources","Finance","Operations","Customer Support","Legal","IT","Procurement"];
+const CURRENCY_CODES = ["USD","EUR","GBP","JPY","CAD","AUD","CHF","CNY","INR","BRL"];
+const PRODUCT_ADJECTIVES = ["Wireless","Stainless Steel","Portable","Eco-Friendly","Premium","Compact","Smart","Rechargeable","Adjustable","Heavy-Duty","Ultra-Light","Ergonomic","Waterproof","Foldable","Multi-Purpose"];
+const PRODUCT_NOUNS = ["Mouse","Water Bottle","Backpack","Desk Lamp","Bluetooth Speaker","Phone Case","Yoga Mat","Coffee Maker","Mechanical Keyboard","Headphones","Charging Cable","Laptop Stand","Storage Bin","Air Purifier","Blender"];
+const PLAN_TIERS = ["Free","Starter","Pro","Business","Enterprise"];
+const GENERAL_STATUSES = ["Pending","Active","Completed","On Hold","In Review"];
+const SHIPPING_STATUSES = ["Pending","Processing","Shipped","Delivered","Cancelled","Returned","On Hold"];
+const CLAIM_STATUSES = ["Submitted","Under Review","Approved","Rejected","Pending","Paid","Closed"];
+const TRANSACTION_STATUSES = ["Pending","Completed","Failed","Refunded","Processing","On Hold"];
+const SUBSCRIPTION_STATUSES = ["Active","Trialing","Paused","Cancelled","Past Due","Expired"];
+const VISIT_STATUSES = ["Scheduled","Checked In","In Progress","Completed","Cancelled","No Show"];
+const ALNUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 function rnd<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 function randInt(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function uuid() { return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16); }); }
+
+function randAlphaNum(len: number): string {
+  let s = "";
+  for (let i = 0; i < len; i++) s += ALNUM[Math.floor(Math.random() * ALNUM.length)];
+  return s;
+}
+
+function randomDate(yearMin: number, yearMax: number): string {
+  const y = randInt(yearMin, yearMax);
+  const m = randInt(1, 12);
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const d = randInt(1, daysInMonth);
+  return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+}
 
 function pickN<T>(arr: T[], n: number): T[] {
   const copy = [...arr];
@@ -60,7 +93,7 @@ function buildIdentity(nameOccurrences: Map<string, number>): RowIdentity {
 
 type CellValue = string | number | boolean;
 
-function generateCell(type: ColType, rowIndex: number, id: RowIdentity): CellValue {
+function generateCell(type: ColType, colName: string, rowIndex: number, id: RowIdentity): CellValue {
   switch (type) {
     case "firstName": return id.firstName;
     case "lastName": return id.lastName;
@@ -71,13 +104,37 @@ function generateCell(type: ColType, rowIndex: number, id: RowIdentity): CellVal
     case "integer": return randInt(1, 10000);
     case "float": return Number((Math.random() * 100).toFixed(2));
     case "boolean": return Math.random() > 0.5;
-    case "date": { const y = randInt(2020, 2025); const m = randInt(1, 12); const daysInMonth = new Date(y, m, 0).getDate(); const d = randInt(1, daysInMonth); return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`; }
+    case "date": return randomDate(2020, 2025);
     case "country": return rnd(COUNTRIES);
     case "city": return rnd(CITIES);
     case "company": return rnd(COMPANIES);
     case "url": return `https://www.${rnd(COMPANIES).toLowerCase().replace(/[^a-z0-9]/gi, "")}.com`;
     case "lorem": return generateLorem();
     case "incrementId": return rowIndex + 1;
+    case "sku": return `SKU-${randInt(10000, 99999)}`;
+    case "trackingNumber": return `1Z${randAlphaNum(16)}`;
+    case "jobTitle": return rnd(JOB_TITLES);
+    case "department": return rnd(DEPARTMENTS);
+    case "currencyCode": return rnd(CURRENCY_CODES);
+    case "productName": return `${rnd(PRODUCT_ADJECTIVES)} ${rnd(PRODUCT_NOUNS)}`;
+    case "planTier": return rnd(PLAN_TIERS);
+    case "birthDate": return randomDate(1950, 2010);
+    case "money": return Number((Math.random() * 14990 + 10).toFixed(2));
+    case "salary": return randInt(35000, 185000);
+    case "refNumber": {
+      const n = colName.toLowerCase();
+      const prefix = /policy/.test(n) ? "POL" : /claim/.test(n) ? "CLM" : /patient/.test(n) ? "PT" : /account/.test(n) ? "ACCT" : /invoice/.test(n) ? "INV" : "REF";
+      return `${prefix}-${randAlphaNum(6)}`;
+    }
+    case "status": {
+      const n = colName.toLowerCase();
+      if (/visit|patient|appointment/.test(n)) return rnd(VISIT_STATUSES);
+      if (/claim/.test(n)) return rnd(CLAIM_STATUSES);
+      if (/subscription|plan/.test(n)) return rnd(SUBSCRIPTION_STATUSES);
+      if (/transaction|payment|invoice/.test(n)) return rnd(TRANSACTION_STATUSES);
+      if (/shipment|tracking|order|delivery/.test(n)) return rnd(SHIPPING_STATUSES);
+      return rnd(GENERAL_STATUSES);
+    }
     default: return "";
   }
 }
@@ -87,7 +144,7 @@ function generateRows(cols: ColDef[], rowCount: number): CellValue[][] {
   const rows: CellValue[][] = [];
   for (let i = 0; i < rowCount; i++) {
     const id = buildIdentity(nameOccurrences);
-    rows.push(cols.map((c) => generateCell(c.type, i, id)));
+    rows.push(cols.map((c) => generateCell(c.type, c.name, i, id)));
   }
   return rows;
 }
@@ -114,13 +171,20 @@ const PRESETS: { label: string; cols: ColDef[] }[] = [
   { label: "Customer list", cols: [{ name: "id", type: "incrementId" }, { name: "first_name", type: "firstName" }, { name: "last_name", type: "lastName" }, { name: "email", type: "email" }, { name: "phone", type: "phone" }, { name: "country", type: "country" }] },
   { label: "Sales records", cols: [{ name: "order_id", type: "uuid" }, { name: "customer_name", type: "fullName" }, { name: "email", type: "email" }, { name: "amount", type: "float" }, { name: "date", type: "date" }, { name: "status", type: "boolean" }] },
   { label: "Employee directory", cols: [{ name: "employee_id", type: "incrementId" }, { name: "name", type: "fullName" }, { name: "email", type: "email" }, { name: "company", type: "company" }, { name: "city", type: "city" }, { name: "country", type: "country" }] },
+  { label: "Supply chain", cols: [{ name: "sku", type: "sku" }, { name: "product_name", type: "productName" }, { name: "quantity", type: "integer" }, { name: "warehouse_city", type: "city" }, { name: "supplier", type: "company" }, { name: "restock_date", type: "date" }] },
+  { label: "Finance", cols: [{ name: "transaction_id", type: "uuid" }, { name: "account_number", type: "refNumber" }, { name: "amount", type: "money" }, { name: "currency", type: "currencyCode" }, { name: "transaction_date", type: "date" }, { name: "transaction_status", type: "status" }] },
+  { label: "Insurance claims", cols: [{ name: "claim_id", type: "refNumber" }, { name: "policyholder_name", type: "fullName" }, { name: "policy_number", type: "refNumber" }, { name: "claim_amount", type: "money" }, { name: "claim_date", type: "date" }, { name: "claim_status", type: "status" }] },
+  { label: "Healthcare", cols: [{ name: "patient_id", type: "refNumber" }, { name: "patient_name", type: "fullName" }, { name: "date_of_birth", type: "birthDate" }, { name: "email", type: "email" }, { name: "phone", type: "phone" }, { name: "visit_status", type: "status" }] },
+  { label: "HR & payroll", cols: [{ name: "employee_id", type: "incrementId" }, { name: "name", type: "fullName" }, { name: "department", type: "department" }, { name: "job_title", type: "jobTitle" }, { name: "salary", type: "salary" }, { name: "hire_date", type: "date" }] },
+  { label: "Dropshipping", cols: [{ name: "order_id", type: "uuid" }, { name: "product_name", type: "productName" }, { name: "sku", type: "sku" }, { name: "customer_name", type: "fullName" }, { name: "tracking_number", type: "trackingNumber" }, { name: "shipment_status", type: "status" }] },
+  { label: "SaaS subscriptions", cols: [{ name: "subscription_id", type: "uuid" }, { name: "customer_email", type: "email" }, { name: "plan", type: "planTier" }, { name: "mrr", type: "money" }, { name: "signup_date", type: "date" }, { name: "subscription_status", type: "status" }] },
 ];
 
 const faqs: FAQItem[] = [
   { q: "What is a test data generator?", a: "A test data generator creates realistic fake data for software testing, database seeding, UI development, and demos. Instead of using real customer data (which raises privacy concerns), you generate synthetic data that looks real but isn't." },
   { q: "How do I generate fake CSV data?", a: "Use the presets to start quickly, or define your own columns by choosing a name and data type. Set the row count, click Generate, and download your CSV or JSON file instantly." },
   { q: "Is there a row limit?", a: "No. You can generate up to 100,000 rows in a single download. The generation runs entirely in your browser — nothing is sent to a server." },
-  { q: "What data types are available?", a: "First/last/full name, email, phone, UUID, integer, float, boolean, date, country, city, company name, URL, lorem ipsum text, and auto-increment ID." },
+  { q: "What data types are available?", a: "First/last/full name, email, phone, UUID, integer, float, boolean, date, country, city, company name, URL, lorem ipsum text, and auto-increment ID — plus industry-specific types like SKU, tracking number, job title, department, currency code, status, product name, reference number, and plan tier, used across 10 ready-made presets covering supply chain, finance, insurance, healthcare, HR, dropshipping, and SaaS." },
   { q: "Can I use this data in production?", a: "No — this is synthetic test data. Names, emails, and phone numbers are randomly generated and not real. Use it for testing, demos, and development only." },
 ];
 
@@ -235,8 +299,16 @@ export function TestDataGeneratorClient() {
       {/* Presets */}
       <div className="mb-6">
         <p className="text-[13px] font-semibold mb-2.5" style={{ color: "var(--ink-soft)" }}>Quick presets</p>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {PRESETS.slice(0, 3).map((p) => (
+            <button key={p.label} onClick={() => setCols(p.cols)} className="px-4 py-2 rounded-full text-[13px] font-medium border transition-all" style={{ borderColor: "var(--hair-strong)", background: "var(--paper)", color: "var(--ink-soft)" }}>
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-[12px] font-semibold mb-2.5" style={{ color: "var(--ink-mute)" }}>Industry presets</p>
         <div className="flex flex-wrap gap-2">
-          {PRESETS.map((p) => (
+          {PRESETS.slice(3).map((p) => (
             <button key={p.label} onClick={() => setCols(p.cols)} className="px-4 py-2 rounded-full text-[13px] font-medium border transition-all" style={{ borderColor: "var(--hair-strong)", background: "var(--paper)", color: "var(--ink-soft)" }}>
               {p.label}
             </button>
@@ -363,7 +435,7 @@ export function TestDataGeneratorClient() {
         <h2 className="text-[22px] font-bold mb-5" style={{ color: "var(--ink)" }}>How to generate fake CSV test data</h2>
         <div className="space-y-4">
           {[
-            { step: "1", title: "Choose a preset or define your columns", body: "Start with a customer list, sales records, or employee directory preset — or define your own columns by choosing a name and data type. Supported types include names, emails, UUIDs, dates, countries, and more." },
+            { step: "1", title: "Choose a preset or define your columns", body: "Start with a customer list, sales records, or employee directory preset — or pick an industry preset for supply chain, finance, insurance, healthcare, HR, dropshipping, or SaaS. Or define your own columns by choosing a name and data type. Supported types include names, emails, UUIDs, dates, SKUs, statuses, and more." },
             { step: "2", title: "Set row count and format", body: "Choose how many rows you need (10 to 100,000) and whether you want CSV or JSON output. CSV is great for spreadsheets and database imports. JSON is useful for APIs and frontend testing." },
             { step: "3", title: "Generate and download", body: "Click Generate. Your file is created instantly in the browser and downloaded automatically. No data is sent to any server." },
           ].map((s) => (
