@@ -128,6 +128,7 @@ const relatedTools = [
   { name: "CSV to JSON Converter", href: "/tools/csv-to-json", description: "Convert CSV to a JSON array" },
   { name: "CSV Column Picker", href: "/tools/csv-columns", description: "Select and reorder CSV columns before importing" },
   { name: "Duplicate Row Remover", href: "/tools/remove-duplicates", description: "Clean duplicates before inserting into a database" },
+  { name: "Test Data Generator", href: "/tools/test-data-generator", description: "Generate fake data to seed a test database" },
 ];
 
 export function CsvToSqlClient() {

@@ -5,7 +5,7 @@ import { TestDataGeneratorClient } from "./TestDataGeneratorClient";
 export const metadata: Metadata = {
   title: "Free Random Test Data Generator — Generate Fake CSV Data Online",
   description:
-    "Generate realistic fake CSV test data online for free. Define columns, set row count (up to 100k), download as CSV or JSON. No signup, no limits.",
+    "Generate realistic fake CSV test data online for free. Define columns, pick a row count up to 100,000, download as CSV or JSON. No signup, no limits.",
   openGraph: {
     title: "Free Random Test Data Generator — Fake CSV Data",
     description: "Generate realistic fake CSV or JSON data for testing. Up to 100k rows. No signup, browser-based.",
@@ -24,7 +24,7 @@ const toolSchema = {
   description: "Generate realistic fake CSV or JSON data for testing. Custom column types, up to 100k rows. 100% browser-based.",
   url: "https://sohovi.com/tools/test-data-generator",
   datePublished: "2026-05-31",
-  dateModified: "2026-05-31",
+  dateModified: "2026-07-18",
 };
 
 const howToSchema = {

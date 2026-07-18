@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HardCTA } from "@/components/tools/HardCTA";
 import { SoftCTA } from "@/components/tools/SoftCTA";
 import { ToolFAQ, type FAQItem } from "@/components/tools/ToolFAQ";
 import { RelatedTools } from "@/components/tools/RelatedTools";
 import { UseCases, type UseCase } from "@/components/tools/UseCases";
-import { Plus, Trash2, Download } from "lucide-react";
+import { Plus, Trash2, Download, Loader2, AlertCircle } from "lucide-react";
 
 type ColType = "firstName" | "lastName" | "fullName" | "email" | "phone" | "uuid" | "integer" | "float" | "boolean" | "date" | "country" | "city" | "company" | "url" | "lorem" | "incrementId";
 
@@ -17,51 +17,97 @@ const COL_TYPE_LABELS: Record<ColType, string> = {
   email: "Email address", phone: "Phone number", uuid: "UUID (random)",
   integer: "Integer (1–10000)", float: "Float (0.00–100.00)", boolean: "Boolean (true/false)",
   date: "Date (2020–2025)", country: "Country", city: "City",
-  company: "Company name", url: "URL", lorem: "Lorem ipsum (sentence)", incrementId: "Auto-increment ID",
+  company: "Company name", url: "URL", lorem: "Lorem ipsum (2–4 sentences)", incrementId: "Auto-increment ID",
 };
 
-const FIRST_NAMES = ["Alice","Bob","Charlie","Diana","Eve","Frank","Grace","Hank","Iris","Jack","Kate","Liam","Mia","Noah","Olivia","Paul","Quinn","Rachel","Sam","Tina","Uma","Victor","Wendy","Xander","Yara","Zoe","Aiden","Bella","Carlos","Daisy"];
-const LAST_NAMES = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker"];
-const COMPANIES = ["Acme Corp","BrightPath Inc","CloudNova","DataSync","EdgeWave","Finova","GreenBridge","HorizonAI","InfoQuest","JetStream","Keystone Labs","Luminary","Metasoft","NexGen","Optimus Systems","PeakData","QuantumLeap","RapidFlow","Skyline Tech","Titan Solutions"];
-const COUNTRIES = ["United States","United Kingdom","Canada","Australia","Germany","France","India","Brazil","Japan","Mexico","Spain","Italy","Netherlands","Singapore","Sweden","Norway","Denmark","South Korea","New Zealand","Switzerland"];
-const CITIES = ["New York","London","Toronto","Sydney","Berlin","Paris","Mumbai","São Paulo","Tokyo","Mexico City","Madrid","Milan","Amsterdam","Singapore","Stockholm","Oslo","Copenhagen","Seoul","Auckland","Zurich"];
-const DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","proton.me","company.io","business.com","enterprise.co"];
-const LOREM = ["The quick brown fox jumps over the lazy dog.","Lorem ipsum dolor sit amet consectetur adipiscing elit.","Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam quis nostrud exercitation.","Duis aute irure dolor in reprehenderit in voluptate velit esse.","Excepteur sint occaecat cupidatat non proident sunt in culpa.","Nulla pariatur at vero eos et accusamus et iusto odio dignissimos.","Nam libero tempore cum soluta nobis est eligendi optio cumque."];
+const FIRST_NAMES = ["Alice","Bob","Charlie","Diana","Eve","Frank","Grace","Hank","Iris","Jack","Kate","Liam","Mia","Noah","Olivia","Paul","Quinn","Rachel","Sam","Tina","Uma","Victor","Wendy","Xander","Yara","Zoe","Aiden","Bella","Carlos","Daisy","Ethan","Fiona","George","Hannah","Ian","Julia","Kevin","Laura","Marcus","Nina","Oscar","Priya","Ravi","Sofia","Tomas","Ursula","Vikram","Wei","Ximena","Yusuf","Zara","Amir","Bianca","Chen","Deepa","Elena","Felix","Gita","Hiro","Ingrid","Jamal","Keiko","Leo","Maya","Nasser","Olga","Pedro","Qiang","Rosa","Stefan","Tara","Ulysses","Valentina","Wolfgang","Ximing","Yolanda","Zane","Aisha","Bruno","Camille","Dmitri","Elif","Fatima","Gabriel","Hana","Ivan","Jasmine","Kenji","Lucia","Mohammed","Natasha","Omar","Petra","Quentin","Rania","Sven","Tanvir","Vera","Wanda","Xiomara","Yasmin","Zoltan","Anders","Beatrice","Cyrus","Delphine","Esteban","Farah","Giulia","Henrik","Imani","Joaquin"];
+const LAST_NAMES = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts","Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes","Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper","Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson","Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes","Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez","Powell","Jenkins","Perry","Russell","Sullivan","Bell","Coleman","Butler","Henderson","Barnes","Gonzales","Fisher"];
+const COMPANIES = ["Acme Corp","BrightPath Inc","CloudNova","DataSync","EdgeWave","Finova","GreenBridge","HorizonAI","InfoQuest","JetStream","Keystone Labs","Luminary","Metasoft","NexGen","Optimus Systems","PeakData","QuantumLeap","RapidFlow","Skyline Tech","Titan Solutions","Apex Dynamics","BlueOak Partners","Catalyst Works","Driftwood Digital","Everline Group","Fernway Systems","Gridlock Analytics","Harbor Point Tech","Ironclad Software","Junction Labs","Kindred Data","Lighthouse Ventures","Maple Ridge Co","Northstar Solutions","Orbital Systems","Pinnacle Softworks","Redwood Analytics","Summit Cloud","Tandem Technologies","Union Square Labs","Vertex Dynamics","Westbrook Group","Yellowstone Data","Zenith Networks","Ashford Technologies"];
+const COUNTRIES = ["United States","United Kingdom","Canada","Australia","Germany","France","India","Brazil","Japan","Mexico","Spain","Italy","Netherlands","Singapore","Sweden","Norway","Denmark","South Korea","New Zealand","Switzerland","Argentina","Austria","Belgium","Chile","China","Colombia","Czech Republic","Egypt","Finland","Greece","Hong Kong","Hungary","Iceland","Indonesia","Ireland","Israel","Kenya","Malaysia","Nigeria","Pakistan","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Saudi Arabia","South Africa","Sri Lanka","Taiwan","Thailand","Turkey","Ukraine","United Arab Emirates","Uruguay","Venezuela","Vietnam","Bangladesh","Bulgaria","Croatia","Cyprus","Ecuador","Estonia","Ethiopia","Ghana","Guatemala","Iraq","Jamaica","Jordan","Kazakhstan","Kuwait","Latvia","Lebanon","Lithuania","Luxembourg","Malta","Mauritius","Mongolia","Morocco","Myanmar","Nepal","Nicaragua","Oman","Panama","Paraguay","Serbia","Slovakia","Slovenia","Tanzania","Tunisia","Uganda","Uzbekistan","Zambia","Zimbabwe"];
+const CITIES = ["New York","London","Toronto","Sydney","Berlin","Paris","Mumbai","São Paulo","Tokyo","Mexico City","Madrid","Milan","Amsterdam","Singapore","Stockholm","Oslo","Copenhagen","Seoul","Auckland","Zurich","Los Angeles","Chicago","Houston","Miami","San Francisco","Boston","Vancouver","Montreal","Melbourne","Brisbane","Munich","Hamburg","Frankfurt","Lyon","Marseille","Barcelona","Valencia","Rome","Naples","Rotterdam","The Hague","Gothenburg","Bergen","Aarhus","Busan","Wellington","Geneva","Basel","Vienna","Brussels","Antwerp","Santiago","Bogota","Lima","Buenos Aires","Rio de Janeiro","Brasilia","Delhi","Bangalore","Chennai","Hyderabad","Kolkata","Osaka","Kyoto","Nagoya","Shanghai","Beijing","Shenzhen","Guangzhou","Hong Kong","Taipei","Manila","Jakarta","Bangkok","Kuala Lumpur","Ho Chi Minh City","Hanoi","Cairo","Lagos","Nairobi","Cape Town","Johannesburg","Casablanca","Dubai","Abu Dhabi","Riyadh","Doha","Istanbul","Warsaw","Prague","Budapest","Dublin","Lisbon","Athens"];
+const DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","proton.me","company.io","business.com","enterprise.co","aol.com","live.com","msn.com","zoho.com","mail.com","fastmail.com","corp.net","work.io"];
+const LOREM = ["The quick brown fox jumps over the lazy dog.","Lorem ipsum dolor sit amet, consectetur adipiscing elit.","Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.","Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.","Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.","Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia.","Nulla pariatur at vero eos et accusamus et iusto odio dignissimos.","Nam libero tempore cum soluta nobis est eligendi optio cumque.","The team reviewed the quarterly report before the meeting began.","A gentle breeze carried the scent of rain across the valley.","Every dataset tells a story if you know how to read it.","The old lighthouse stood silent against the darkening sky.","Innovation often starts with a simple question nobody else asked.","The recipe called for three eggs and a pinch of salt.","Markets fluctuated wildly after the announcement was made public.","She spent the afternoon sketching the skyline from her window.","The engineers debated the tradeoffs of the new architecture.","A distant train whistle echoed through the quiet countryside.","The library was unusually crowded during exam week.","He planted rows of tomatoes along the garden fence.","The conference attracted researchers from over forty countries.","Rain tapped softly against the windowpane all night long.","The startup pivoted twice before finding product-market fit.","Children laughed as they chased kites across the open field.","The committee postponed its decision until further notice.","A single candle flickered in the otherwise dark room.","The algorithm sorted the records in under two seconds.","Travelers lined up early to catch the first ferry.","The museum unveiled a new exhibit on ancient trade routes.","Sunlight filtered through the canopy of tall pine trees.","The negotiations continued well past midnight without resolution.","Her presentation covered three years of customer feedback data.","The bridge was closed for repairs following the storm.","Local farmers gathered at the market to sell fresh produce.","The software update fixed several long-standing bugs.","A curious cat wandered into the open bakery door.","The professor assigned a lengthy reading for the weekend.","Waves crashed steadily against the rocky shoreline.","The company reported strong earnings for the third quarter.","Volunteers spent the weekend cleaning up the riverbank.","The orchestra rehearsed the symphony one final time.","New regulations require additional disclosures from vendors.","The hikers reached the summit just before sunset.","A faint aroma of coffee drifted from the kitchen.","The city council approved funding for the new park.","Researchers published their findings in a peer-reviewed journal.","The bakery sold out of croissants before nine in the morning.","Traffic slowed to a crawl near the downtown exit."];
 
 function rnd<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 function randInt(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function uuid() { return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16); }); }
 
-function generateCell(type: ColType, rowIndex: number): string {
+function pickN<T>(arr: T[], n: number): T[] {
+  const copy = [...arr];
+  const out: T[] = [];
+  for (let i = 0; i < n && copy.length; i++) {
+    out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+  }
+  return out;
+}
+
+function generateLorem(): string {
+  return pickN(LOREM, randInt(2, 4)).join(" ");
+}
+
+interface RowIdentity { firstName: string; lastName: string; email: string; }
+
+function buildIdentity(nameOccurrences: Map<string, number>): RowIdentity {
+  const firstName = rnd(FIRST_NAMES);
+  const lastName = rnd(LAST_NAMES);
+  const key = `${firstName}|${lastName}`;
+  const n = (nameOccurrences.get(key) ?? 0) + 1;
+  nameOccurrences.set(key, n);
+  const suffix = n > 1 ? String(n) : "";
+  const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${suffix}@${rnd(DOMAINS)}`;
+  return { firstName, lastName, email };
+}
+
+type CellValue = string | number | boolean;
+
+function generateCell(type: ColType, rowIndex: number, id: RowIdentity): CellValue {
   switch (type) {
-    case "firstName": return rnd(FIRST_NAMES);
-    case "lastName": return rnd(LAST_NAMES);
-    case "fullName": return `${rnd(FIRST_NAMES)} ${rnd(LAST_NAMES)}`;
-    case "email": { const fn = rnd(FIRST_NAMES).toLowerCase(); const ln = rnd(LAST_NAMES).toLowerCase(); return `${fn}.${ln}@${rnd(DOMAINS)}`; }
-    case "phone": return `+1${randInt(200, 999)}${randInt(1000000, 9999999)}`;
+    case "firstName": return id.firstName;
+    case "lastName": return id.lastName;
+    case "fullName": return `${id.firstName} ${id.lastName}`;
+    case "email": return id.email;
+    case "phone": return `+1${randInt(200, 999)}${randInt(200, 999)}${randInt(1000, 9999)}`;
     case "uuid": return uuid();
-    case "integer": return String(randInt(1, 10000));
-    case "float": return (Math.random() * 100).toFixed(2);
-    case "boolean": return Math.random() > 0.5 ? "true" : "false";
-    case "date": { const y = randInt(2020, 2025); const m = String(randInt(1, 12)).padStart(2, "0"); const d = String(randInt(1, 28)).padStart(2, "0"); return `${y}-${m}-${d}`; }
+    case "integer": return randInt(1, 10000);
+    case "float": return Number((Math.random() * 100).toFixed(2));
+    case "boolean": return Math.random() > 0.5;
+    case "date": { const y = randInt(2020, 2025); const m = randInt(1, 12); const daysInMonth = new Date(y, m, 0).getDate(); const d = randInt(1, daysInMonth); return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`; }
     case "country": return rnd(COUNTRIES);
     case "city": return rnd(CITIES);
     case "company": return rnd(COMPANIES);
-    case "url": return `https://www.${rnd(COMPANIES).toLowerCase().replace(/\s+/g, "")}.com`;
-    case "lorem": return rnd(LOREM);
-    case "incrementId": return String(rowIndex + 1);
+    case "url": return `https://www.${rnd(COMPANIES).toLowerCase().replace(/[^a-z0-9]/gi, "")}.com`;
+    case "lorem": return generateLorem();
+    case "incrementId": return rowIndex + 1;
     default: return "";
   }
 }
 
-function generateCSV(cols: ColDef[], rowCount: number): string {
-  const esc = (v: string) => v.includes(",") || v.includes('"') || v.includes("\n") ? `"${v.replace(/"/g, '""')}"` : v;
-  const header = cols.map((c) => esc(c.name)).join(",");
-  const rows: string[] = [];
+function generateRows(cols: ColDef[], rowCount: number): CellValue[][] {
+  const nameOccurrences = new Map<string, number>();
+  const rows: CellValue[][] = [];
   for (let i = 0; i < rowCount; i++) {
-    rows.push(cols.map((c) => esc(generateCell(c.type, i))).join(","));
+    const id = buildIdentity(nameOccurrences);
+    rows.push(cols.map((c) => generateCell(c.type, i, id)));
   }
+  return rows;
+}
+
+function esc(v: string): string {
+  const s = /^[=+\-@]/.test(v) ? `'${v}` : v;
+  return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function generateCSV(cols: ColDef[], rowCount: number): string {
+  const header = cols.map((c) => esc(c.name)).join(",");
+  const rows = generateRows(cols, rowCount).map((row) => row.map((v) => esc(String(v))).join(","));
   return [header, ...rows].join("\n");
+}
+
+function nextColumnName(existingNames: string[]): string {
+  const existing = new Set(existingNames);
+  let n = existingNames.length + 1;
+  while (existing.has(`column_${n}`)) n++;
+  return `column_${n}`;
 }
 
 const PRESETS: { label: string; cols: ColDef[] }[] = [
@@ -120,9 +166,18 @@ export function TestDataGeneratorClient() {
   const [rowCount, setRowCount] = useState(100);
   const [format, setFormat] = useState<"csv" | "json">("csv");
   const [generated, setGenerated] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => { setGenerated(false); }, [cols, rowCount, format]);
+
+  const nameCounts = cols.reduce((m, c) => m.set(c.name, (m.get(c.name) ?? 0) + 1), new Map<string, number>());
+  const hasBlankName = cols.some((c) => !c.name.trim());
+  const hasDuplicateName = cols.some((c) => (nameCounts.get(c.name) ?? 0) > 1);
+  const hasValidationError = hasBlankName || hasDuplicateName;
 
   function addCol() {
-    setCols((prev) => [...prev, { name: `column_${prev.length + 1}`, type: "firstName" }]);
+    setCols((prev) => [...prev, { name: nextColumnName(prev.map((c) => c.name)), type: "firstName" }]);
   }
 
   function removeCol(i: number) {
@@ -134,25 +189,32 @@ export function TestDataGeneratorClient() {
   }
 
   function handleDownload() {
-    if (format === "csv") {
-      const csv = generateCSV(cols, rowCount);
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "test-data.csv"; a.click();
-      URL.revokeObjectURL(url);
-    } else {
-      const rows: Record<string, string>[] = [];
-      for (let i = 0; i < rowCount; i++) {
-        const obj: Record<string, string> = {};
-        cols.forEach((c) => { obj[c.name] = generateCell(c.type, i); });
-        rows.push(obj);
+    setError(null);
+    setIsGenerating(true);
+    setTimeout(() => {
+      try {
+        if (format === "csv") {
+          const csv = generateCSV(cols, rowCount);
+          const blob = new Blob([csv], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a"); a.href = url; a.download = "test-data.csv"; a.click();
+          URL.revokeObjectURL(url);
+        } else {
+          const rows = generateRows(cols, rowCount).map((row) =>
+            Object.fromEntries(row.map((v, i) => [cols[i].name, v]))
+          );
+          const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a"); a.href = url; a.download = "test-data.json"; a.click();
+          URL.revokeObjectURL(url);
+        }
+        setGenerated(true);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Generation failed. Please try again.");
+      } finally {
+        setIsGenerating(false);
       }
-      const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "test-data.json"; a.click();
-      URL.revokeObjectURL(url);
-    }
-    setGenerated(true);
+    }, 30);
   }
 
   return (
@@ -188,30 +250,37 @@ export function TestDataGeneratorClient() {
           Column definitions
         </div>
         <div>
-          {cols.map((col, i) => (
-            <div key={i} className="flex items-center gap-3 px-4 py-3 border-b" style={{ borderColor: "var(--hair)", background: "var(--paper)" }}>
-              <input
-                value={col.name}
-                onChange={(e) => updateCol(i, { name: e.target.value })}
-                className="flex-1 min-w-0 rounded-lg border px-3 py-1.5 text-[13px] font-mono focus:outline-none"
-                style={{ borderColor: "var(--hair-strong)", background: "var(--cream)", color: "var(--ink)", fontFamily: "var(--font-geist-mono)" }}
-                placeholder="column_name"
-              />
-              <select
-                value={col.type}
-                onChange={(e) => updateCol(i, { type: e.target.value as ColType })}
-                className="rounded-lg border px-3 py-1.5 text-[13px] focus:outline-none"
-                style={{ borderColor: "var(--hair-strong)", background: "var(--cream)", color: "var(--ink)" }}
-              >
-                {(Object.keys(COL_TYPE_LABELS) as ColType[]).map((t) => (
-                  <option key={t} value={t}>{COL_TYPE_LABELS[t]}</option>
-                ))}
-              </select>
-              <button onClick={() => removeCol(i)} disabled={cols.length <= 1} className="p-2 rounded-lg transition-all disabled:opacity-30" style={{ color: "var(--ink-mute)" }}>
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
+          {cols.map((col, i) => {
+            const nameInvalid = !col.name.trim() || (nameCounts.get(col.name) ?? 0) > 1;
+            return (
+              <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-4 py-3 border-b" style={{ borderColor: "var(--hair)", background: "var(--paper)" }}>
+                <input
+                  value={col.name}
+                  onChange={(e) => updateCol(i, { name: e.target.value })}
+                  aria-label={`Column ${i + 1} name`}
+                  className="w-full sm:flex-1 sm:min-w-0 rounded-lg border px-3 py-1.5 text-[13px] font-mono focus:outline-none"
+                  style={{ borderColor: nameInvalid ? "#FCA5A5" : "var(--hair-strong)", background: "var(--cream)", color: "var(--ink)", fontFamily: "var(--font-geist-mono)" }}
+                  placeholder="column_name"
+                />
+                <div className="flex gap-2">
+                  <select
+                    value={col.type}
+                    onChange={(e) => updateCol(i, { type: e.target.value as ColType })}
+                    aria-label={`Column ${i + 1} type`}
+                    className="flex-1 sm:flex-none sm:w-[190px] rounded-lg border px-3 py-1.5 text-[13px] focus:outline-none"
+                    style={{ borderColor: "var(--hair-strong)", background: "var(--cream)", color: "var(--ink)" }}
+                  >
+                    {(Object.keys(COL_TYPE_LABELS) as ColType[]).map((t) => (
+                      <option key={t} value={t}>{COL_TYPE_LABELS[t]}</option>
+                    ))}
+                  </select>
+                  <button onClick={() => removeCol(i)} disabled={cols.length <= 1} aria-label={`Remove column ${i + 1}`} className="p-2 rounded-lg transition-all disabled:opacity-30" style={{ color: "var(--ink-mute)" }}>
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
         <button onClick={addCol} className="w-full flex items-center justify-center gap-2 py-3 text-[13px] font-medium transition-all" style={{ color: "var(--ink-mute)", borderTop: "1px solid var(--hair)" }}>
           <Plus className="w-4 h-4" />
@@ -233,7 +302,7 @@ export function TestDataGeneratorClient() {
           <label className="block text-[12px] font-semibold mb-1.5" style={{ color: "var(--ink-soft)" }}>Output format</label>
           <div className="flex gap-2">
             {(["csv", "json"] as const).map((f) => (
-              <button key={f} onClick={() => setFormat(f)} className="flex-1 py-2 rounded-lg border text-[13px] font-medium transition-all" style={{ borderColor: format === f ? "var(--mint)" : "var(--hair-strong)", background: format === f ? "rgba(0,201,167,0.06)" : "transparent", color: format === f ? "#007A65" : "var(--ink-soft)" }}>
+              <button key={f} onClick={() => setFormat(f)} aria-pressed={format === f} className="flex-1 py-2 rounded-lg border text-[13px] font-medium transition-all" style={{ borderColor: format === f ? "var(--mint)" : "var(--hair-strong)", background: format === f ? "rgba(0,201,167,0.06)" : "transparent", color: format === f ? "#007A65" : "var(--ink-soft)" }}>
                 .{f}
               </button>
             ))}
@@ -241,14 +310,37 @@ export function TestDataGeneratorClient() {
         </div>
       </div>
 
+      {hasValidationError && (
+        <div className="flex items-center gap-3 p-4 rounded-xl mb-5" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+          <p className="text-[14px] text-red-700">Column names must be non-empty and unique.</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-3 p-4 rounded-xl mb-5" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+          <p className="text-[14px] text-red-700">{error}</p>
+        </div>
+      )}
+
       <button
         onClick={handleDownload}
-        disabled={cols.length === 0}
+        disabled={isGenerating || hasValidationError}
         className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-[15px] transition-all disabled:opacity-40 mb-5"
         style={{ background: "var(--ink)", color: "white" }}
       >
-        <Download className="w-5 h-5" />
-        Generate &amp; download {rowCount.toLocaleString()} rows ({format.toUpperCase()})
+        {isGenerating ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Generating…
+          </>
+        ) : (
+          <>
+            <Download className="w-5 h-5" />
+            Generate &amp; download {rowCount.toLocaleString()} rows ({format.toUpperCase()})
+          </>
+        )}
       </button>
 
       <SoftCTA text="Testing with fake data? When real data arrives, Sohovi validates its quality automatically →" />

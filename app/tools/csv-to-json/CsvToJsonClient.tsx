@@ -96,6 +96,7 @@ const relatedTools = [
   { name: "JSON to CSV Converter", href: "/tools/json-to-csv", description: "Convert JSON back to a CSV spreadsheet" },
   { name: "Duplicate Row Remover", href: "/tools/remove-duplicates", description: "Remove duplicate rows from CSV" },
   { name: "CSV Column Picker", href: "/tools/csv-columns", description: "Select and reorder CSV columns" },
+  { name: "Test Data Generator", href: "/tools/test-data-generator", description: "Generate fake CSV/JSON data for testing" },
 ];
 
 export function CsvToJsonClient() {

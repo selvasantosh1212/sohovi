@@ -208,6 +208,7 @@ const relatedTools = [
   { name: "Two-File Reconciler", href: "/tools/compare", description: "Compare two files and see what changed" },
   { name: "PII Audit", href: "/tools/pii-audit", description: "Check a file for personal data before sharing" },
   { name: "CSV Column Picker", href: "/tools/csv-columns", description: "Select, drop, and rename CSV columns" },
+  { name: "Test Data Generator", href: "/tools/test-data-generator", description: "Generate fake CSV/JSON data for testing" },
 ];
 
 export function RemoveDuplicatesClient() {
