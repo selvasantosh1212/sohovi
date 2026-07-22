@@ -17,7 +17,7 @@ export function FinalCTA() {
             Start measuring your data quality today.
           </h2>
           <p className="text-lg max-w-lg mx-auto" style={{ color: "rgba(10,10,10,0.65)" }}>
-            Free forever for individual use. Pro plans from $29/month when you need more.
+            Free forever for individual use. Pro plans from $39/month when you need more.
           </p>
         </div>
 

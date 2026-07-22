@@ -92,7 +92,7 @@ export default function DataQualityScoringPage() {
               </h2>
               <p>
                 Scores roll up from individual rules to a column score, from columns to a dataset score,
-                and — on the Business plan — from datasets to a catalog-level score across an entire
+                and — on the Team plan — from datasets to a catalog-level score across an entire
                 business unit. A score under 60 is flagged critical, 60–80 is a warning, 80–95 is good,
                 and 95+ is excellent, so anyone on your team can read the color and understand the
                 severity instantly.

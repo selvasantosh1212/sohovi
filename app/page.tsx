@@ -40,8 +40,8 @@ const homepageJsonLd = {
         "Privacy-first data quality platform that profiles, scores, and validates CSV and Excel files entirely in the browser. Zero server upload.",
       offers: [
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD", description: "5 data assets, unlimited profiling, 5 DQ rules per asset" },
-        { "@type": "Offer", name: "Pro", price: "29", priceCurrency: "USD", billingIncrement: "month", description: "Unlimited assets, AI DQ rule suggestions, PDF reports" },
-        { "@type": "Offer", name: "Business", price: "59", priceCurrency: "USD", billingIncrement: "month", description: "Team collaboration, business units, cross-column validations, priority support" },
+        { "@type": "Offer", name: "Pro", price: "39", priceCurrency: "USD", billingIncrement: "month", description: "Unlimited assets, AI DQ rule suggestions, PDF reports" },
+        { "@type": "Offer", name: "Team", price: "99", priceCurrency: "USD", billingIncrement: "month", description: "Team collaboration, business units, cross-column validations, priority support" },
       ],
     },
     {
@@ -52,7 +52,7 @@ const homepageJsonLd = {
         { "@type": "Question", name: "How does Sohovi compare to traditional data quality tools?", acceptedAnswer: { "@type": "Answer", text: "Most established DQ platforms are built for enterprise IT departments — they require months of implementation, dedicated ops teams, and significant annual budgets. Sohovi is built for data analysts and small teams who need to trust their data now. You can be scoring your first dataset in under 10 minutes with zero setup." } },
         { "@type": "Question", name: "What file types and sizes does Sohovi support?", acceptedAnswer: { "@type": "Answer", text: "CSV and Excel (.xlsx, .xls) files up to 200MB. For very large files, Sohovi automatically samples up to 100,000 rows for profiling while still applying rules across all rows. JSON and Parquet support are on the roadmap." } },
         { "@type": "Question", name: "Does the Free plan actually work, or is it intentionally limited?", acceptedAnswer: { "@type": "Answer", text: "The Free plan is genuinely useful for individuals. You get 5 data assets, unlimited profiling runs, 5 DQ rules per asset, and 7-day run history. It's not a 14-day trial — it's free forever for solo use." } },
-        { "@type": "Question", name: "Does the Business plan have a free trial?", acceptedAnswer: { "@type": "Answer", text: "Yes — Business includes a 7-day free trial with no credit card required. You get full access to all Business features. If you don't upgrade by the end of the trial, you move to the Free plan automatically — no charges." } },
+        { "@type": "Question", name: "Does the Team plan have a free trial?", acceptedAnswer: { "@type": "Answer", text: "Yes — Team includes a 7-day free trial with no credit card required. You get full access to all Team features. If you don't upgrade by the end of the trial, you move to the Free plan automatically — no charges." } },
         { "@type": "Question", name: "How does the DQ scoring work? Can I trust the numbers?", acceptedAnswer: { "@type": "Answer", text: "Each of the 10 DQ dimensions has a defined formula. Completeness = (non-null rows / total rows) × 100. Validity = (rows matching your rule / total rows) × 100. Every score shows exactly which rule was applied and how many rows failed — there are no proprietary algorithms or opaque weighting." } },
         { "@type": "Question", name: "Can I use Sohovi for regulated industries?", acceptedAnswer: { "@type": "Answer", text: "Yes. Because your raw data never leaves your browser, there is no data transfer to our servers, which means Sohovi doesn't become a data processor under GDPR for your customer data. Legal teams in healthcare, finance, and HR typically approve Sohovi in 24 hours." } },
       ],

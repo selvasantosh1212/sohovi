@@ -7,22 +7,22 @@ import { Footer } from "@/components/landing/Footer";
 const SITE_URL = "https://sohovi.com";
 
 export const metadata: Metadata = {
-  title: "Pricing — Data Quality Tool Plans from Free to Business",
+  title: "Pricing — Data Quality Tool Plans from Free to Team",
   description:
-    "Sohovi pricing: start free with 5 data assets and unlimited profiling runs. Upgrade to Pro ($29/mo) or Business ($59/mo) for AI rule suggestions, trend charts, and team collaboration.",
+    "Sohovi pricing: start free with 5 data assets and unlimited profiling runs. Upgrade to Pro ($39/mo) or Team ($99/mo) for AI rule suggestions, trend charts, and team collaboration.",
   alternates: { canonical: `${SITE_URL}/pricing` },
   openGraph: {
-    title: "Sohovi Pricing — Free, Pro, and Business Plans",
+    title: "Sohovi Pricing — Free, Pro, and Team Plans",
     description:
-      "Simple, transparent pricing for data profiling and DQ scoring. Free forever for individuals; Pro and Business plans for teams.",
+      "Simple, transparent pricing for data profiling and DQ scoring. Free forever for individuals; Pro and Team plans for teams.",
     url: `${SITE_URL}/pricing`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sohovi Pricing — Free, Pro, and Business Plans",
+    title: "Sohovi Pricing — Free, Pro, and Team Plans",
     description:
-      "Simple, transparent pricing for data profiling and DQ scoring. Free forever for individuals; Pro and Business plans for teams.",
+      "Simple, transparent pricing for data profiling and DQ scoring. Free forever for individuals; Pro and Team plans for teams.",
   },
 };
 
@@ -46,8 +46,8 @@ const pricingJsonLd = {
       operatingSystem: "Web",
       offers: [
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD", description: "5 data assets, unlimited profiling, 5 DQ rules per asset" },
-        { "@type": "Offer", name: "Pro", price: "29", priceCurrency: "USD", billingIncrement: "month", description: "Unlimited assets, AI DQ rule suggestions, PDF reports" },
-        { "@type": "Offer", name: "Business", price: "59", priceCurrency: "USD", billingIncrement: "month", description: "Team collaboration, business units, cross-column validations, priority support" },
+        { "@type": "Offer", name: "Pro", price: "39", priceCurrency: "USD", billingIncrement: "month", description: "Unlimited assets, AI DQ rule suggestions, PDF reports" },
+        { "@type": "Offer", name: "Team", price: "99", priceCurrency: "USD", billingIncrement: "month", description: "Team collaboration, business units, cross-column validations, priority support" },
       ],
     },
   ],
@@ -96,9 +96,9 @@ export default function PricingPage() {
               <p>
                 <strong style={{ color: "#0A0A0A" }}>Free</strong> covers 5 data assets, unlimited
                 profiling runs, and 5 DQ rules per asset — enough for most individuals validating a
-                handful of recurring datasets. <strong style={{ color: "#0A0A0A" }}>Pro</strong> ($29/mo)
+                handful of recurring datasets. <strong style={{ color: "#0A0A0A" }}>Pro</strong> ($39/mo)
                 unlocks unlimited assets and rules, the full 10-dimension quality score, AI-suggested
-                rules, historical trend charts, and PII detection. <strong style={{ color: "#0A0A0A" }}>Business</strong> ($59/mo)
+                rules, historical trend charts, and PII detection. <strong style={{ color: "#0A0A0A" }}>Team</strong> ($99/mo)
                 adds multi-catalog organization, cross-column validations, a rule-testing sandbox, and
                 team collaboration for data teams managing more than one business unit — with a 7-day
                 free trial and no credit card required.
@@ -117,7 +117,7 @@ export default function PricingPage() {
               Free. If you&apos;re running the same checks every week and want to see whether quality
               is trending up or down, Pro pays for itself the first time it catches a schema change
               before it breaks a downstream report. If you manage data across multiple teams or
-              business units, Business gives you the organizational structure — catalogs, ownership
+              business units, Team gives you the organizational structure — catalogs, ownership
               fields, and lineage metadata — to keep everyone looking at the same source of truth.
             </p>
             <p className="text-lg leading-relaxed mb-8" style={{ color: "#5B5B63" }}>

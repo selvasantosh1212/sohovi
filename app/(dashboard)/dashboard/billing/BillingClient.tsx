@@ -7,7 +7,7 @@ import type { Plan } from "@/lib/plans/limits";
 const PLAN_INFO: Record<Plan, { name: string; description: string }> = {
   free: { name: "Free", description: "5 data assets, 5 rules per asset, 7-day run history." },
   pro: { name: "Pro", description: "Unlimited assets & rules, AI suggestions, alerts, workflows, 90-day run history." },
-  business: { name: "Business", description: "Everything in Pro plus business units, rule sandbox, remediation, and unlimited run history." },
+  business: { name: "Team", description: "Everything in Pro plus business units, rule sandbox, remediation, and unlimited run history." },
 };
 
 const UPGRADE_PLANS: {
@@ -20,8 +20,8 @@ const UPGRADE_PLANS: {
   {
     key: "pro",
     name: "Pro",
-    monthly: "$29/mo",
-    annual: "$23/mo billed annually ($276/yr)",
+    monthly: "$39/mo",
+    annual: "$31/mo billed annually ($372/yr)",
     features: [
       "Unlimited data assets & rules",
       "AI rule suggestions",
@@ -33,9 +33,9 @@ const UPGRADE_PLANS: {
   },
   {
     key: "business",
-    name: "Business",
-    monthly: "$59/mo",
-    annual: "$49/mo billed annually ($588/yr)",
+    name: "Team",
+    monthly: "$99/mo",
+    annual: "$79/mo billed annually ($948/yr)",
     features: [
       "Everything in Pro",
       "Unlimited business units",

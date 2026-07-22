@@ -30,7 +30,7 @@ export function PlanGate({ minPlan, feature, description, fallback, children }: 
   if (hasAccess) return <>{children}</>;
   if (fallback !== undefined) return <>{fallback}</>;
 
-  const planLabel = minPlan === "business" ? "Business" : "Pro";
+  const planLabel = minPlan === "business" ? "Team" : "Pro";
 
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center space-y-4">

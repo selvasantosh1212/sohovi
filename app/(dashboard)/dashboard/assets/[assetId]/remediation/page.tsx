@@ -45,7 +45,7 @@ export default async function RemediationPage({
       <PlanGate
         minPlan="business"
         feature="Remediation"
-        description="Remediation and cleaned-file export are available on the Business plan. Upgrade to review failed records and export a cleaned file."
+        description="Remediation and cleaned-file export are available on the Team plan. Upgrade to review failed records and export a cleaned file."
       >
         <RemediationClient
           assetId={assetId}

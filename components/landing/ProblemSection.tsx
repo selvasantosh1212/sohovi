@@ -94,7 +94,7 @@ export function ProblemSection() {
                   <span className="text-5xl font-bold tracking-tight" style={{ color: "#0A0A0A" }}>$0</span>
                   <span className="ml-2 text-sm" style={{ color: "#37376B" }}>/ month to get started</span>
                 </div>
-                <p className="text-sm mt-1" style={{ color: "#37376B" }}>Pro plans from $29/month when you need more</p>
+                <p className="text-sm mt-1" style={{ color: "#37376B" }}>Pro plans from $39/month when you need more</p>
               </div>
 
               <ul className="space-y-3">

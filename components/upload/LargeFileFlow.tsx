@@ -114,7 +114,7 @@ function BulkDropZone({ onFile }: { onFile: (f: File) => void }) {
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-mono text-[12px] font-medium text-slate-500"
             style={{ background: "#F1F5F9" }}
           >
-            .csv · .xlsx · .xls · up to 1 GB · Business plan
+            .csv · .xlsx · .xls · up to 1 GB · Team plan
           </div>
         </div>
       </label>

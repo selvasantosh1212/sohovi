@@ -45,7 +45,7 @@ export default async function SandboxPage({
       <PlanGate
         minPlan="business"
         feature="Rule Sandbox"
-        description="The rule testing sandbox is available on the Business plan. Upgrade to test rules instantly against your uploaded data."
+        description="The rule testing sandbox is available on the Team plan. Upgrade to test rules instantly against your uploaded data."
       >
         <SandboxClient
           assetId={assetId}

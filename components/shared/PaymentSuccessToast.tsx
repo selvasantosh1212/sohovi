@@ -16,7 +16,7 @@ export function PaymentSuccessToast({ plan }: Props) {
   useEffect(() => {
     if (searchParams.get("payment") !== "success") return;
 
-    const planLabel = plan === "pro" ? "Pro" : plan === "business" ? "Business" : "paid";
+    const planLabel = plan === "pro" ? "Pro" : plan === "business" ? "Team" : "paid";
     toast.success(`Welcome to the ${planLabel} plan!`, {
       description: "Your subscription is now active. Enjoy all the features.",
       duration: 6000,

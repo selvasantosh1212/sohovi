@@ -18,15 +18,15 @@ const faqs = [
   },
   {
     q: "What file types and sizes does Sohovi support?",
-    a: "CSV and Excel (.xlsx, .xls) files up to 200MB. For very large files, Sohovi automatically samples up to 100,000 rows for profiling while still applying rules across all rows. JSON and Parquet support are on the roadmap. You can also connect live data sources (Google Sheets, Airtable, REST APIs) on the Business plan.",
+    a: "CSV and Excel (.xlsx, .xls) files up to 200MB. For very large files, Sohovi automatically samples up to 100,000 rows for profiling while still applying rules across all rows. JSON and Parquet support are on the roadmap. You can also connect live data sources (Google Sheets, Airtable, REST APIs) on the Team plan.",
   },
   {
     q: "Does the Free plan actually work, or is it intentionally limited?",
-    a: "The Free plan is genuinely useful for individuals. You get 5 data assets, unlimited profiling runs, 5 DQ rules per asset, and 7-day run history. It's not a 14-day trial — it's free forever for solo use. When you need unlimited assets, AI DQ Rule suggestions, PDF reports, and full trend history, that's when Pro ($29/mo) makes sense.",
+    a: "The Free plan is genuinely useful for individuals. You get 5 data assets, unlimited profiling runs, 5 DQ rules per asset, and 7-day run history. It's not a 14-day trial — it's free forever for solo use. When you need unlimited assets, AI DQ Rule suggestions, PDF reports, and full trend history, that's when Pro ($39/mo) makes sense.",
   },
   {
-    q: "Does the Business plan have a free trial?",
-    a: "Yes — Business includes a 7-day free trial with no credit card required. You get full access to all Business features: unlimited business units, team collaboration, cross-column validations, remediation tools, and priority support. If you don't upgrade by the end of the trial, you move to the Free plan automatically — no charges.",
+    q: "Does the Team plan have a free trial?",
+    a: "Yes — Team includes a 7-day free trial with no credit card required. You get full access to all Team features: unlimited business units, team collaboration, cross-column validations, remediation tools, and priority support. If you don't upgrade by the end of the trial, you move to the Free plan automatically — no charges.",
   },
   {
     q: "How does the DQ scoring work? Can I trust the numbers?",
