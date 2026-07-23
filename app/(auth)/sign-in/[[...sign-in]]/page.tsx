@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Sign In — Sohovi",
+  robots: { index: false, follow: true },
+};
 
 export default function SignInPage() {
   return (

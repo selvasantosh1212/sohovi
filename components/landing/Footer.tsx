@@ -35,12 +35,12 @@ export function Footer() {
 
           {/* Product */}
           <div className="space-y-4">
-            <h4
+            <h3
               className="font-bold uppercase"
               style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Product
-            </h4>
+            </h3>
             <ul className="space-y-2.5">
               {[
                 { label: "Data Profiling", href: "/features/data-profiling" },
@@ -66,17 +66,19 @@ export function Footer() {
 
           {/* Resources */}
           <div className="space-y-4">
-            <h4
+            <h3
               className="font-bold uppercase"
               style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Resources
-            </h4>
+            </h3>
             <ul className="space-y-2.5">
               {[
                 { label: "Blog", href: "/blog" },
                 { label: "DQ Dimensions Guide", href: "/blog/category/data-quality-dimensions" },
                 { label: "Free Tools", href: "/tools" },
+                { label: "Labs", href: "/labs" },
+                { label: "About", href: "/about" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link
@@ -95,12 +97,12 @@ export function Footer() {
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4
+            <h3
               className="font-bold uppercase"
               style={{ fontSize: "13px", letterSpacing: "0.08em", color: "#0A0A0A" }}
             >
               Legal
-            </h4>
+            </h3>
             <ul className="space-y-2.5">
               {[
                 { label: "Privacy Policy", href: "/privacy" },

@@ -44,7 +44,13 @@ const securityJsonLd = {
       url: `${SITE_URL}/security`,
       description:
         "How Sohovi keeps your data private: zero server upload, browser-only processing via Web Workers, no raw row storage.",
-      publisher: { "@id": `${SITE_URL}/#organization` },
+      publisher: {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Sohovi",
+        url: SITE_URL,
+        email: "hello@sohovi.com",
+      },
     },
   ],
 };

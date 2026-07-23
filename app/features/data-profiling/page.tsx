@@ -42,7 +42,13 @@ const jsonLd = {
       "@id": `${PAGE_URL}#page`,
       name: "Data Profiling Tool for CSV & Excel",
       url: PAGE_URL,
-      publisher: { "@id": `${SITE_URL}/#organization` },
+      publisher: {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Sohovi",
+        url: SITE_URL,
+        email: "hello@sohovi.com",
+      },
     },
   ],
 };
