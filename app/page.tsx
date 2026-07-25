@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { PublicNav } from "@/components/landing/PublicNav";
 import { Hero } from "@/components/landing/Hero";
+import { Outcomes } from "@/components/landing/Outcomes";
 import { BrandStrip } from "@/components/landing/BrandStrip";
 import { ProofStrip } from "@/components/landing/ProofStrip";
 import { ProblemSection } from "@/components/landing/ProblemSection";
@@ -73,6 +74,7 @@ export default async function LandingPage() {
       <PublicNav />
       <main className="flex-1">
         <Hero />
+        <Outcomes />
         <BrandStrip />
         <ProofStrip />
         <ProblemSection />
