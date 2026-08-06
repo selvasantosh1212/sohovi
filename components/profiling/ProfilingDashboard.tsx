@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Download, Search, ShieldAlert, SortAsc, SortDesc } from "lucide-react";
+import { CheckCircle2, Download, Search, ShieldAlert, SortAsc, SortDesc } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ColumnProfileCard } from "./ColumnProfileCard";
 import type { ColumnProfile } from "@/types/profiling.types";
@@ -9,6 +9,10 @@ import type { DQGlossaryEntry } from "@/types/dq.types";
 import { buildColumnNarrative } from "@/lib/profiling/narrative";
 import { buildDQGlossary } from "@/lib/profiling/dq-glossary";
 import { explainOutlier } from "@/lib/profiling/value-report-export";
+import { filledPct, isMandatoryFieldPass } from "@/lib/profiling/mandatory-field";
+import { useProfilingStore } from "@/store/profilingStore";
+
+const MANDATORY_PRESETS = [95, 99, 100];
 
 type SortKey = "file_order" | "name" | "null_pct" | "unique_pct";
 type SortDir = "asc" | "desc";
@@ -82,7 +86,8 @@ function addFrequencySheet(
 async function exportProfilingXLSX(
   profiles: ColumnProfile[],
   fileName: string,
-  glossary: DQGlossaryEntry[]
+  glossary: DQGlossaryEntry[],
+  mandatoryThreshold: number
 ) {
   const ExcelJS = (await import("exceljs")).default;
   const wb = new ExcelJS.Workbook();
@@ -101,6 +106,7 @@ async function exportProfilingXLSX(
     "Unique Count", "Unique %", "Min Value", "Max Value",
     "Avg Value", "Std Dev", "Min Length", "Max Length", "Avg Length",
     "Outlier Count", "Duplicate Groups", "Duplicate Rows", "Top Patterns", "PII Detected", "PII Type",
+    "Filled %", "Mandatory Fields",
   ];
   summaryWs.addRow(summaryHeaders);
   const sumHdr = summaryWs.getRow(1);
@@ -135,6 +141,8 @@ async function exportProfilingXLSX(
       topPatterns,
       p.pii_detected ? "Yes" : "No",
       p.pii_type ?? "",
+      filledPct(p),
+      isMandatoryFieldPass(p, mandatoryThreshold) ? "Pass" : "Fail",
     ]);
   }
   summaryWs.columns.forEach((col, i) => {
@@ -291,11 +299,22 @@ export function ProfilingDashboard({
   const [sortKey, setSortKey] = useState<SortKey>("file_order");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [piiOnly, setPiiOnly] = useState(false);
+  const [failingOnly, setFailingOnly] = useState(false);
+
+  const threshold = useProfilingStore((s) => s.mandatoryFieldThreshold);
+  const setThreshold = useProfilingStore((s) => s.setMandatoryFieldThreshold);
 
   const piiCount = profiles.filter((p) => p.pii_detected).length;
   const avgNull = profiles.length
     ? Math.round(profiles.reduce((s, p) => s + p.null_pct, 0) / profiles.length)
     : 0;
+  const passCount = profiles.filter((p) => isMandatoryFieldPass(p, threshold)).length;
+
+  function handleThresholdInput(raw: string) {
+    const num = Number(raw);
+    if (Number.isNaN(num)) return;
+    setThreshold(Math.min(100, Math.max(0, num)));
+  }
 
   // Attach original file index before any filtering/sorting
   const profilesWithIdx = useMemo(
@@ -317,6 +336,7 @@ export function ProfilingDashboard({
   const filtered = useMemo(() => {
     let result = profilesWithIdx;
     if (piiOnly) result = result.filter((p) => p.pii_detected);
+    if (failingOnly) result = result.filter((p) => !isMandatoryFieldPass(p, threshold));
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter((p) => p.column_name.toLowerCase().includes(q));
@@ -333,7 +353,7 @@ export function ProfilingDashboard({
       if (sortKey === "null_pct") return mul * (a.null_pct - b.null_pct);
       return mul * (a.unique_pct - b.unique_pct);
     });
-  }, [profilesWithIdx, search, sortKey, sortDir, piiOnly]);
+  }, [profilesWithIdx, search, sortKey, sortDir, piiOnly, failingOnly, threshold]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -343,12 +363,17 @@ export function ProfilingDashboard({
   return (
     <div className="space-y-6">
       {/* Summary banner */}
-      <div className="grid sm:grid-cols-4 gap-3">
+      <div className="grid sm:grid-cols-5 gap-3">
         {[
           { label: "File", value: fileName, mono: true },
           { label: "Rows", value: totalRows.toLocaleString() + (sampleMode ? " (sampled)" : "") },
           { label: "Columns", value: String(profiles.length) },
           { label: "Avg Null %", value: `${avgNull}%`, warn: avgNull > 20 },
+          {
+            label: `Meets Threshold (${threshold}%)`,
+            value: `${passCount} / ${profiles.length}`,
+            warn: passCount < profiles.length,
+          },
         ].map(({ label, value, mono, warn }) => (
           <div
             key={label}
@@ -441,12 +466,59 @@ export function ProfilingDashboard({
                 PII only
               </button>
             )}
+
+            {passCount < profiles.length && (
+              <button
+                onClick={() => setFailingOnly((v) => !v)}
+                className={[
+                  "inline-flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors",
+                  failingOnly
+                    ? "border-red-300 bg-red-50 text-red-700 font-medium"
+                    : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                ].join(" ")}
+              >
+                Fails threshold
+              </button>
+            )}
+          </div>
+
+          {/* Mandatory Field threshold control */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Mandatory threshold
+            </span>
+            {MANDATORY_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                onClick={() => setThreshold(preset)}
+                className={[
+                  "text-xs px-2.5 py-1.5 rounded-lg border transition-colors",
+                  threshold === preset
+                    ? "border-slate-300 bg-slate-100 text-slate-700 font-medium"
+                    : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                ].join(" ")}
+              >
+                {preset}%
+              </button>
+            ))}
+            <div className="relative">
+              <Input
+                type="number"
+                min={0}
+                max={100}
+                value={threshold}
+                onChange={(e) => handleThresholdInput(e.target.value)}
+                className="h-8 w-20 text-xs pr-6"
+              />
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">%</span>
+            </div>
           </div>
         </div>
 
         {/* Download button */}
         <button
-          onClick={() => exportProfilingXLSX(profiles, fileName, glossary)}
+          onClick={() => exportProfilingXLSX(profiles, fileName, glossary, threshold)}
           className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-5 py-2.5 rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90 shrink-0"
         >
           <Download className="w-3.5 h-3.5" />
@@ -461,6 +533,7 @@ export function ProfilingDashboard({
             key={profile.column_name || idx}
             profile={profile}
             glossaryEntries={glossaryByColumn.get(profile.column_name) ?? []}
+            mandatoryThreshold={threshold}
           />
         ))}
       </div>

@@ -13,6 +13,7 @@ import type { ColumnProfile } from "@/types/profiling.types";
 import type { DQGlossaryEntry } from "@/types/dq.types";
 import { DIMENSION_COLORS } from "@/lib/dq-engine/dimension-meta";
 import { explainOutlier } from "@/lib/profiling/value-report-export";
+import { filledPct, isMandatoryFieldPass } from "@/lib/profiling/mandatory-field";
 
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   integer:  { bg: "bg-blue-50",    text: "text-blue-700" },
@@ -189,13 +190,15 @@ function DuplicateDialog({
 interface ColumnProfileCardProps {
   profile: ColumnProfile;
   glossaryEntries?: DQGlossaryEntry[];
+  mandatoryThreshold?: number;
 }
 
-export function ColumnProfileCard({ profile, glossaryEntries = [] }: ColumnProfileCardProps) {
+export function ColumnProfileCard({ profile, glossaryEntries = [], mandatoryThreshold = 95 }: ColumnProfileCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [outlierOpen, setOutlierOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
   const typeStyle = TYPE_COLORS[profile.inferred_type] ?? TYPE_COLORS.string;
+  const mandatoryPass = isMandatoryFieldPass(profile, mandatoryThreshold);
 
   const totalRows = profile.row_count;
 
@@ -219,6 +222,13 @@ export function ColumnProfileCard({ profile, glossaryEntries = [] }: ColumnProfi
                 PII: {profile.pii_type}
               </span>
             )}
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                mandatoryPass ? DIMENSION_COLORS.completeness : "bg-red-50 text-red-700"
+              }`}
+            >
+              {mandatoryPass ? "Meets threshold" : "Below threshold"}
+            </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
             {profile.row_count.toLocaleString()} rows · {profile.unique_count.toLocaleString()} unique
@@ -257,6 +267,10 @@ export function ColumnProfileCard({ profile, glossaryEntries = [] }: ColumnProfi
         <div>
           <p className="text-xs text-slate-500 mb-1">Unique</p>
           <StatBar value={profile.unique_pct} color="var(--mint)" />
+        </div>
+        <div>
+          <p className="text-xs text-slate-500 mb-1">Filled (mandatory threshold: {mandatoryThreshold}%)</p>
+          <StatBar value={filledPct(profile)} color={mandatoryPass ? "#10B981" : "#EF4444"} />
         </div>
       </div>
 
