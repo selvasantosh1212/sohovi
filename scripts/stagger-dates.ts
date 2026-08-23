@@ -28,7 +28,7 @@ function loadEnvLocal() {
 loadEnvLocal();
 
 const DRY_RUN = process.argv.includes("--dry-run");
-const POSTS_PER_WEEK = 15;
+const POSTS_PER_WEEK = 5;
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
 const supabase = createClient(
