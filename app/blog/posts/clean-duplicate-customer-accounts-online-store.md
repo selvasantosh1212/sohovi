@@ -85,7 +85,7 @@ For other platforms (WooCommerce, BigCommerce): similar limitations generally ap
 
 **Enable account matching on checkout**: Most platforms can be configured to match a guest checkout email to an existing account and offer account login rather than creating a new guest record.
 
-**Deduplicate list imports before importing**: When you import a customer list from an external source, check it against your existing customer database for email matches before loading. Sohovi can help you profile the import file for duplicates before it goes into your store.
+**Deduplicate list imports before importing**: When you import a customer list from an external source, check it against your existing customer database for email matches before loading. Sohovi's free [duplicate remover](/tools/remove-duplicates) flags matching emails in seconds, before the file goes anywhere near your store.
 
 **Run quarterly deduplication checks**: A quarterly export and duplicate check is faster and less disruptive than periodic major cleanups.
 

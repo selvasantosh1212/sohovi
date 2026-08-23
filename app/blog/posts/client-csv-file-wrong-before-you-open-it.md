@@ -98,7 +98,7 @@ Frame it as findings, not failures: "Before we start, I ran a quick review of th
 Document your findings, note the client's response, and flag in your project notes what you were asked to do. If the project later fails because of data quality issues you flagged and the client dismissed, you have a paper trail. Some clients learn from the experience; others don't. Your documentation protects you either way.
 
 **Q: What's the biggest hidden risk in client CSV files?**
-Unexpected PII. Freelancers regularly receive files containing Social Security numbers, credit card data, passport numbers, or health information — often in columns they're not told about. Scan for these before starting and flag anything that looks like regulated data.
+Unexpected PII. Freelancers regularly receive files containing Social Security numbers, credit card data, passport numbers, or health information — often in columns they're not told about. Scan for these before starting with Sohovi's free [PII scanner](/tools/pii-audit) — drag in the file and see every SSN, card number, and email address it contains before you touch the data.
 
 ---
 

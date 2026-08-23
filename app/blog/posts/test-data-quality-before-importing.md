@@ -72,6 +72,8 @@ Identify records in the import file that would create duplicates when loaded int
 
 **Why it matters:** An import of 5,000 contacts with 8% duplicates creates 400 duplicate records in your database. If your target system doesn't deduplicate on import, those records need to be found and merged manually — after the import.
 
+Sohovi's free [duplicate remover](/tools/remove-duplicates) runs this check on a file of any size in seconds — no formulas required.
+
 [IMAGE: Screenshot showing a pre-import duplicate check — a highlighted column of email addresses with duplicates flagged in red]
 
 Running your file through Sohovi before import shows you the completeness rate, duplicate rate, and format validity for every column in under a minute — exactly the information you need for Checks 2, 3, and 4.

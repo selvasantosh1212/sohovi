@@ -242,3 +242,5 @@ TEXTJOIN requires Excel 2019 or Excel 365. In older versions, use `=A2&" "&B2` w
 ---
 
 **When Excel formulas aren't enough** — upload the file to Sohovi for automatic profiling, deduplication, and validation without writing a formula for each problem. Free to try.
+
+**Inherited a formula and don't know what it does?** Paste it into Sohovi's free [Formula Explainer](/tools/formula-explainer) for a plain-English breakdown of every function it calls.

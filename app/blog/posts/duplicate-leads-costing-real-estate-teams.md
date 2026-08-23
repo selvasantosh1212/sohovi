@@ -95,7 +95,7 @@ Duplicates concentrate at periods of high lead inflow — busy open house season
 
 **Require search-before-create for manual entries**: Team policy: before creating a new lead record, search for the lead's email and phone number. Only create a new record if nothing matches.
 
-**Deduplicate imported lists before import**: When importing leads from a list or a new source, compare the import against your existing database first. Sohovi can profile your import CSV and flag records matching emails already in your database.
+**Deduplicate imported lists before import**: When importing leads from a list or a new source, compare the import against your existing database first. Sohovi's free [duplicate remover](/tools/remove-duplicates) flags matching emails and phone numbers in seconds, before the list ever reaches your CRM.
 
 **Run a quarterly deduplication pass**: Even with good prevention, duplicates accumulate. 30 minutes quarterly keeps the problem manageable.
 

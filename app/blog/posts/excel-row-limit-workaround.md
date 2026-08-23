@@ -97,6 +97,8 @@ GROUP BY status;
 
 **Best for:** Files you'll query repeatedly. One-time effort to import; all subsequent analysis is fast SQL.
 
+**Don't want to stand up a database just to run one query?** Paste the CSV into Sohovi's free [CSV to SQL converter](/tools/csv-to-sql) and get ready-to-run INSERT statements in your browser — no connection string, no install.
+
 ---
 
 ## Option 5: Google BigQuery or Cloud Databases (No Local Limit)

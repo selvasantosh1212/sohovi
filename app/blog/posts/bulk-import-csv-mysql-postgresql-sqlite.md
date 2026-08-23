@@ -35,6 +35,8 @@ Every database has strict expectations. Problems that cause partial imports or s
 
 Profile your CSV before importing to catch these issues. See [Data Cleaning: The Complete 8-Step Process](/blog/data-cleaning-complete-process).
 
+For small files or one-off imports, Sohovi's free [CSV to SQL converter](/tools/csv-to-sql) generates ready-to-run INSERT statements directly in your browser — no server connection needed.
+
 ---
 
 ## MySQL: LOAD DATA INFILE
