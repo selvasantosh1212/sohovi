@@ -84,9 +84,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <Image
               src="/sohovi.svg"
               alt="Sohovi"
-              width={96}
-              height={24}
-              className="h-6 w-auto brightness-0 invert"
+              width={112}
+              height={28}
+              className="h-7 w-auto brightness-0 invert"
             />
           )}
         </Link>

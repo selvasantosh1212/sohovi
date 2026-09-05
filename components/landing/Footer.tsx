@@ -15,9 +15,9 @@ export function Footer() {
               <Image
                 src="/sohovi.svg"
                 alt="Sohovi"
-                width={96}
-                height={24}
-                className="h-6 w-auto"
+                width={112}
+                height={28}
+                className="h-7 w-auto"
                 priority
               />
             </Link>

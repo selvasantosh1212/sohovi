@@ -48,9 +48,9 @@ export function PublicNav() {
           <Image
             src="/sohovi.svg"
             alt="Sohovi"
-            width={88}
-            height={22}
-            className="h-[22px] w-auto"
+            width={104}
+            height={26}
+            className="h-[26px] w-auto"
             priority
           />
         </Link>

@@ -1,0 +1,334 @@
+DQ PROFILING AGENT — KNOWLEDGE BASE
+====================================
+This document is the complete rulebook for the Data Profiling & DQ Assistant. It defines the exact output schema, every algorithm/threshold used to compute statistics, the Data Quality dimension taxonomy (with Primary/Secondary hierarchy), and how to turn column statistics into DQ Glossary entries. Follow every rule literally and deterministically — do not improvise alternative thresholds or formulas. PII detection is intentionally and permanently excluded (see Section 10) — this is a deliberate design choice, not a gap to fill in.
+
+Sample sizing convention used throughout: wherever a rule says "sample," it means the first 500 non-null values in that column (or all of them if the column has fewer than 500 non-null values), unless a different sample size is stated. Always compute stats over the FULL column for counts/percentages/min/max/avg — under normal conditions (files up to ~200,000 rows, see Section 12), sampling is only used for pattern analysis, type inference, and date-format detection, where it keeps the analysis representative without needing to re-scan for those specific checks. Section 12 defines the one exception: a separate, larger fallback sample that also applies to Values/Outliers/Duplicates, but only for files that exceed that row-count threshold.
+
+
+SECTION 1 — OUTPUT SCHEMA (7 sheets/tables, exact names, headers, and order)
+=============================================================================
+
+Produce exactly these 7 tables, in this order, as tabs of one workbook named "<original file name>_profiling.xlsx":
+
+1) SUMMARY — one row per column, in the same left-to-right order as the source file's columns.
+Headers, in order:
+Column Name | Type | Row Count | Null Count | Null % | Unique Count | Unique % | Min Value | Max Value | Avg Value | Std Dev | Min Length | Max Length | Avg Length | Outlier Count | Duplicate Groups | Duplicate Rows | Top Patterns | Mandatory Field
+
+Field meanings:
+- Column Name: the source header text, unchanged.
+- Type: inferred type from Section 2 (integer, float, boolean, date, datetime, email, phone, url, uuid, string, or mixed).
+- Row Count: total rows in the column (including nulls).
+- Null Count / Null %: count and percentage (2 decimals) of null/empty values. A value counts as null if it is a true null OR an empty string OR a string containing only whitespace.
+- Unique Count / Unique %: count and percentage (2 decimals) of distinct non-null values.
+- Min Value / Max Value: for numeric types, the numeric min/max. For all other types, the lexicographically (alphabetical) smallest/largest non-null value. Leave blank if the column has no non-null values.
+- Avg Value / Std Dev: numeric mean and population standard deviation, numeric columns only (3 decimals). Leave blank for non-numeric columns.
+- Min Length / Max Length / Avg Length: character length of non-null values — min, max, and mean (Avg Length to 1 decimal). Computed for every column regardless of type.
+- Outlier Count: number of values flagged as outliers (Section 8). 0 for non-numeric columns.
+- Duplicate Groups: count of DISTINCT values that occur more than once in the column.
+- Duplicate Rows: total number of "extra" occurrences across all duplicate groups (a value appearing 5 times contributes 4).
+- Top Patterns: the top 3 patterns from Section 3, formatted as "pattern (count); pattern (count); pattern (count)".
+- Mandatory Field: "Yes" or "No" — see Section 9.
+
+2) VALUES — one row per distinct value per column (top 20 values per column by frequency, descending).
+Headers: Column Name | Value | Count | Percentage (%)
+If a column has no values, still include one placeholder row: "(no values)" with Count 0 and Percentage 0.
+
+3) PATTERNS — one row per structural pattern per column (top 10 patterns per column by frequency, descending).
+Headers: Column Name | Pattern | Count | Percentage (%)
+Percentage is relative to the sampled non-null values used for pattern analysis (Section 3), not the full column. If a column has no patterns (empty), include one row: "(no patterns)" with Count 0 and Percentage 0.
+
+4) COLUMN DESCRIPTIONS — one row per column, a plain-English paragraph.
+Headers: Column Name | Description
+Template (join whichever sentences apply, in this order, separated by a single space):
+- If Row Count is 0: `"{column}" is a/an {type} column with no data.` (use "an" if Type starts with a vowel sound, else "a") — stop here, skip the rest.
+- Always: `"{column}" is a/an {type} column with {row_count} rows.` (row_count formatted with thousands separators)
+- Only if Null % > 0: `{null_pct}% of values are missing.`
+- Always: `{unique_pct}% are unique.`
+- Only if at least one pattern was found: `Most common format "{top_pattern}" ({top_pattern_pct}%).`
+(No PII sentence — that behavior is permanently removed, see Section 10.)
+
+5) DQ GLOSSARY — one row per (column, dimension-group) that applies, per Section 6/7 logic.
+Headers: Column Name | Primary DQ Dimension | Secondary DQ Dimension | Definition | Why It Applies Here | Confidence (%) | Suggested Checks
+- Primary DQ Dimension: always one of Completeness, Accuracy, Timeliness (Section 5).
+- Secondary DQ Dimension: the specific child dimension name, or "—" when the row is about the primary dimension directly with no finer child (Section 5).
+- Definition: the generic business-friendly definition of whichever dimension is most specific for this row (the Secondary if present, else the Primary) — text given in Section 5.
+- Why It Applies Here: the column-specific rationale, built per Section 7.
+- Confidence (%): whole-number percentage, per Section 7.
+- Suggested Checks: comma-separated rule types (underscores replaced with spaces), per Section 7.
+Sort rows for each column by Confidence descending.
+
+6) OUTLIERS — one row per flagged outlier value (Section 8). Skip columns with none.
+Headers: Column Name | Value | Deviation (σ) | Method | Reason
+Method is "iqr" or "zscore". If a column has more than 50 outliers, keep only the 50 with greatest deviation and note in the chat summary that the list was capped.
+
+7) DUPLICATES — one row per distinct value occurring more than once, sorted by occurrence count descending. Skip columns with none.
+Headers: Column Name | Value | Occurrences | % of Rows
+% of Rows is that value's occurrence count divided by total row count (2 decimals). If a column has more than 50 duplicate groups, keep only the top 50 by occurrence count and note the cap in the chat summary.
+
+
+SECTION 2 — TYPE INFERENCE
+=============================================================================
+Determine each column's Type by testing in this exact order against the sample of non-null values; the FIRST rule that reaches its hit-rate threshold wins. Strip commas from numeric-looking values before testing.
+
+1. datetime — regex `^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}` AND the value parses as a valid date/time. Threshold: ≥90% of sample.
+2. date — value matches any of `^\d{4}-\d{2}-\d{2}$`, `^\d{2}/\d{2}/\d{4}$`, `^\d{2}\.\d{2}\.\d{4}$`, `^\d{4}/\d{2}/\d{2}$` AND parses as a valid date. Threshold: ≥90%.
+3. email — regex `^[^\s@]+@[^\s@]+\.[^\s@]+$`. Threshold: ≥80%.
+4. phone — regex `^[+]?[\d\s\-.()]{7,15}$`. Threshold: ≥80%.
+5. url — regex `^https?://.+` (case-insensitive). Threshold: ≥90%.
+6. uuid — standard 8-4-4-4-12 hex UUID regex (case-insensitive). Threshold: ≥95%.
+7. boolean — lowercased value is one of: true, false, yes, no, y, n, 1, 0, t, f. Threshold: ≥95%.
+8. numeric — regex `^-?\d+(\.\d+)?$` (after stripping commas). Threshold: ≥95%. If this passes, additionally test `^-?\d+$` (no decimal point) on the same sample: if ≥95% of the sample also matches this stricter integer regex, Type = "integer"; otherwise Type = "float".
+9. mixed — only checked if none of the above passed. On the first 100 sample values, tag each as one of {int, float, email, date, string} using simple regex/parse checks; if 3 or more distinct tags appear across the sub-sample, Type = "mixed".
+10. string — default fallback if nothing else matched.
+
+DATE FORMAT DETECTION (only run for columns typed date or datetime — used to feed the Conformity rule in Section 6):
+Test the sample against these 12 candidate formats. Skip any candidate matching under 5% of the sample.
+Unambiguous (confidence = match% as a fraction, no disambiguation needed):
+  YYYY-MM-DD, YYYY/MM/DD, DD.MM.YYYY, YYYYMMDD
+Paired/ambiguous (day-first vs month-first look identical until a number >12 appears in one position):
+  DD-MM-YYYY ↔ MM-DD-YYYY, DD/MM/YYYY ↔ MM/DD/YYYY, DD-MM-YY ↔ MM-DD-YY, DD/MM/YY ↔ MM/DD/YY
+Disambiguation for a paired format: scan all matches for that regex.
+  - If any value's presumed-day position exceeds 12 → confirmed day-first; confidence = match% × 0.95; drop the month-first mirror.
+  - Else if any value's presumed-month position (in the mirror candidate) exceeds 12 → confirmed month-first; confidence = match% × 0.95; drop the day-first mirror.
+  - Else (never exceeds 12 in either position) → "ambiguous"; confidence = match% × 0.60; keep only the day-first-labeled variant to avoid reporting the same ambiguity twice.
+Report the single highest-confidence format found as "the detected date format" for that column.
+
+
+SECTION 3 — PATTERN NOTATION ALGORITHM
+=============================================================================
+Converts a value into a structural "shape" so you can see what format a column actually uses.
+
+Algorithm, applied to each value (first 30 characters only — truncate longer values before processing):
+1. Map every character to a class: uppercase letter (A-Z) → class "A"; lowercase letter (a-z) → class "a"; digit (0-9) → class "9"; any other character (space, punctuation, symbol) → kept as its literal character (its own class).
+2. Scan left to right, tracking consecutive runs of the same class.
+   - A run of MORE than 2 consecutive characters of the same class collapses to "{class}+" (e.g. 4 lowercase letters → "a+").
+   - A run of 1 or 2 characters stays literal, repeated (e.g. 2 digits "42" → "99"; 1 uppercase letter "J" → "A").
+3. Concatenate the collapsed/literal pieces in order to get the final pattern string.
+4. Skip blank/whitespace-only values entirely (they don't get a pattern).
+5. Run this over the sample (first 500 non-null values). Count how often each resulting pattern string occurs; report the top 10 by count descending as the column's Pattern Summary; Percentage = count / sample size × 100 (2 decimals).
+
+Worked examples:
+  "John"      → J=A, o/h/n=a×3(run>2)         → "A" + "a+"          = "Aa+"
+  "42"        → 4/2 = 9×2 (run of 2, literal) → "99"
+  "4521"      → 9×4 (run>2)                   → "9+"
+  "abc-123"   → a×3(run>2)="a+", "-" literal, 1×3(run>2)="9+" → "a+-9+"
+  "USA"       → A×3 (run>2)                   → "A+"
+  "id-007"    → i/d=a×2(run of 2, literal)="aa", "-"=literal, "007"=9×3(run>2)="9+" → "aa-9+"
+
+
+SECTION 4 — COLUMN CLASSIFICATION (13 categories, 3-layer heuristic)
+=============================================================================
+Classify every column into exactly one category before generating DQ rule suggestions (Section 6). Categories: email, phone, date, datetime, id, name, amount, postal_code, boolean, categorical, numeric, free_text, unknown.
+
+Run all 3 layers; each layer produces at most one candidate (category + confidence). Pick the single highest-confidence candidate across all layers that fired. If none fired, category = "unknown", confidence = 0.3.
+
+LAYER 1 — Column name keywords (checked in this category order; first matching category wins):
+  email: email, e-mail, mail, emailaddress
+  phone: phone, mobile, tel, cell, fax, contact_no, phonenumber
+  date: date, dob, birthday, created_at, updated_at, timestamp, dt, day
+  datetime: datetime, created_at, updated_at, timestamp, time
+  id: _id, id, uuid, guid, key, code, ref, no, num, number, identifier
+  name: name, first_name, last_name, fullname, surname, given_name, contact
+  amount: amount, price, cost, fee, salary, income, revenue, total, value, balance
+  postal_code: zip, postcode, postal, pincode, zipcode
+  boolean: is_, has_, flag, active, enabled, status, bool
+  categorical: category, type, gender, status, level, grade, tier, region, country
+  numeric: count, qty, quantity, age, score, rating, rank, index, pct, percent
+  free_text: description, comment, note, remark, reason, message, detail, text, body
+  (Lowercase the column name and replace spaces/hyphens with underscores before matching. A keyword match anywhere in the name counts.)
+  Confidence: 0.92 if the name exactly equals the keyword, or starts with "keyword_", or ends with "_keyword"; otherwise 0.85 (looser substring match).
+
+LAYER 2 — Inferred type + stats:
+  Type=email → email @0.90 | Type=phone → phone @0.85 | Type=datetime → datetime @0.88 | Type=date → date @0.88
+  Type=uuid → id @0.90 | Type=boolean → boolean @0.90 | Type=url → free_text @0.60
+  Type=integer or float: Unique% > 90 → id @0.72; else → numeric @0.75
+  Type=string: Unique% > 95 AND Avg Length > 20 → free_text @0.65; else if Unique% < 10 AND top-values count ≤ 20 → categorical @0.70
+
+LAYER 3 — Distribution signals:
+  If Null% > 80: Type integer/float → numeric @0.40; Type date/datetime → that type @0.40; otherwise no candidate from this layer.
+  Else: Type integer/float AND Unique% > 98 → id @0.65
+  Unique Count ≤ 2 AND Row Count > 10 → boolean @0.65
+  Unique Count ≤ 10 AND Unique% < 5 → categorical @0.60
+
+
+SECTION 5 — DQ DIMENSION TAXONOMY (Primary / Secondary hierarchy)
+=============================================================================
+This is the core upgrade over a flat dimension list: every check maps to one of exactly 3 PRIMARY pillars, and (where applicable) a more specific SECONDARY dimension underneath it.
+
+  PRIMARY: COMPLETENESS — "Is the data present where it needs to be?"
+    └─ secondary: Mandatory Compliance — only used for the ≥95%-fill-rate rule (Section 9).
+  PRIMARY: ACCURACY — "Is the data correct, valid, and reliably true to reality?"
+    ├─ secondary: Validity
+    ├─ secondary: Consistency
+    ├─ secondary: Uniqueness
+    ├─ secondary: Conformity
+    ├─ secondary: Precision
+    └─ secondary: Integrity
+  PRIMARY: TIMELINESS — "Is the data current enough to be trustworthy?"
+    └─ secondary: Currency
+
+Column-value convention for the DQ Glossary sheet:
+  - A row whose underlying check is a plain Completeness check (not_null, not_empty, conditional_not_null) → Primary=Completeness, Secondary="—".
+  - A row whose underlying check is specifically the Mandatory Field ≥95% rule → Primary=Completeness, Secondary="Mandatory Compliance". This is ALWAYS its own separate Glossary row — never merge it with a plain Completeness row for the same column, even though both roll up to Completeness (see Section 7 grouping rule).
+  - A row whose underlying dimension is Validity, Consistency, Uniqueness, Conformity, Precision, or Integrity → Primary=Accuracy, Secondary=<that dimension's proper-cased name>.
+  - A row whose underlying dimension is Accuracy itself (e.g. range_check, positive_check, reference_lookup) → Primary=Accuracy, Secondary="—".
+  - A row whose underlying dimension is Timeliness itself (e.g. not_future_date, freshness_check) → Primary=Timeliness, Secondary="—".
+  - A row whose underlying dimension is Currency → Primary=Timeliness, Secondary="Currency".
+
+Full definitions (use verbatim for the Definition column) and rule types (for Suggested Checks / Section 6):
+
+COMPLETENESS — "Whether values that should be present actually are. Real-world extracts often have gaps from optional fields, failed integrations, or skipped entry — this flags how much of that gap exists here."
+  Rule types: not_null, not_empty, mandatory_column, conditional_not_null. Logic: non_null_count / total_rows.
+
+MANDATORY COMPLIANCE (secondary, new) — "Whether a field is populated often enough (≥95% fill rate) to be treated as a required/mandatory field in practice, even if it was never formally declared mandatory in the source system."
+  Rule type: mandatory_column (fill-rate variant). Logic: (total_rows − null_count) / total_rows ≥ 0.95.
+
+ACCURACY — "Whether values are correct and plausible — free of impossible numbers or figures that contradict what's realistic for this kind of data."
+  Rule types: range_check, reference_lookup, cross_field_validation, positive_check. Logic: valid_records / total_records.
+
+VALIDITY (secondary of Accuracy) — "Whether values conform to an expected format, type, or allowed set. Source systems rarely enforce this consistently, so even 'required' fields can contain malformed entries."
+  Rule types: regex_match, datatype_check, enum_validation, business_rule, sequence_validation. Logic: valid_format_records / total_records.
+
+CONSISTENCY (secondary of Accuracy) — "Whether values are represented the same way across all records, rather than drifting because different systems or people entered the data differently."
+  Rule types: format_standardization, case_consistency, cross_table_match, historical_consistency. Logic: matched_records / total_compared_records.
+
+UNIQUENESS (secondary of Accuracy) — "Whether values meant to identify a single record actually do, with no unintended duplicates from re-entry, merges, or retries."
+  Rule types: unique_column, composite_unique, duplicate_detection, fuzzy_matching. Logic: unique_records / total_records.
+
+CONFORMITY (secondary of Accuracy) — "Whether values follow an expected structural standard — a regional format, a code list, an ISO format — beyond just 'looking like' the right type."
+  Rule types: format_check, datatype_enforcement, standardization_check. Logic: conforming_records / total_records.
+
+PRECISION (secondary of Accuracy) — "Whether numeric values are recorded at the level of detail expected — e.g. consistent decimal places — rather than mixed granularity."
+  Rule types: decimal_places, decimal_precision_check, rounding_validation. Logic: precise_records / total_records.
+
+INTEGRITY (secondary of Accuracy) — "Whether relationships this column depends on are intact, with no orphaned or dangling references."
+  Rule types: foreign_key_check, referential_integrity, parent_child_validation, cardinality_check. Logic: valid_relationships / total_relationships.
+
+TIMELINESS — "Whether date/time values make logical sense relative to when they were recorded — e.g. not in the future or implausibly old."
+  Rule types: not_future_date, freshness_check, last_updated_threshold. Logic: fresh_records / total_records.
+
+CURRENCY (secondary of Timeliness) — "Whether the data reflects a recent enough state of the world to still be trustworthy, rather than a stale snapshot."
+  Rule types: recent_update, state_freshness_check, update_frequency_check. Logic: current_records / total_records.
+
+
+SECTION 6 — DQ RULE SUGGESTION LOGIC
+=============================================================================
+Two sources of candidate rules per column: (A) a static table keyed by the column's Category (Section 4), and (B) dynamic rules computed straight from that column's own statistics. Generate ALL that apply, then aggregate per Section 7.
+
+(A) CATEGORY → RULE TEMPLATES (dimension / rule_type / base confidence / reason):
+  email: completeness/not_null/0.90/"Emails should be present" · validity/regex_match/0.92/"Validate email format" · uniqueness/unique_column/0.82/"Emails should be unique per record" · conformity/format_check/0.88/"Email format conformity"
+  phone: completeness/not_null/0.85/"Phone should be present" · validity/regex_match/0.85/"Validate phone format" · conformity/format_check/0.82/"Phone format conformity"
+  date: completeness/not_null/0.85/"Date should be present" · validity/datatype_check/0.90/"All values must be valid dates" · timeliness/not_future_date/0.75/"Dates should not be in the future" · conformity/format_check/0.78/"ISO date format (YYYY-MM-DD)"
+  datetime: completeness/not_null/0.85/"Datetime should be present" · validity/datatype_check/0.90/"All values must be valid datetimes" · timeliness/not_future_date/0.72/"Timestamps should not be in the future" · currency/recent_update/0.65/"Data should be updated within 30 days"
+  id: completeness/not_null/0.95/"ID must never be null" · uniqueness/unique_column/0.95/"IDs must be unique" · completeness/mandatory_column/0.90/"ID column is mandatory"
+  name: completeness/not_null/0.88/"Name should be present" · completeness/not_empty/0.85/"Name should not be empty" · consistency/case_consistency/0.65/"Names should be title-cased"
+  amount: completeness/not_null/0.88/"Amount should be present" · accuracy/positive_check/0.82/"Amounts should be positive" · precision/decimal_places/0.80/"Currency amounts need 2 decimal places" · conformity/datatype_enforcement/0.90/"Amount must be numeric"
+  postal_code: validity/regex_match/0.80/"Validate postal code format" · conformity/format_check/0.75/"Postal code format"
+  boolean: completeness/not_null/0.82/"Boolean flag should be present"
+  categorical: completeness/not_null/0.82/"Category should be present" · consistency/case_consistency/0.70/"Categories should be consistently cased"
+  numeric: completeness/not_null/0.80/"Numeric value should be present" · conformity/datatype_enforcement/0.88/"Column should contain only numbers" · accuracy/positive_check/0.65/"Numeric values should be positive"
+  free_text: completeness/not_empty/0.72/"Text field should not be empty"
+  unknown: completeness/not_null/0.60/"Column should not be null"
+
+(B) PROFILE-BASED DYNAMIC RULES (evaluate every one of these for every column; independent of category):
+  1. Detected date format exists, confidence ≥0.7, match% ≥90%, and it is NOT the ISO format → conformity/format_check, reason `Detected date format: {format} ({match%}% match, {confidence%}% confidence)`, confidence = min(0.95, detected_format_confidence).
+  2. Column has ≤20 unique values, Null% < 80%, and at least one observed value exists → validity/enum_validation listing the actual observed values as the allowed set, reason `{unique_count} distinct values observed — auto-generated allowed set`, confidence = 0.85 if unique_count ≤5 else 0.75.
+  3. The single most common pattern covers ≥95% of the sampled values → consistency/format_standardization, reason `Pattern "{pattern}" covers {pct}% of values — standardization recommended`, confidence 0.78.
+  4. Numeric column (integer/float), outlier_count > 0, min/max known → accuracy/range_check. If avg and std_dev>0 are available: bounds = avg ± 3×std_dev, reason `{outlier_count} outlier(s) detected — range bounded by μ±3σ [{lower}–{upper}]`, confidence 0.80. Otherwise: bounds = [min×0.5, max×1.5], reason `{outlier_count} outlier(s) detected — range check recommended`, confidence 0.72.
+  5. Null% > 80% → completeness/not_null, threshold = max(0.1, (100−null_pct)/100), reason `Column is {null_pct}% null — completeness rule with realistic threshold`, confidence 0.70.
+  6. Type=boolean OR unique_count ≤2, and at least one observed value exists → validity/enum_validation listing the actual observed values, reason `Boolean column — allowed values from data: [...]`, confidence 0.88.
+  7. 20% < Null% ≤ 80% → completeness/not_null, threshold = max(0.5, (100−null_pct)/100 − 0.05), reason `Column has {null_pct}% nulls — threshold adjusted to data reality`, confidence 0.75.
+  8. NEW — Fill rate ≥95% (Null% ≤5) → completeness/mandatory_column (Mandatory Compliance variant), reason `Column is {fill_rate}% filled (≥95% threshold) — treated as a mandatory field.`, confidence 0.85. This is the ONLY trigger for a Mandatory Compliance glossary row — always keep it as its own row per Section 5/7, never merged into a plain Completeness row.
+
+Deduplication: within one column, if the exact same (dimension, rule_type) pair is produced by both (A) and (B), keep it once — do not double-count it. If (B) and (A) genuinely disagree on the same rule_type's confidence, prefer the (B) value.
+
+There is no PII-triggered rule in this replica (see Section 10) — the corresponding slot from the source system is fully removed, not replaced with a substitute.
+
+
+SECTION 7 — CONFIDENCE SCORING & GLOSSARY AGGREGATION
+=============================================================================
+Per-suggestion confidence:
+  confidence = min(1, base_confidence × classification_confidence + (1 − base_confidence × classification_confidence) × 0.1)
+  where base_confidence comes from Section 6 and classification_confidence is the column's Section 4 classification confidence.
+
+Aggregating suggestions into DQ Glossary rows:
+  Group all of a column's suggestions by a grouping key: normally the key is just the dimension (completeness, accuracy, validity, consistency, uniqueness, conformity, precision, integrity, timeliness, currency). EXCEPTION: within "completeness," split into two separate groups — one for the Mandatory Compliance trigger (Section 6, rule 8) and one for every other completeness suggestion — so they always produce two distinct Glossary rows, never one merged row (see Section 5).
+  For each group, emit ONE Glossary row:
+    - Confidence = the MAXIMUM confidence among the group's suggestions, rounded to the nearest whole percent.
+    - Why It Applies Here = each DISTINCT reason string in the group (skip exact duplicates), each ending with a period if it doesn't already, joined with a single space.
+    - Suggested Checks = the DISTINCT rule_type values in the group, underscores replaced with spaces, joined with ", ".
+    - Primary / Secondary DQ Dimension = per the Section 5 convention table.
+    - Definition = the Section 5 text for the most specific dimension in the row (Secondary if present and not "—", else Primary).
+  Sort a column's Glossary rows by Confidence descending.
+
+
+SECTION 8 — OUTLIER DETECTION
+=============================================================================
+Applies only to numeric (integer/float) columns.
+Primary method — IQR (interquartile range): compute Q1 and Q3 over the full column. Lower bound = Q1 − 1.5×(Q3−Q1); Upper bound = Q3 + 1.5×(Q3−Q1). Any value outside [Lower, Upper] is an outlier. Method label: "iqr".
+Fallback method — only if IQR bounds cannot be computed (e.g., too few numeric values to get a stable quartile estimate): Lower bound = mean − 3×std_dev; Upper bound = mean + 3×std_dev (only if std_dev > 0). Method label: "zscore".
+
+For each flagged value, emit one Outliers row:
+  - Deviation (σ): |value − mean| / std_dev, rounded to 1 decimal (0 if std_dev is 0 or unavailable).
+  - Method: "iqr" or "zscore" as applicable.
+  - Reason (choose the matching template, round bound numbers to 2 decimals):
+      IQR, value above upper bound: `Above the IQR bound of {upper} (1.5× interquartile range).`
+      IQR, value below lower bound: `Below the IQR bound of {lower} (1.5× interquartile range).`
+      zscore, above: `{deviation}σ above the mean ({avg}) — beyond the ±3σ threshold ({upper}).`
+      zscore, below: `{deviation}σ below the mean ({avg}) — beyond the ±3σ threshold ({lower}).`
+  - If one single value accounts for ≥80% of all values in the column (a heavily dominant value), append to the reason: ` {dominant_pct}% of values in this column are "{dominant_value}" — this value sits far outside that dominant cluster.`
+
+
+SECTION 9 — MANDATORY FIELD RULE (Summary sheet)
+=============================================================================
+For every column:
+  fill_rate = 100 − Null %
+  Mandatory Field = "Yes" if fill_rate ≥ 95, else "No"
+This is a fixed threshold — do not vary it by column type or category. When "Yes," also emit the dedicated Mandatory Compliance Glossary row described in Section 6 rule 8 and Section 7.
+
+
+SECTION 10 — PII EXCLUSION (explicit "Do NOT" list)
+=============================================================================
+This replica permanently and deliberately excludes all PII handling:
+  - Do NOT run any email/phone/SSN/credit-card/IP-address/person-name detection against column names or values.
+  - Do NOT add a "PII Detected" or "PII Type" column to any sheet.
+  - Do NOT mask, redact, or partially hide any value.
+  - Do NOT mention PII, privacy, or data sensitivity anywhere in the Column Descriptions or DQ Glossary text — even for columns named "email," "ssn," "phone," etc. Profile them exactly like any other column.
+  - Ordinary DQ rules still apply normally to such columns (e.g. an "email" column still gets validity/regex_match and uniqueness/unique_column from Section 6's category table) — that is standard DQ reasoning, not PII detection, and is expected.
+
+
+SECTION 11 — WORKED MINI-EXAMPLE (illustrative only — always compute real numbers from the real upload)
+=============================================================================
+Column "customer_age", 200 rows, 2 nulls, values mostly 25-55 with one value of 156.
+
+  Type inference: ≥95% numeric, all whole numbers → Type = integer.
+  Summary stats: Row Count=200, Null Count=2, Null %=1.00, Unique Count≈40, Unique %=20.00, Min=29, Max=156, Avg≈36.800, Std Dev≈8.200.
+  Pattern: two-digit ages like "34" → "99"; "156" → "9+" (3-digit run collapses). Top pattern is "99".
+  Mandatory Field: fill_rate = 100−1.00 = 99.00 ≥95 → "Yes".
+  Classification: name contains "age" (Layer 1 numeric keyword) → candidate {numeric, 0.85}. Type=integer, Unique%=20 (not >90) → Layer 2 candidate {numeric, 0.75}. Highest wins → category=numeric, classification_confidence=0.85.
+  Rule suggestions: category "numeric" → completeness/not_null(base 0.80), conformity/datatype_enforcement(base 0.88), accuracy/positive_check(base 0.65). Profile-based: one outlier (156) → accuracy/range_check via μ±3σ (base 0.80); Mandatory Field=Yes → completeness/mandatory_column, Mandatory Compliance variant (base 0.85).
+  Applying the Section 7 formula — confidence = min(1, base×classification_confidence + (1−base×classification_confidence)×0.1) — with classification_confidence=0.85 to each base value: 0.80→71%, 0.88→77%, 0.65→60%, 0.85→75%. (Worked for 0.88: 0.88×0.85=0.748; 1−0.748=0.252; 0.252×0.1=0.0252; 0.748+0.0252=0.7732→77%. The others follow the same steps.)
+  Resulting DQ Glossary rows for "customer_age" (grouped per Section 7, sorted by confidence descending):
+    1. Primary=Accuracy | Secondary=Conformity | Confidence=77% | Why="Column should contain only numbers." | Suggested Checks="datatype enforcement"
+    2. Primary=Completeness | Secondary=Mandatory Compliance | Confidence=75% | Why="Column is 99.00% filled (≥95% threshold) — treated as a mandatory field." | Suggested Checks="mandatory column"
+    3. Primary=Completeness | Secondary=— | Confidence=71% | Why="Numeric value should be present." | Suggested Checks="not null"
+    4. Primary=Accuracy | Secondary=— | Confidence=71% | Why="1 outlier(s) detected — range bounded by μ±3σ [12.20–61.40]. Numeric values should be positive." | Suggested Checks="range check, positive check" (this group merges range_check, base 0.80→71%, with positive_check, base 0.65→60% — MAX of the group wins, both reasons are kept)
+  Outliers row: Column Name=customer_age, Value=156, Deviation=14.5, Method=zscore, Reason="14.5σ above the mean (36.8) — beyond the ±3σ threshold (61.4)." (|156−36.8|/8.2 = 14.536… → 14.5)
+
+These numbers are worked precisely from the stated formulas so you can verify the arithmetic yourself — but always compute the real formula (Section 7) against real classification confidence for the actual uploaded data; don't reuse these specific numbers.
+
+
+SECTION 12 — LARGE DATASET SAFETY NET
+=============================================================================
+This agent is designed for small-to-medium files — roughly up to 200,000 rows. Below that, every section above applies exactly as written: every sheet is computed over the FULL dataset, no sampling, no exceptions. This section only matters for the rare file that exceeds that size; it is a safety net, not the normal path.
+
+Why 200,000 rows is safe with no special handling: every computation in this document is either (a) a single vectorized pass — Row Count, Null Count/%, Unique Count/%, Min/Max/Avg/Std Dev, length stats, top-20 value frequencies, top duplicate groups, and IQR/z-score outlier bounds are all one-pass aggregations (e.g. pandas value_counts, quantile, describe) that stay fast well beyond this size — or (b) already sample-bounded regardless of table size (pattern analysis and type/date-format inference already only ever look at the first 500 non-null values per column, per Sections 2–3). The one genuinely expensive step is reading a very large file into memory at all.
+
+If row count exceeds ~200,000:
+  1. Still compute the entire SUMMARY sheet exactly, over the full dataset — Row Count, Null Count/%, Unique Count/%, Min/Max/Avg/Std Dev, length stats, Outlier Count, Duplicate Groups/Rows, Top Patterns, and Mandatory Field. These stay exact at any scale because they're single vectorized passes, not per-value work.
+  2. For VALUES, PATTERNS, OUTLIERS, and DUPLICATES only: draw one reproducible random sample of 100,000 rows (fixed random seed, e.g. 42, so re-running produces the same sample) and compute these four sheets from the sample instead of the full file.
+  3. Do this automatically — do not pause to ask the user first.
+  4. Label it clearly in two places: (a) a short note in the chat summary, e.g. "Values, Patterns, Outliers, and Duplicates are based on a random sample of 100,000 of {total_rows} rows; Summary counts are exact over the full file." and (b) a one-line note in the workbook itself (e.g. a short text cell above the header row, or an extra row, on each of the four affected sheets: "Based on a random sample of 100,000 of {total_rows} rows").
+  5. If the file is so large that even the Summary-sheet full pass fails or times out, say so plainly in chat and ask the user how to proceed (e.g. splitting the file) rather than silently producing an incomplete or fabricated report — this is the one case where you should stop and ask, per the Hard Constraints in the agent instructions.
+
+This threshold (200,000) and sample size (100,000) are deliberately simple, round numbers — adjust them down if your environment's code-execution tool has tighter memory/time limits than expected, but do not remove the labeling requirement in step 4 even if you do.

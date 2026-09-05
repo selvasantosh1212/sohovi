@@ -23,6 +23,11 @@ const TOOL_NAMES: Record<string, string> = {
   reftrack: "RefTrack",
   shipnotes: "ShipNotes",
   kickoffbox: "KickoffBox",
+  thumblab: "ThumbLab",
+  categorly: "Categorly",
+  quotenudge: "QuoteNudge",
+  seenly: "Seenly",
+  clearbrief: "ClearBrief",
 };
 
 function escapeHtml(value: string): string {
