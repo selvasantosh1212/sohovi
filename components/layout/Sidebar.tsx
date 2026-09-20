@@ -74,19 +74,20 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="h-16 flex items-center px-4 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
         <Link href="/dashboard" className="flex items-center gap-2.5 overflow-hidden">
           {collapsed ? (
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm shrink-0"
-              style={{ background: "#00C9A7" }}
-            >
-              S
-            </div>
+            <Image
+              src="/sohovi-icon.svg"
+              alt="Sohovi"
+              width={25}
+              height={28}
+              className="h-7 w-auto shrink-0 brightness-0 invert"
+            />
           ) : (
             <Image
               src="/sohovi.svg"
               alt="Sohovi"
-              width={112}
-              height={28}
-              className="h-7 w-auto brightness-0 invert"
+              width={131}
+              height={16}
+              className="h-4 w-auto brightness-0 invert"
             />
           )}
         </Link>

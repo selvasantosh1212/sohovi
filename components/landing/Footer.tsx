@@ -13,11 +13,11 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1 space-y-4">
             <Link href="/" className="flex items-center">
               <Image
-                src="/sohovi.svg"
+                src="/sohovi-lockup.svg"
                 alt="Sohovi"
-                width={112}
-                height={28}
-                className="h-7 w-auto"
+                width={153}
+                height={24}
+                className="h-6 w-auto"
                 priority
               />
             </Link>

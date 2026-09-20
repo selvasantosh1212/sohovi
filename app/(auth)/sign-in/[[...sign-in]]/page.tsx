@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Sign In — Sohovi",
@@ -16,13 +17,14 @@ export default function SignInPage() {
       {/* Logo */}
       <div className="mb-8 flex flex-col items-center gap-3">
         <Link href="/" className="flex items-center gap-2">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-lg"
-            style={{ background: "#00C9A7" }}
-          >
-            S
-          </div>
-          <span className="text-white font-bold text-2xl">Sohovi</span>
+          <Image
+            src="/sohovi-lockup.svg"
+            alt="Sohovi"
+            width={204}
+            height={32}
+            className="h-8 w-auto brightness-0 invert"
+            priority
+          />
         </Link>
         <p className="text-white/60 text-sm">Privacy-first data quality platform</p>
       </div>
