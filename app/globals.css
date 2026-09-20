@@ -460,6 +460,24 @@ html { scroll-behavior: smooth; }
 }
 
 /* ============================================================
+   HERO DQ DASHBOARD WIDGET — mount animations
+   ============================================================ */
+@keyframes sv-draw  { from { stroke-dashoffset: 292.2; } }
+@keyframes sv-grow  { from { transform: scaleX(0); } }
+@keyframes sv-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* Gauge value arc sweeps up from zero on mount */
+.sv-arc  { animation: sv-draw 900ms cubic-bezier(0.16, 1, 0.3, 1); }
+/* Dimension bars grow from the left edge */
+.sv-bar  { transform-origin: left; animation: sv-grow 1000ms cubic-bezier(0.16, 1, 0.3, 1); }
+/* LIVE indicator dot */
+.sv-live { animation: sv-pulse 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-arc, .sv-bar, .sv-live { animation: none; }
+}
+
+/* ============================================================
    BLOG POST PAGE — reading-first layout
    ============================================================ */
 @layer components {
