@@ -57,7 +57,7 @@ const DIMENSIONS: [string, number][] = [
 const COLUMNS: {
   name: string; type: string; nulls: string; distinct: string; score: number; tag: string; rules: string;
 }[] = [
-  { name: "customer_id", type: "string", nulls: "0.0%", distinct: "126,135", score: 72, tag: "PII", rules: "unique +1" },
+  { name: "customer_id", type: "string", nulls: "0.0%", distinct: "126,135", score: 72, tag: "", rules: "unique +1" },
   { name: "phone", type: "string", nulls: "12.4%", distinct: "96,551", score: 66, tag: "PII", rules: "regex +1" },
   { name: "consent_flag", type: "boolean", nulls: "0.0%", distinct: "2", score: 79, tag: "", rules: "allowed_values" },
   { name: "order_total", type: "number", nulls: "0.0%", distinct: "88,120", score: 91, tag: "", rules: "range +1" },
