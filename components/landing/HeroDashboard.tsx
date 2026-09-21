@@ -176,11 +176,12 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
   ];
 
   return (
-    <div className="flex justify-center px-6 pt-6 pb-6 min-[900px]:pt-16 md:pb-[92px]">
+    <div className="flex justify-center pt-6 pb-6 min-[768px]:pb-[92px] min-[900px]:pt-16 min-[1240px]:pt-16 min-[1240px]:pb-16">
       <div className="relative w-full min-w-0 max-w-[980px]">
         {/* Straddles the top edge of the window at the design width; sits
-            above it on narrower screens. */}
-        <div className="mb-4 rounded-[14px] border border-[#9FD8FF] bg-[#E3F4FF] px-4 py-[13px] shadow-[0_16px_34px_rgba(3,105,161,0.22)] min-[900px]:absolute min-[900px]:top-[-38px] min-[900px]:left-1/2 min-[900px]:z-10 min-[900px]:mb-0 min-[900px]:w-[min(376px,100%)] min-[900px]:-translate-x-1/2">
+            above it on narrower screens. In the two-column hero the deck is
+            only ~690px wide, so it anchors right to stay off the URL pill. */}
+        <div className="mb-4 rounded-[14px] border border-[#9FD8FF] bg-[#E3F4FF] px-4 py-[13px] shadow-[0_12px_28px_-12px_rgba(3,105,161,0.3)] min-[900px]:absolute min-[900px]:top-[-38px] min-[900px]:left-1/2 min-[900px]:z-10 min-[900px]:mb-0 min-[900px]:w-[min(376px,100%)] min-[900px]:-translate-x-1/2 min-[1240px]:left-auto min-[1240px]:right-4 min-[1240px]:translate-x-0">
           <div className="flex items-center gap-2">
             <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#0091FF]">
               <Lock className="h-3 w-3 text-white" aria-hidden />
@@ -194,7 +195,7 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[18px] border border-white/10 bg-[#15151F] shadow-[0_30px_70px_rgba(0,0,0,0.6),0_6px_14px_rgba(0,0,0,0.45)]">
+        <div className="overflow-hidden rounded-[18px] border border-white/10 bg-[#15151F] shadow-[0_24px_48px_-20px_rgba(10,10,20,0.42),0_6px_16px_-8px_rgba(10,10,20,0.22)]">
 
           {/* ---- Browser chrome ------------------------------------------ */}
           <div className="flex items-center gap-[14px] bg-[#12121C] px-4 py-[11px]">
@@ -204,8 +205,9 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
               ))}
             </div>
             {/* Capped once the privacy card straddles the bar, so the URL pill
-                can never grow underneath it. */}
-            <div className="flex min-w-0 flex-1 justify-start overflow-hidden min-[900px]:max-w-[calc(50%-200px)]">
+                can never grow underneath it — uncapped again at 1240px, where
+                the card has moved to the right of the bar. */}
+            <div className="flex min-w-0 flex-1 justify-start overflow-hidden min-[900px]:max-w-[calc(50%-200px)] min-[1240px]:max-w-none">
               <div className="flex items-center gap-[7px] rounded-full border border-white/10 bg-white/[0.07] px-[14px] py-1">
                 <Lock className="h-3 w-3 shrink-0 text-[#00E6C3]" aria-hidden />
                 <span className="font-mono text-[12px] text-white/70">app.sohovi.com</span>
@@ -269,7 +271,7 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
           <div className="relative bg-[#0A0A12]">
             {/* Crop: 660px at design width. On phones the gauge and dimension
                 cards stack and eat the whole budget, so give the tab panel room. */}
-            <div className="max-h-[1120px] overflow-hidden pb-[26px] md:max-h-[660px]">
+            <div className="max-h-[1120px] overflow-hidden pb-[26px] min-[768px]:max-h-[660px] min-[1240px]:max-h-[516px]">
 
               <div className="flex flex-wrap gap-3 px-5 pt-[14px]">
                 {/* Score gauge card */}
@@ -318,11 +320,17 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
                 <div className={`${CARD} min-w-0 flex-[1_1_300px] px-4 py-[14px]`}>
                   <div className="mb-[11px] flex items-center justify-between">
                     <span className={CARD_TITLE}>10 DATA QUALITY DIMENSIONS</span>
-                    <span className={CARD_META}>ISO 25012</span>
+                    <span className={CARD_META}>
+                      <span className="hidden min-[1240px]:inline">6 of 10 · </span>ISO 25012
+                    </span>
                   </div>
                   <div className="grid gap-y-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px,1fr))", columnGap: "22px" }}>
-                    {DIMENSIONS.map(([name, value]) => (
-                      <div key={name} className="grid items-center gap-2" style={{ gridTemplateColumns: "78px minmax(36px,1fr) 24px" }}>
+                    {DIMENSIONS.map(([name, value], i) => (
+                      <div
+                        key={name}
+                        className={`grid items-center gap-2 ${i >= 6 ? "min-[1240px]:hidden" : ""}`}
+                        style={{ gridTemplateColumns: "78px minmax(36px,1fr) 24px" }}
+                      >
                         <span className="whitespace-nowrap text-[12.5px] text-[#C8CFDD]">{name}</span>
                         <span className="block h-[7px] overflow-hidden rounded-full bg-white/[0.09]">
                           <span className="sv-bar block h-full rounded-full" style={{ width: `${value}%`, background: tierColor(value) }} />
@@ -587,7 +595,7 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
 
         {/* ---- Floating callouts — overhang on md+, stacked below on mobile --- */}
         <div className="mt-4 flex flex-col gap-3 md:mt-0 md:block">
-          <div className="rounded-[14px] border border-[#C9B8FA] bg-[#EFE9FE] px-[15px] py-[13px] shadow-[0_16px_34px_rgba(76,29,149,0.28)] md:absolute md:bottom-[-34px] md:left-[-18px] md:max-w-[318px]">
+          <div className="rounded-[14px] border border-[#C9B8FA] bg-[#EFE9FE] px-[15px] py-[13px] shadow-[0_12px_28px_-12px_rgba(76,29,149,0.34)] md:absolute md:bottom-[-34px] md:left-[-18px] md:max-w-[min(318px,34%)]">
             <div className="flex items-center gap-2">
               <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#7C3AED]">
                 <UploadCloud className="h-3 w-3 text-white" aria-hidden />
@@ -599,7 +607,7 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
             </div>
           </div>
 
-          <div className="rounded-[14px] border border-[rgba(57,255,136,0.38)] bg-[#08170F] px-[15px] py-[13px] shadow-[0_16px_34px_rgba(0,0,0,0.65)] md:absolute md:right-[-18px] md:bottom-[-34px] md:max-w-[304px]">
+          <div className="rounded-[14px] border border-[rgba(57,255,136,0.38)] bg-[#08170F] px-[15px] py-[13px] shadow-[0_12px_28px_-12px_rgba(0,0,0,0.6)] md:absolute md:right-[-18px] md:bottom-[-34px] md:max-w-[min(304px,32%)]">
             <div className="flex items-center gap-2">
               <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#39FF88]">
                 <Sparkles className="h-3 w-3 text-[#062012]" aria-hidden />
