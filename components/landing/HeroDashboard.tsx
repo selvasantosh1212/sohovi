@@ -235,11 +235,6 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
                 </span>
               </div>
             </div>
-            <div className="min-w-[12px] flex-1" />
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#FF8A5C] px-[14px] py-2 text-[13px] font-semibold text-white">
-              <Play className="h-3.5 w-3.5" aria-hidden />
-              Run Workflow
-            </span>
           </div>
 
           {/* ---- Tabs ----------------------------------------------------- */}
@@ -314,6 +309,11 @@ export function HeroDashboard({ score = 87 }: { score?: number }) {
                     <TrendingUp className="h-[13px] w-[13px] text-[#2DE8C8]" aria-hidden />
                     <span><span className="font-bold text-[#2DE8C8]">+6</span> since run #13</span>
                   </div>
+                  <div className="min-h-[10px] flex-1" />
+                  <span className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#FF8A5C] px-[14px] py-2 text-[13px] font-semibold text-white">
+                    <Play className="h-3.5 w-3.5" aria-hidden />
+                    Run Workflow
+                  </span>
                 </div>
 
                 {/* Dimensions card */}

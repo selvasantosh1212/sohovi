@@ -74,8 +74,8 @@ export default async function LandingPage() {
       <PublicNav />
       <main className="flex-1">
         <Hero />
-        <Outcomes />
         <BrandStrip />
+        <Outcomes />
         <ProofStrip />
         <ProblemSection />
         <CapabilityPillars />
