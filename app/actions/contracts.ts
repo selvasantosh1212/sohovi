@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { requireFeature, hasFeature } from "@/lib/plans/entitlements";
+import { assertAssetInScope } from "@/lib/supabase/ownership";
 import type {
   DataContract,
   DataContractInput,
@@ -29,6 +30,7 @@ export async function getContracts(assetId: string): Promise<DataContract[]> {
 export async function createContract(input: DataContractInput): Promise<DataContract> {
   await requireFeature("dataContracts");
   const userId = await getScopeId();
+  await assertAssetInScope(input.asset_id, userId);
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -184,15 +186,15 @@ export async function evaluateContracts(
       });
     }
 
-    // An empty required_rule_ids means "every rule must pass", which keeps the
-    // contract correct as rules are added to the asset later.
+    // Every failing rule fails the contract.
+    //
+    // There is deliberately no per-rule subset: dq_scores carries no reference
+    // back to dq_rules (its `id` is the score row's own PK), so a contract
+    // cannot name individual rules without a join key that does not exist.
+    // Filtering on it silently passed contracts whose named rules had failed,
+    // which is the worst possible failure mode for an acceptance gate.
     if (failedRules.length > 0) {
-      const relevant =
-        contract.required_rule_ids.length === 0
-          ? failedRules
-          : failedRules.filter((r) => contract.required_rule_ids.includes(r.id as string));
-
-      for (const r of relevant) {
+      for (const r of failedRules) {
         failures.push({
           check: "rule",
           passed: false,

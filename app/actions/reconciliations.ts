@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { requireFeature } from "@/lib/plans/entitlements";
+import { assertAssetInScope } from "@/lib/supabase/ownership";
 
 export interface Reconciliation {
   id: string;
@@ -36,6 +37,7 @@ export interface ReconciliationInput {
 export async function getReconciliations(assetId: string): Promise<Reconciliation[]> {
   await requireFeature("reconciliation");
   const userId = await getScopeId();
+  await assertAssetInScope(assetId, userId);
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -60,6 +62,7 @@ export async function saveReconciliation(
 ): Promise<Reconciliation> {
   await requireFeature("reconciliation");
   const userId = await getScopeId();
+  await assertAssetInScope(input.asset_id, userId);
   const supabase = createServiceClient();
 
   const { data, error } = await supabase

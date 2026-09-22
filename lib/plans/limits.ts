@@ -50,6 +50,8 @@ export interface PlanLimits {
   dataContracts: boolean;
   /** Portfolio health: trend, worst assets, freshness SLA. */
   portfolioHealth: boolean;
+  /** The portfolio view rolled up across more than one business unit. */
+  multiBusinessUnitPortfolio: boolean;
 }
 
 export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
@@ -76,6 +78,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     privacyStudio: false,
     dataContracts: false,
     portfolioHealth: false,
+    multiBusinessUnitPortfolio: false,
   },
   pro: {
     maxAssets: Infinity,
@@ -100,6 +103,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     privacyStudio: false,
     dataContracts: false,
     portfolioHealth: true,
+    multiBusinessUnitPortfolio: false,
   },
   business: {
     maxAssets: Infinity,
@@ -124,5 +128,6 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     privacyStudio: true,
     dataContracts: true,
     portfolioHealth: true,
+    multiBusinessUnitPortfolio: true,
   },
 };

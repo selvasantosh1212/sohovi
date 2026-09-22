@@ -19,8 +19,7 @@ import { useRuleBuilderUIStore } from "@/store/ruleBuilderUIStore";
 import { getRuleExample, type RuleExample } from "@/lib/dq-rule-examples";
 import { COLUMN_PARAMS, THRESHOLD_PRESETS, paramHint } from "@/lib/dq-rule-meta";
 import { useUser } from "@clerk/nextjs";
-import { can, minPlanFor, PLAN_LABELS, GATED_RULE_TYPES } from "@/lib/plans/features";
-import type { Plan } from "@/lib/plans/limits";
+import { can, minPlanFor, normalizePlan, PLAN_LABELS, GATED_RULE_TYPES } from "@/lib/plans/features";
 import type { DetectedDateFormat } from "@/types/profiling.types";
 
 const DIMENSIONS: DQDimension[] = [
@@ -125,7 +124,7 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
     activeProfile?.inferred_type === "date" || activeProfile?.inferred_type === "datetime";
 
   const { user } = useUser();
-  const plan = (user?.publicMetadata?.plan as Plan | undefined) ?? "free";
+  const plan = normalizePlan(user?.publicMetadata?.plan) ?? "free";
 
   /**
    * Rule types the current plan cannot author. They stay visible but disabled

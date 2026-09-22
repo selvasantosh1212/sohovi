@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { requireFeature } from "@/lib/plans/entitlements";
+import { assertAssetInScope } from "@/lib/supabase/ownership";
 
 export interface ColumnNote {
   id: string;
@@ -49,6 +50,10 @@ export async function getColumnNotes(assetId: string): Promise<Record<string, Co
 export async function upsertColumnNote(input: ColumnNoteInput): Promise<ColumnNote | null> {
   await requireFeature("columnNotes");
   const userId = await getScopeId();
+  // The upsert below is keyed on (asset_id, column_name) and .upsert() does not
+  // honour .eq() filters, so without this an arbitrary asset_id would overwrite
+  // another workspace's note and reassign it.
+  await assertAssetInScope(input.asset_id, userId);
   const supabase = createServiceClient();
 
   const source = input.source_description?.trim() || null;

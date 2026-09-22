@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { Lock } from "lucide-react";
-import type { Plan } from "@/lib/plans/limits";
 import {
   can,
   minPlanFor,
   planAtLeast,
+  normalizePlan,
   FEATURE_LABELS,
   PLAN_LABELS,
   type Feature,
@@ -49,7 +49,7 @@ export function PlanGate({
 
   if (!isLoaded) return null;
 
-  const plan = (user?.publicMetadata?.plan as Plan | undefined) ?? "free";
+  const plan = normalizePlan(user?.publicMetadata?.plan) ?? "free";
 
   const hasAccess = feature ? can(plan, feature) : planAtLeast(plan, minPlan ?? "pro");
   if (hasAccess) return <>{children}</>;

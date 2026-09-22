@@ -6,6 +6,7 @@ import { getScopeId } from "@/lib/clerk/utils";
 import { createRule } from "@/app/actions/rules";
 import type { DQRule, Workflow, WorkflowRule, WorkflowApplication } from "@/types/app.types";
 import type { ScopeCondition } from "@/types/dq.types";
+import { requireFeature, hasFeature } from "@/lib/plans/entitlements";
 
 export interface WorkflowInput {
   asset_id?: string | null;
@@ -15,6 +16,7 @@ export interface WorkflowInput {
 }
 
 export async function getWorkflows(assetId?: string): Promise<Workflow[]> {
+  if (!(await hasFeature("workflows"))) return [];
   const userId = await getScopeId();
   const supabase = createServiceClient();
   let query = supabase
@@ -40,6 +42,7 @@ export async function getWorkflows(assetId?: string): Promise<Workflow[]> {
 }
 
 export async function getWorkflow(id: string): Promise<Workflow | null> {
+  if (!(await hasFeature("workflows"))) return null;
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { data } = await supabase
@@ -52,6 +55,7 @@ export async function getWorkflow(id: string): Promise<Workflow | null> {
 }
 
 export async function getWorkflowRules(workflowId: string): Promise<WorkflowRule[]> {
+  if (!(await hasFeature("workflows"))) return [];
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { data, error } = await supabase
@@ -65,6 +69,7 @@ export async function getWorkflowRules(workflowId: string): Promise<WorkflowRule
 }
 
 export async function getWorkflowApplications(workflowId: string): Promise<WorkflowApplication[]> {
+  if (!(await hasFeature("workflows"))) return [];
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { data, error } = await supabase
@@ -78,6 +83,7 @@ export async function getWorkflowApplications(workflowId: string): Promise<Workf
 }
 
 export async function createWorkflow(input: WorkflowInput): Promise<Workflow> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   if (!input.name.trim()) throw new Error("Workflow name is required.");
@@ -104,6 +110,7 @@ export async function updateWorkflow(
   id: string,
   input: Partial<WorkflowInput & { is_active: boolean }>
 ): Promise<Workflow> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { data, error } = await supabase
@@ -120,6 +127,7 @@ export async function updateWorkflow(
 }
 
 export async function deleteWorkflow(id: string): Promise<void> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { error } = await supabase
@@ -141,6 +149,7 @@ export interface PromoteRulesInput {
 }
 
 export async function promoteRulesToWorkflow(input: PromoteRulesInput): Promise<Workflow> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
@@ -209,6 +218,7 @@ export async function promoteRulesToWorkflow(input: PromoteRulesInput): Promise<
 }
 
 export async function removeWorkflowRule(workflowRuleId: string, workflowId: string): Promise<void> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { error } = await supabase
@@ -235,6 +245,7 @@ export interface ApplyWorkflowResult {
 }
 
 export async function applyWorkflowToAsset(input: ApplyWorkflowInput): Promise<ApplyWorkflowResult> {
+  await requireFeature("workflows");
   const userId = await getScopeId();
   const supabase = createServiceClient();
 

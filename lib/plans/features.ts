@@ -41,7 +41,7 @@ export const FEATURE_LABELS: Record<Feature, string> = {
   crossColumnValidation: "Cross-column validations",
   catalogScoring: "Catalog-level DQ scoring",
   connectors: "Connectors",
-  columnNotes: "Lineage & context metadata",
+  columnNotes: "Column source & transformation notes",
   alertEmail: "Email alert delivery",
   alertSlack: "Slack alert delivery",
   reconciliation: "Reconciliation",
@@ -49,6 +49,7 @@ export const FEATURE_LABELS: Record<Feature, string> = {
   privacyStudio: "Privacy Studio",
   dataContracts: "Data contracts",
   portfolioHealth: "Portfolio health",
+  multiBusinessUnitPortfolio: "Multi-business-unit portfolio",
 };
 
 /**

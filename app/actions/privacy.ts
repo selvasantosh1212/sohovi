@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { requireFeature } from "@/lib/plans/entitlements";
+import { assertAssetInScope } from "@/lib/supabase/ownership";
 
 /** One PII-flagged column somewhere in a catalog. */
 export interface PIIRegisterEntry {
@@ -83,6 +84,7 @@ export async function getPIIRegister(catalogId: string): Promise<PIIRegisterEntr
 export async function getPrivacyAudits(assetId: string): Promise<PrivacyAudit[]> {
   await requireFeature("privacyStudio");
   const userId = await getScopeId();
+  await assertAssetInScope(assetId, userId);
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -116,6 +118,7 @@ export interface PrivacyAuditInput {
 export async function savePrivacyAudit(input: PrivacyAuditInput): Promise<PrivacyAudit> {
   await requireFeature("privacyStudio");
   const userId = await getScopeId();
+  await assertAssetInScope(input.asset_id, userId);
   const supabase = createServiceClient();
 
   const { data, error } = await supabase

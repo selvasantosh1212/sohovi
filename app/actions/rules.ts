@@ -101,6 +101,15 @@ export async function updateRule(
   input: Partial<RuleInput & { threshold: number; weight: number; is_active: boolean }>
 ): Promise<DQRule> {
   const userId = await getScopeId();
+
+  // updateRule takes Partial<RuleInput>, which includes rule_type — without
+  // this a free caller could create an ungated rule and then switch its type
+  // to a Team-only one, and the engine would evaluate it on every run.
+  if (input.rule_type) {
+    const gatedBy = GATED_RULE_TYPES[input.rule_type];
+    if (gatedBy) await requireFeature(gatedBy);
+  }
+
   const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("dq_rules")
