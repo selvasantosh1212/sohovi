@@ -3,7 +3,8 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
+import { PLAN_LIMITS } from "@/lib/plans/limits";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import type { BusinessUnit, BusinessUnitInput } from "@/types/app.types";
 
 export async function getBusinessUnits(): Promise<BusinessUnit[]> {
@@ -35,7 +36,7 @@ export async function createBusinessUnit(input: BusinessUnitInput): Promise<Busi
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
-  const plan = await getUserPlan();
+  const plan = await getPlanForScope();
   const limit = PLAN_LIMITS[plan].maxBusinessUnits;
   if (limit !== Infinity) {
     const { count } = await supabase

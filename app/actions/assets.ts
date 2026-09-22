@@ -3,7 +3,8 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
+import { PLAN_LIMITS } from "@/lib/plans/limits";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import type { DataAsset, DataAssetInput } from "@/types/app.types";
 
 export async function getAssets(catalogId?: string): Promise<DataAsset[]> {
@@ -37,7 +38,7 @@ export async function createAsset(input: DataAssetInput): Promise<DataAsset> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
-  const plan = await getUserPlan();
+  const plan = await getPlanForScope();
   const limit = PLAN_LIMITS[plan].maxAssets;
   if (limit !== Infinity) {
     const { count } = await supabase

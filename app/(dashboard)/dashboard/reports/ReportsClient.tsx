@@ -240,8 +240,7 @@ export function ReportsClient({ assetRuns }: Props) {
       {/* Export buttons */}
       <div className="flex items-center gap-3 flex-wrap">
         <PlanGate
-          minPlan="pro"
-          feature="PDF/Excel export"
+          feature="pdfExport"
           fallback={
             <Link
               href="/dashboard/billing"

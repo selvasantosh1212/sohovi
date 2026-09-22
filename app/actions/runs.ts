@@ -3,7 +3,8 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
+import { PLAN_LIMITS } from "@/lib/plans/limits";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import type { AssetRun, DQScore, ProfilingSummary } from "@/types/app.types";
 import type { BehaviorFlag, DQRunResult, ScopeCondition } from "@/types/dq.types";
 import type { ColumnProfile } from "@/types/profiling.types";
@@ -334,7 +335,7 @@ export async function getRuns(assetId: string): Promise<AssetRun[]> {
     .eq("clerk_user_id", userId)
     .order("run_at", { ascending: false });
 
-  const historyDays = PLAN_LIMITS[await getUserPlan()].historyDays;
+  const historyDays = PLAN_LIMITS[await getPlanForScope()].historyDays;
   if (historyDays !== Infinity) {
     const cutoff = new Date(Date.now() - historyDays * 24 * 60 * 60 * 1000).toISOString();
     query = query.gte("run_at", cutoff);

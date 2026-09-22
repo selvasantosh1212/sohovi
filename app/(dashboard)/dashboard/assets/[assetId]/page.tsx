@@ -3,14 +3,9 @@ import Link from "next/link";
 import {
   ArrowLeft,
   UploadCloud,
-  Pencil,
   ShieldCheck,
   Clock,
   Database,
-  ListChecks,
-  FlaskConical,
-  Wrench,
-  BarChart3,
 } from "lucide-react";
 import { getAsset } from "@/app/actions/assets";
 import { getRuns } from "@/app/actions/runs";
@@ -18,6 +13,7 @@ import { ScoreBadge, ScoreBar } from "@/components/shared/ScoreBadge";
 import { Card } from "@/components/ui/card";
 import { ScoreTrendChart } from "@/components/trends/ScoreTrendChart";
 import { AnomalyFlagCard } from "@/components/trends/AnomalyFlagCard";
+import { AssetTabs } from "@/components/assets/AssetTabs";
 
 export async function generateMetadata({
   params,
@@ -81,21 +77,7 @@ export default async function AssetDetailPage({
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
-            {[
-              { href: `/dashboard/assets/${assetId}/edit`, icon: Pencil, label: "Edit" },
-              { href: `/dashboard/assets/${assetId}/rules`, icon: ListChecks, label: "Rules" },
-              { href: `/dashboard/assets/${assetId}/scoring`, icon: BarChart3, label: "Scoring" },
-              { href: `/dashboard/assets/${assetId}/sandbox`, icon: FlaskConical, label: "Sandbox" },
-              { href: `/dashboard/assets/${assetId}/remediation`, icon: Wrench, label: "Remediate" },
-            ].map(({ href, icon: Icon, label }) => (
-              <Link
-                key={label}
-                href={href}
-                className="inline-flex items-center gap-1.5 text-[13px] font-medium px-3 py-2 rounded-full border border-[#EEF0F3] bg-white hover:bg-slate-50 transition-colors duration-150 text-slate-700"
-              >
-                <Icon className="w-3.5 h-3.5" />{label}
-              </Link>
-            ))}
+            <AssetTabs assetId={assetId} />
             <Link
               href={`/dashboard/assets/${assetId}/upload`}
               className="inline-flex items-center gap-2 text-[13px] font-semibold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90"

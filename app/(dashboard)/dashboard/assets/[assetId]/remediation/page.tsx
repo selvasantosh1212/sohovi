@@ -43,8 +43,7 @@ export default async function RemediationPage({
       </div>
 
       <PlanGate
-        minPlan="business"
-        feature="Remediation"
+        feature="remediation"
         description="Remediation and cleaned-file export are available on the Team plan. Upgrade to review failed records and export a cleaned file."
       >
         <RemediationClient

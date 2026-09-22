@@ -3,7 +3,8 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
+import { PLAN_LIMITS } from "@/lib/plans/limits";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import type { DQRule } from "@/types/app.types";
 
 export async function getRules(assetId: string): Promise<DQRule[]> {
@@ -37,7 +38,7 @@ export async function createRule(input: RuleInput): Promise<DQRule> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
-  const plan = await getUserPlan();
+  const plan = await getPlanForScope();
   const ruleLimit = PLAN_LIMITS[plan].maxRulesPerAsset;
   if (ruleLimit !== Infinity) {
     const { count } = await supabase

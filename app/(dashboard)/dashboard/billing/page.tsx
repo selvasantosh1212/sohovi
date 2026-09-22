@@ -1,10 +1,10 @@
-import { getUserPlan } from "@/lib/plans/limits";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import { BillingClient } from "./BillingClient";
 
 export const metadata = { title: "Billing — Sohovi" };
 
 export default async function BillingPage() {
-  const plan = await getUserPlan();
+  const plan = await getPlanForScope();
 
   return (
     <div className="space-y-6 max-w-3xl">

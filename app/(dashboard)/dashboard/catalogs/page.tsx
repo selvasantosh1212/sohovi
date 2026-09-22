@@ -4,25 +4,14 @@ import { getCatalogs } from "@/app/actions/catalogs";
 import { getAssets } from "@/app/actions/assets";
 import { CatalogCard } from "@/components/catalogs/CatalogCard";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { withCatalogRollups } from "@/lib/scoring/rollup";
 
 export const metadata = { title: "Catalogs" };
 
 export default async function CatalogsPage() {
   const [catalogs, assets] = await Promise.all([getCatalogs(), getAssets()]);
 
-  const catalogsWithCounts = catalogs.map((c) => {
-    const catAssets = assets.filter((a) => a.catalog_id === c.id);
-    const scores = catAssets
-      .map((a) => a.latest_dq_score)
-      .filter((s): s is number => s != null);
-    return {
-      ...c,
-      asset_count: catAssets.length,
-      latest_dq_score: scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : undefined,
-    };
-  });
+  const catalogsWithCounts = withCatalogRollups(catalogs, assets);
 
   return (
     <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">

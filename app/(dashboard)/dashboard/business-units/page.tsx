@@ -5,6 +5,7 @@ import { getCatalogs } from "@/app/actions/catalogs";
 import { getAssets } from "@/app/actions/assets";
 import { BUCard } from "@/components/business-units/BUCard";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { withBusinessUnitRollups } from "@/lib/scoring/rollup";
 
 export const metadata = { title: "Business Units" };
 
@@ -15,22 +16,7 @@ export default async function BusinessUnitsPage() {
     getAssets(),
   ]);
 
-  const buWithCounts = bus.map((bu) => {
-    const buCatalogIds = catalogs
-      .filter((c) => c.business_unit_id === bu.id)
-      .map((c) => c.id);
-    const buAssets = assets.filter((a) => buCatalogIds.includes(a.catalog_id!));
-    const scores = buAssets
-      .map((a) => a.latest_dq_score)
-      .filter((s): s is number => s != null);
-    return {
-      ...bu,
-      catalog_count: buCatalogIds.length,
-      latest_dq_score: scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : undefined,
-    };
-  });
+  const buWithCounts = withBusinessUnitRollups(bus, catalogs, assets);
 
   return (
     <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">

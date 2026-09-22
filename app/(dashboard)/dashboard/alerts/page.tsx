@@ -48,8 +48,7 @@ export default async function AlertsPage() {
       </div>
 
       <PlanGate
-        minPlan="pro"
-        feature="Alerts & Anomaly Detection"
+        feature="alerts"
         description="Alerts and anomaly detection are available on the Pro plan. Upgrade to get notified when quality thresholds are breached."
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
