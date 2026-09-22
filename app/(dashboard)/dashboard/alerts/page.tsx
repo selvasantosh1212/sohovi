@@ -5,15 +5,20 @@ import { getAssets } from "@/app/actions/assets";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { AlertRuleForm } from "@/components/alerts/AlertRuleForm";
 import { PlanGate } from "@/components/shared/PlanGate";
+import { NotificationChannels } from "@/components/alerts/NotificationChannels";
+import { getNotificationChannels } from "@/app/actions/notifications";
+import { getPlanForScope } from "@/lib/plans/entitlements";
 import type { AlertEvent } from "@/types/app.types";
 
 export const metadata = { title: "Alerts — Sohovi" };
 
 export default async function AlertsPage() {
-  const [alerts, allAssets, allEvents] = await Promise.all([
+  const [alerts, allAssets, allEvents, channels, plan] = await Promise.all([
     getAlerts(),
     getAssets(),
     getAlertEvents(),
+    getNotificationChannels(),
+    getPlanForScope(),
   ]);
 
   // Map events by alert_id
@@ -51,6 +56,10 @@ export default async function AlertsPage() {
         feature="alerts"
         description="Alerts and anomaly detection are available on the Pro plan. Upgrade to get notified when quality thresholds are breached."
       >
+        <div className="mb-6">
+          <NotificationChannels channels={channels} plan={plan} />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Alert list */}
           <div className="lg:col-span-2 space-y-3">

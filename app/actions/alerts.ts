@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import type { Alert, AlertEvent } from "@/types/app.types";
 import type { BehaviorFlag } from "@/types/dq.types";
+import { sendAlertNotification } from "@/app/actions/notifications";
 
 // ---- Alerts CRUD ---------------------------------------------------------
 
@@ -221,7 +222,10 @@ export async function evaluateAlerts(
 
   if (triggeredEvents.length === 0) return;
 
-  await supabase.from("alert_events").insert(triggeredEvents);
+  const { data: insertedEvents } = await supabase
+    .from("alert_events")
+    .insert(triggeredEvents)
+    .select("id");
 
   await Promise.all(
     triggeredAlertIds.map((id) =>
@@ -232,6 +236,36 @@ export async function evaluateAlerts(
         .eq("clerk_user_id", userId)
     )
   );
+
+  // Push the alert out of the app. Everything above is already committed, so a
+  // delivery failure is recorded against the channel rather than thrown — a
+  // dead Slack webhook must not fail the DQ run that triggered it.
+  try {
+    const { data: asset } = await supabase
+      .from("data_assets")
+      .select("name")
+      .eq("id", assetId)
+      .eq("clerk_user_id", userId)
+      .single();
+
+    const eventIds = (insertedEvents ?? []).map((e) => e.id as string);
+    const firedAlerts = (activeAlerts as Alert[]).filter((a) =>
+      triggeredAlertIds.includes(a.id)
+    );
+
+    await sendAlertNotification(
+      {
+        assetId,
+        assetName: asset?.name ?? "Untitled asset",
+        alertName: firedAlerts[0]?.name ?? "Alert",
+        message: triggeredEvents.map((e) => e.message).join(" · "),
+        score: overallScore,
+      },
+      eventIds
+    );
+  } catch (err) {
+    console.error("[evaluateAlerts] notification delivery failed:", err);
+  }
 
   revalidatePath("/dashboard/alerts");
   revalidatePath("/dashboard");
