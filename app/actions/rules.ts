@@ -4,7 +4,8 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import { PLAN_LIMITS } from "@/lib/plans/limits";
-import { getPlanForScope } from "@/lib/plans/entitlements";
+import { getPlanForScope, requireFeature } from "@/lib/plans/entitlements";
+import { GATED_RULE_TYPES } from "@/lib/plans/features";
 import type { DQRule } from "@/types/app.types";
 
 export async function getRules(assetId: string): Promise<DQRule[]> {
@@ -37,6 +38,11 @@ export interface RuleInput {
 export async function createRule(input: RuleInput): Promise<DQRule> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
+
+  // Some rule types are a paid feature. PlanGate only hides the UI — this is
+  // the check that actually holds, since server actions are public endpoints.
+  const gatedBy = GATED_RULE_TYPES[input.rule_type];
+  if (gatedBy) await requireFeature(gatedBy);
 
   const plan = await getPlanForScope();
   const ruleLimit = PLAN_LIMITS[plan].maxRulesPerAsset;

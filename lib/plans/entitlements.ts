@@ -1,67 +1,18 @@
+import "server-only";
 import { cache } from "react";
 import { auth, currentUser, clerkClient } from "@clerk/nextjs/server";
-import { PLAN_LIMITS, type Plan, type PlanLimits } from "./limits";
+import type { Plan } from "./limits";
+import {
+  can,
+  minPlanFor,
+  normalizePlan,
+  FEATURE_LABELS,
+  PLAN_LABELS,
+  type Feature,
+} from "./features";
 
-/**
- * The feature-flag keys of `PlanLimits` — the numeric quota keys are excluded
- * by construction, so a new boolean added to `PlanLimits` becomes a valid
- * `Feature` automatically and a new quota does not.
- */
-export type Feature = {
-  [K in keyof PlanLimits]: PlanLimits[K] extends boolean ? K : never;
-}[keyof PlanLimits];
-
-const PLAN_ORDER: readonly Plan[] = ["free", "pro", "business"] as const;
-
-const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, business: 2 };
-
-/** Customer-facing plan names. The paid top tier is sold as "Team". */
-export const PLAN_LABELS: Record<Plan, string> = {
-  free: "Free",
-  pro: "Pro",
-  business: "Team",
-};
-
-/** Human-readable feature names, used in lock messages and upgrade prompts. */
-export const FEATURE_LABELS: Record<Feature, string> = {
-  aiSuggestions: "AI rule suggestions",
-  workflows: "Reusable rule workflows",
-  alerts: "Alerts",
-  pdfExport: "PDF export",
-  pii: "PII detection",
-  sandbox: "Rule sandbox",
-  remediation: "Remediation",
-  crossColumnValidation: "Cross-column validations",
-  catalogScoring: "Catalog-level DQ scoring",
-  connectors: "Connectors",
-  columnNotes: "Lineage & context metadata",
-  alertEmail: "Email alert delivery",
-  alertSlack: "Slack alert delivery",
-  reconciliation: "Reconciliation",
-  fuzzyMatching: "Fuzzy duplicate matching",
-  privacyStudio: "Privacy Studio",
-  dataContracts: "Data contracts",
-  portfolioHealth: "Portfolio health",
-};
-
-/** Pure predicate — does `plan` include `feature`? Safe in client components. */
-export function can(plan: Plan, feature: Feature): boolean {
-  return PLAN_LIMITS[plan][feature] === true;
-}
-
-/** The cheapest plan that includes `feature`, derived from PLAN_LIMITS. */
-export function minPlanFor(feature: Feature): Plan {
-  return PLAN_ORDER.find((p) => can(p, feature)) ?? "business";
-}
-
-/** True when `plan` is at least `other`. */
-export function planAtLeast(plan: Plan, other: Plan): boolean {
-  return PLAN_RANK[plan] >= PLAN_RANK[other];
-}
-
-function normalizePlan(value: unknown): Plan | null {
-  return value === "pro" || value === "business" || value === "free" ? value : null;
-}
+export type { Feature } from "./features";
+export { can, minPlanFor, planAtLeast, FEATURE_LABELS, PLAN_LABELS } from "./features";
 
 /**
  * The plan that applies to the caller's active workspace.
@@ -109,9 +60,7 @@ export class FeatureLockedError extends Error {
 
   constructor(feature: Feature) {
     const requiredPlan = minPlanFor(feature);
-    super(
-      `${FEATURE_LABELS[feature]} is available on the ${PLAN_LABELS[requiredPlan]} plan.`
-    );
+    super(`${FEATURE_LABELS[feature]} is available on the ${PLAN_LABELS[requiredPlan]} plan.`);
     this.name = "FeatureLockedError";
     this.feature = feature;
     this.requiredPlan = requiredPlan;

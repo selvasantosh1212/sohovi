@@ -14,6 +14,8 @@ import type { DQGlossaryEntry } from "@/types/dq.types";
 import { DIMENSION_COLORS } from "@/lib/dq-engine/dimension-meta";
 import { explainOutlier } from "@/lib/profiling/value-report-export";
 import { filledPct, isMandatoryFieldPass } from "@/lib/profiling/mandatory-field";
+import { ColumnNoteDrawer } from "@/components/profiling/ColumnNoteDrawer";
+import type { ColumnNote } from "@/app/actions/column-notes";
 
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   integer:  { bg: "bg-blue-50",    text: "text-blue-700" },
@@ -191,9 +193,19 @@ interface ColumnProfileCardProps {
   profile: ColumnProfile;
   glossaryEntries?: DQGlossaryEntry[];
   mandatoryThreshold?: number;
+  /** Asset this column belongs to. Omitted when notes are unavailable (free plan). */
+  assetId?: string;
+  /** Existing context note for this column, if any. */
+  note?: ColumnNote | null;
 }
 
-export function ColumnProfileCard({ profile, glossaryEntries = [], mandatoryThreshold = 95 }: ColumnProfileCardProps) {
+export function ColumnProfileCard({
+  profile,
+  glossaryEntries = [],
+  mandatoryThreshold = 95,
+  assetId,
+  note = null,
+}: ColumnProfileCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [outlierOpen, setOutlierOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
@@ -229,6 +241,13 @@ export function ColumnProfileCard({ profile, glossaryEntries = [], mandatoryThre
             >
               {mandatoryPass ? "Meets threshold" : "Below threshold"}
             </span>
+            {assetId && (
+              <ColumnNoteDrawer
+                assetId={assetId}
+                columnName={profile.column_name}
+                note={note}
+              />
+            )}
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
             {profile.row_count.toLocaleString()} rows · {profile.unique_count.toLocaleString()} unique

@@ -5,6 +5,10 @@ import { getCatalog } from "@/app/actions/catalogs";
 import { getAssets } from "@/app/actions/assets";
 import { AssetCard } from "@/components/assets/AssetCard";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { getCatalogBreakdown } from "@/app/actions/rollups";
+import { hasFeature } from "@/lib/plans/entitlements";
+import { ScoreBreakdownPanel } from "@/components/scoring/ScoreBreakdownPanel";
+import { FeatureLockCard } from "@/components/shared/FeatureLockCard";
 
 export async function generateMetadata({ params }: { params: Promise<{ catalogId: string }> }) {
   const { catalogId } = await params;
@@ -14,8 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ catalogId
 
 export default async function CatalogDetailPage({ params }: { params: Promise<{ catalogId: string }> }) {
   const { catalogId } = await params;
-  const [catalog, assets] = await Promise.all([getCatalog(catalogId), getAssets(catalogId)]);
+  const [catalog, assets, canScore] = await Promise.all([
+    getCatalog(catalogId),
+    getAssets(catalogId),
+    hasFeature("catalogScoring"),
+  ]);
   if (!catalog) notFound();
+
+  const breakdown = canScore ? await getCatalogBreakdown(catalogId) : null;
 
   return (
     <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
@@ -50,6 +60,18 @@ export default async function CatalogDetailPage({ params }: { params: Promise<{ 
             </Link>
           </div>
         </div>
+      </div>
+
+      <div>
+        <h2 className="text-base font-semibold text-slate-700 mb-4">Quality</h2>
+        {breakdown ? (
+          <ScoreBreakdownPanel breakdown={breakdown} label="catalog" />
+        ) : (
+          <FeatureLockCard
+            feature="catalogScoring"
+            description="Catalog-level DQ scoring rolls every asset in this catalog into one score, with a per-dimension and per-asset breakdown. Available on the Team plan."
+          />
+        )}
       </div>
 
       <div>

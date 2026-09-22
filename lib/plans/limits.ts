@@ -1,5 +1,9 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
-
+/**
+ * Plan configuration only — no imports, and in particular nothing from
+ * `@clerk/nextjs/server`. `features.ts` reads this file and is imported by
+ * client components, so a server-only import here would break the client
+ * bundle. Plan *resolution* lives in `entitlements.ts`.
+ */
 export type Plan = "free" | "pro" | "business";
 
 /**
@@ -122,17 +126,3 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     portfolioHealth: true,
   },
 };
-
-/**
- * Server-side helper — returns the current user's plan from Clerk publicMetadata.
- *
- * @deprecated Use `getPlanForScope` from `lib/plans/entitlements.ts`, which also
- * honours an organization-level plan when the user is in a team workspace.
- */
-export async function getUserPlan(): Promise<Plan> {
-  const { userId } = await auth();
-  if (!userId) return "free";
-  const user = await currentUser();
-  const plan = user?.publicMetadata?.plan as Plan | undefined;
-  return plan === "pro" || plan === "business" ? plan : "free";
-}

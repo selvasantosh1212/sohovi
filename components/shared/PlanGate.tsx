@@ -11,7 +11,7 @@ import {
   FEATURE_LABELS,
   PLAN_LABELS,
   type Feature,
-} from "@/lib/plans/entitlements";
+} from "@/lib/plans/features";
 
 interface PlanGateProps {
   /**
