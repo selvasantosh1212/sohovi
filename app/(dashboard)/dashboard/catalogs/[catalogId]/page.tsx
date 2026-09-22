@@ -9,6 +9,8 @@ import { getCatalogBreakdown } from "@/app/actions/rollups";
 import { hasFeature } from "@/lib/plans/entitlements";
 import { ScoreBreakdownPanel } from "@/components/scoring/ScoreBreakdownPanel";
 import { FeatureLockCard } from "@/components/shared/FeatureLockCard";
+import { getPIIRegister } from "@/app/actions/privacy";
+import { PIIRegisterTable } from "@/components/privacy/PIIRegisterTable";
 
 export async function generateMetadata({ params }: { params: Promise<{ catalogId: string }> }) {
   const { catalogId } = await params;
@@ -25,7 +27,11 @@ export default async function CatalogDetailPage({ params }: { params: Promise<{ 
   ]);
   if (!catalog) notFound();
 
-  const breakdown = canScore ? await getCatalogBreakdown(catalogId) : null;
+  const canPrivacy = await hasFeature("privacyStudio");
+  const [breakdown, piiRegister] = await Promise.all([
+    canScore ? getCatalogBreakdown(catalogId) : Promise.resolve(null),
+    canPrivacy ? getPIIRegister(catalogId) : Promise.resolve(null),
+  ]);
 
   return (
     <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
@@ -73,6 +79,13 @@ export default async function CatalogDetailPage({ params }: { params: Promise<{ 
           />
         )}
       </div>
+
+      {piiRegister && (
+        <div>
+          <h2 className="text-base font-semibold text-slate-700 mb-4">Personal data</h2>
+          <PIIRegisterTable entries={piiRegister} />
+        </div>
+      )}
 
       <div>
         <h2 className="text-base font-semibold text-slate-700 mb-4">
