@@ -21,6 +21,8 @@ import { ScoreGauge } from "@/components/scoring/ScoreGauge";
 import { OnboardingChecklist } from "@/components/shared/OnboardingChecklist";
 import { PaymentSuccessToast } from "@/components/shared/PaymentSuccessToast";
 import { withCatalogRollups, withBusinessUnitRollups } from "@/lib/scoring/rollup";
+import { getPortfolioHealth } from "@/app/actions/dashboard";
+import { PortfolioHealthSection } from "@/components/scoring/PortfolioHealthSection";
 import type { DataAsset, BusinessUnit, Catalog } from "@/types/app.types";
 
 export const metadata = { title: "Dashboard" };
@@ -78,6 +80,10 @@ export default async function DashboardPage() {
   const recentEvents = alertEvents.filter((e) => !e.is_read).slice(0, 3);
   const setupDone = counts.business_units > 0 && counts.assets > 0 && counts.has_run;
 
+  // Portfolio health is a paid view; getPortfolioHealth returns null when the
+  // plan does not include it.
+  const portfolioHealth = await getPortfolioHealth();
+
   // Per-BU and per-catalog DQ rollups — see lib/scoring/rollup.ts
   const busWithScores = withBusinessUnitRollups(bus, catalogs, allAssets);
   const catalogsWithScores = withCatalogRollups(catalogs, allAssets);
@@ -132,6 +138,16 @@ export default async function DashboardPage() {
           hasAsset={counts.assets > 0}
           hasRun={counts.has_run}
         />
+      )}
+
+      {/* Portfolio health — Pro and above; null when the plan excludes it */}
+      {portfolioHealth && setupDone && (
+        <div className="space-y-3">
+          <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            Portfolio Health
+          </h2>
+          <PortfolioHealthSection health={portfolioHealth} />
+        </div>
       )}
 
       {/* Welcome banner */}
