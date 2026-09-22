@@ -10,6 +10,7 @@ import type { BehaviorFlag, DQRunResult, ScopeCondition } from "@/types/dq.types
 import type { ColumnProfile } from "@/types/profiling.types";
 import { computeBehavioralScore } from "@/lib/dq-engine/behavioral-scorer";
 import { evaluateAlerts } from "@/app/actions/alerts";
+import { evaluateContracts } from "@/app/actions/contracts";
 
 // ---- Save a completed DQ run result to Supabase -------------------------
 
@@ -227,6 +228,15 @@ export async function saveRunResult(
     );
   } catch (err) {
     console.error("[evaluateAlerts] failed silently:", err);
+  }
+
+  // Evaluate data contracts against the run that was just committed. Failures
+  // are recorded as verdicts, not thrown — a contract problem must not fail
+  // the run that produced the data being judged.
+  try {
+    await evaluateContracts(input.asset_id, run.id);
+  } catch (err) {
+    console.error("[evaluateContracts] failed silently:", err);
   }
 
   revalidatePath(`/dashboard/assets/${input.asset_id}`);
