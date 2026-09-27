@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { HeroDashboard } from "@/components/landing/HeroDashboard";
+import { HeroWidget } from "@/components/landing/HeroWidget";
 
 export function Hero() {
   const penRef = useRef<SVGPathElement>(null);
@@ -30,13 +30,12 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden pt-16 min-[1240px]:pt-10">
-      {/* Stacked below 1240px — the column-profile table inside the dashboard
-          needs ~670px, so it only earns a side-by-side column above that. */}
-      <div className="mx-auto grid max-w-[1280px] gap-y-14 px-6 min-[1240px]:grid-cols-[minmax(380px,0.92fr)_minmax(540px,0.86fr)] min-[1240px]:items-center min-[1240px]:gap-x-14">
+    <section className="relative overflow-hidden pt-16 min-[1100px]:pt-10">
+      {/* Stacked below 1100px — the widget then sits under the copy, centered. */}
+      <div className="mx-auto grid max-w-[1280px] gap-y-14 px-6 min-[1100px]:grid-cols-[minmax(380px,1fr)_minmax(0,480px)] min-[1100px]:items-center min-[1100px]:gap-x-14">
 
         {/* ---- Copy column ---------------------------------------------- */}
-        <div className="relative mx-auto max-w-[1080px] text-center min-[1240px]:mx-0 min-[1240px]:max-w-none min-[1240px]:text-left">
+        <div className="relative mx-auto max-w-[1080px] text-center min-[1100px]:mx-0 min-[1100px]:max-w-none min-[1100px]:text-left">
           {/* Eyebrow chip */}
           <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full text-[12px] font-semibold" style={{ background: "#F4F4F5", border: "1px solid #E9E9EC" }}>
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "#FFE439", color: "#0A0A0A" }}>NEW</span>
@@ -45,7 +44,7 @@ export function Hero() {
 
           {/* H1 with pen-strike on "expensive tools" */}
           <h1
-            className="m-0 font-extrabold leading-[1.02] text-[clamp(34px,6.4vw,80px)] min-[1240px]:text-[clamp(44px,3.7vw,58px)]"
+            className="m-0 font-extrabold leading-[1.02] text-[clamp(34px,6.4vw,80px)] min-[1100px]:text-[clamp(44px,3.7vw,58px)]"
             style={{ letterSpacing: "-0.045em", color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}
           >
             You need{" "}
@@ -67,15 +66,15 @@ export function Hero() {
             <br />to trust your data quality.
           </h1>
 
-          <p className="mx-auto mt-7 leading-[1.55] min-[1240px]:mx-0 min-[1240px]:mt-6" style={{ fontSize: "18px", color: "#5B5B63", maxWidth: "620px", textWrap: "pretty" } as React.CSSProperties}>
+          <p className="mx-auto mt-7 leading-[1.55] min-[1100px]:mx-0 min-[1100px]:mt-6" style={{ fontSize: "18px", color: "#5B5B63", maxWidth: "620px", textWrap: "pretty" } as React.CSSProperties}>
             Sohovi is a privacy-first <strong style={{ color: "#0A0A0A", fontWeight: 600 }}>data quality tool</strong> that profiles, scores, and validates your CSV and Excel files entirely in your browser — no setup, no code, no upload.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-9 min-[1240px]:mt-8 min-[1240px]:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-9 min-[1100px]:mt-8 min-[1100px]:justify-start">
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 px-8 py-4 text-center text-[17px] font-semibold text-white transition-all min-[1240px]:px-6 min-[1240px]:text-[15px]"
+              className="inline-flex items-center gap-2 px-8 py-4 text-center text-[17px] font-semibold text-white transition-all min-[1100px]:px-6 min-[1100px]:text-[15px]"
               style={{ background: "#0A0A0A", borderRadius: "12px" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#2A2A2E"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#0A0A0A"; }}
@@ -85,7 +84,7 @@ export function Hero() {
           </div>
 
           {/* Reassurance chips */}
-          <div className="flex flex-wrap justify-center gap-2 mt-5 min-[1240px]:justify-start">
+          <div className="flex flex-wrap justify-center gap-2 mt-5 min-[1100px]:justify-start">
             {["No credit card", "Free forever for solo", "Data stays in your browser"].map((t) => (
               <span key={t} className="text-[12px] font-medium px-3 py-1 rounded-full" style={{ color: "#5B5B63", background: "rgba(10,10,10,0.04)" }}>
                 {t}
@@ -94,9 +93,10 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ---- Dashboard column ------------------------------------------ */}
-        <div className="min-w-0 min-[1240px]:[zoom:0.81]">
-          <HeroDashboard />
+        {/* ---- Widget column ------------------------------------------ */}
+        {/* Scaled so the 600px design sits at ~480px beside the copy. */}
+        <div className="min-w-0 min-[1100px]:[zoom:0.8]">
+          <HeroWidget />
         </div>
       </div>
     </section>
