@@ -155,8 +155,6 @@ import {
   type AlertPayload,
 } from "@/lib/notifications/deliver";
 
-export type { AlertPayload };
-
 /** Sends a sample alert to one channel so a user can confirm it works. */
 export async function sendTestNotification(channelId: string): Promise<{ ok: boolean; error?: string }> {
   const userId = await getScopeId();
