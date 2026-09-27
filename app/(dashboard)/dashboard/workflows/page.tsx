@@ -28,8 +28,7 @@ export default async function WorkflowsPage() {
       </div>
 
       <PlanGate
-        minPlan="pro"
-        feature="Workflows & Automation"
+        feature="workflows"
         description="Reusable workflows and automation are available on the Pro plan. Upgrade to save column-mapping configurations for repeat runs."
       >
       {workflows.length === 0 ? (

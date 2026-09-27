@@ -561,9 +561,10 @@ export function RemoveDuplicatesClient() {
               <div className="px-5 py-4 flex items-start gap-3" style={{ background: "var(--paper)", borderTop: "1px solid var(--hair)" }}>
                 <Lock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--ink-mute)" }} />
                 <p className="text-[13px]" style={{ color: "var(--ink-soft)" }}>
-                  <strong style={{ color: "var(--ink)" }}>Sohovi Business</strong> — fuzzy duplicate
-                  detection (catch "Bob Smith" vs "Robert Smith"), merge with survivorship rules, and
-                  bulk normalized-file export with a full change log.
+                  <strong style={{ color: "var(--ink)" }}>Sohovi Team</strong> — reconcile two files
+                  on a shared key with fuzzy near-match detection (catch &ldquo;ACME Corp.&rdquo; against
+                  &ldquo;ACME Corp&rdquo;), see exactly which fields changed, and keep a history of every
+                  comparison against the asset.
                 </p>
               </div>
             </div>

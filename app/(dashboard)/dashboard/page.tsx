@@ -20,6 +20,9 @@ import { ScoreBadge, ScoreBar } from "@/components/shared/ScoreBadge";
 import { ScoreGauge } from "@/components/scoring/ScoreGauge";
 import { OnboardingChecklist } from "@/components/shared/OnboardingChecklist";
 import { PaymentSuccessToast } from "@/components/shared/PaymentSuccessToast";
+import { withCatalogRollups, withBusinessUnitRollups } from "@/lib/scoring/rollup";
+import { getPortfolioHealth } from "@/app/actions/dashboard";
+import { PortfolioHealthSection } from "@/components/scoring/PortfolioHealthSection";
 import type { DataAsset, BusinessUnit, Catalog } from "@/types/app.types";
 
 export const metadata = { title: "Dashboard" };
@@ -77,30 +80,13 @@ export default async function DashboardPage() {
   const recentEvents = alertEvents.filter((e) => !e.is_read).slice(0, 3);
   const setupDone = counts.business_units > 0 && counts.assets > 0 && counts.has_run;
 
-  // Compute per-BU and per-catalog DQ scores (same logic as list pages)
-  const busWithScores = bus.map((bu) => {
-    const buCatalogIds = catalogs.filter((c) => c.business_unit_id === bu.id).map((c) => c.id);
-    const buAssets = allAssets.filter((a) => buCatalogIds.includes(a.catalog_id!));
-    const scores = buAssets.map((a) => a.latest_dq_score).filter((s): s is number => s != null);
-    return {
-      ...bu,
-      catalog_count: buCatalogIds.length,
-      latest_dq_score: scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : undefined,
-    };
-  });
+  // Portfolio health is a paid view; getPortfolioHealth returns null when the
+  // plan does not include it.
+  const portfolioHealth = await getPortfolioHealth();
 
-  const catalogsWithScores = catalogs.map((c) => {
-    const catAssets = allAssets.filter((a) => a.catalog_id === c.id);
-    const scores = catAssets.map((a) => a.latest_dq_score).filter((s): s is number => s != null);
-    return {
-      ...c,
-      latest_dq_score: scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : undefined,
-    };
-  });
+  // Per-BU and per-catalog DQ rollups — see lib/scoring/rollup.ts
+  const busWithScores = withBusinessUnitRollups(bus, catalogs, allAssets);
+  const catalogsWithScores = withCatalogRollups(catalogs, allAssets);
 
   // Risk counts (score < 60)
   const busAtRisk = busWithScores.filter(
@@ -152,6 +138,16 @@ export default async function DashboardPage() {
           hasAsset={counts.assets > 0}
           hasRun={counts.has_run}
         />
+      )}
+
+      {/* Portfolio health — Pro and above; null when the plan excludes it */}
+      {portfolioHealth && setupDone && (
+        <div className="space-y-3">
+          <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            Portfolio Health
+          </h2>
+          <PortfolioHealthSection health={portfolioHealth} />
+        </div>
       )}
 
       {/* Welcome banner */}

@@ -528,12 +528,12 @@ export function DeIdentifyClient() {
           </div>
 
           <HardCTA
-            headline="Ongoing de-identification and PII monitoring for your team"
-            body="Sohovi automatically detects PII across every connected dataset, monitors for new personal data as your data changes, and keeps an audit trail — without downloading files each time."
+            headline="De-identification your team can point to later"
+            body="Run the same classification and generalization inside Sohovi against a tracked asset, and keep a record of what was done and the k you achieved."
             bullets={[
-              "Automatic PII detection across all connected datasets and uploads",
-              "Column-level alerts when personal data appears in unexpected places",
-              "Full audit trail for compliance documentation",
+              "PII detection on every file you upload or re-fetch",
+              "A catalog-level PII register across every asset in the domain",
+              "An audit trail of each pass — columns treated, actions applied, k achieved",
             ]}
           />
         </div>

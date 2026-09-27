@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { CheckCircle2, Download, Search, ShieldAlert, SortAsc, SortDesc } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ColumnProfileCard } from "./ColumnProfileCard";
+import type { ColumnNote } from "@/app/actions/column-notes";
 import type { ColumnProfile } from "@/types/profiling.types";
 import type { DQGlossaryEntry } from "@/types/dq.types";
 import { buildColumnNarrative } from "@/lib/profiling/narrative";
@@ -22,6 +23,13 @@ interface ProfilingDashboardProps {
   fileName: string;
   totalRows: number;
   sampleMode: boolean;
+  /**
+   * Set only when the workspace can author column notes. Left undefined on
+   * plans without the feature, which hides the note control entirely.
+   */
+  assetId?: string;
+  /** Existing notes keyed by column name. */
+  columnNotes?: Record<string, ColumnNote>;
 }
 
 // One row per distinct value/pattern per column, with the "Column Name" cell
@@ -294,6 +302,8 @@ export function ProfilingDashboard({
   fileName,
   totalRows,
   sampleMode,
+  assetId,
+  columnNotes = {},
 }: ProfilingDashboardProps) {
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("file_order");
@@ -534,6 +544,8 @@ export function ProfilingDashboard({
             profile={profile}
             glossaryEntries={glossaryByColumn.get(profile.column_name) ?? []}
             mandatoryThreshold={threshold}
+            assetId={assetId}
+            note={columnNotes[profile.column_name] ?? null}
           />
         ))}
       </div>

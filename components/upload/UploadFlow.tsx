@@ -177,7 +177,7 @@ export function UploadFlow({ assetId, assetName, previousSchema }: UploadFlowPro
             sampleMode={fileData.sampleMode}
           />
 
-          <PlanGate minPlan="pro" feature="PII detection" fallback={null}>
+          <PlanGate feature="pii" fallback={null}>
             <PIIDetectionBanner />
           </PlanGate>
 

@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Filter, ListChecks, UploadCloud } from "lucide-react";
 import { ProfilingDashboard } from "@/components/profiling/ProfilingDashboard";
+import { getColumnNotes, type ColumnNote } from "@/app/actions/column-notes";
 import { SchemaDriftBanner } from "@/components/profiling/SchemaDriftBanner";
 import { ScopePreviewCard } from "@/components/profiling/ScopePreviewCard";
 import { useProfilingStore } from "@/store/profilingStore";
@@ -24,6 +25,25 @@ export default function AssetProfilePage() {
   const setSchemaDiff = useFileStore((s) => s.setSchemaDiff);
   const appliedScopeConditions = useFileStore((s) => s.appliedScopeConditions);
   const originalTotalRows = useFileStore((s) => s.originalTotalRows);
+
+  // Column notes are a Team feature. The action throws FeatureLockedError on
+  // plans without it, which is the signal to leave `columnNotes` null and hide
+  // the note controls — no separate entitlement round-trip needed.
+  const [columnNotes, setColumnNotes] = useState<Record<string, ColumnNote> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getColumnNotes(assetId)
+      .then((notes) => {
+        if (!cancelled) setColumnNotes(notes);
+      })
+      .catch(() => {
+        if (!cancelled) setColumnNotes(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [assetId]);
 
   const [schemaDiff, setSchemaDiffLocal] = useState<SchemaDiff | null>(null);
   const hasSaved = useRef(false);
@@ -134,6 +154,8 @@ export default function AssetProfilePage() {
         fileName={fileData.fileName}
         totalRows={fileData.totalRows}
         sampleMode={fileData.sampleMode}
+        assetId={columnNotes ? assetId : undefined}
+        columnNotes={columnNotes ?? {}}
       />
     </div>
   );

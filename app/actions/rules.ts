@@ -3,7 +3,9 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
-import { getUserPlan, PLAN_LIMITS } from "@/lib/plans/limits";
+import { PLAN_LIMITS } from "@/lib/plans/limits";
+import { getPlanForScope, requireFeature } from "@/lib/plans/entitlements";
+import { GATED_RULE_TYPES } from "@/lib/plans/features";
 import type { DQRule } from "@/types/app.types";
 
 export async function getRules(assetId: string): Promise<DQRule[]> {
@@ -37,7 +39,12 @@ export async function createRule(input: RuleInput): Promise<DQRule> {
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
-  const plan = await getUserPlan();
+  // Some rule types are a paid feature. PlanGate only hides the UI — this is
+  // the check that actually holds, since server actions are public endpoints.
+  const gatedBy = GATED_RULE_TYPES[input.rule_type];
+  if (gatedBy) await requireFeature(gatedBy);
+
+  const plan = await getPlanForScope();
   const ruleLimit = PLAN_LIMITS[plan].maxRulesPerAsset;
   if (ruleLimit !== Infinity) {
     const { count } = await supabase
@@ -94,6 +101,15 @@ export async function updateRule(
   input: Partial<RuleInput & { threshold: number; weight: number; is_active: boolean }>
 ): Promise<DQRule> {
   const userId = await getScopeId();
+
+  // updateRule takes Partial<RuleInput>, which includes rule_type — without
+  // this a free caller could create an ungated rule and then switch its type
+  // to a Team-only one, and the engine would evaluate it on every run.
+  if (input.rule_type) {
+    const gatedBy = GATED_RULE_TYPES[input.rule_type];
+    if (gatedBy) await requireFeature(gatedBy);
+  }
+
   const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("dq_rules")

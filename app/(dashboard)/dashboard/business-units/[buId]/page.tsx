@@ -5,6 +5,10 @@ import { getBusinessUnit } from "@/app/actions/business-units";
 import { getCatalogs } from "@/app/actions/catalogs";
 import { CatalogCard } from "@/components/catalogs/CatalogCard";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { getBusinessUnitBreakdown } from "@/app/actions/rollups";
+import { hasFeature } from "@/lib/plans/entitlements";
+import { ScoreBreakdownPanel } from "@/components/scoring/ScoreBreakdownPanel";
+import { FeatureLockCard } from "@/components/shared/FeatureLockCard";
 
 export async function generateMetadata({ params }: { params: Promise<{ buId: string }> }) {
   const { buId } = await params;
@@ -14,8 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ buId: str
 
 export default async function BUDetailPage({ params }: { params: Promise<{ buId: string }> }) {
   const { buId } = await params;
-  const [bu, catalogs] = await Promise.all([getBusinessUnit(buId), getCatalogs(buId)]);
+  const [bu, catalogs, canScore] = await Promise.all([
+    getBusinessUnit(buId),
+    getCatalogs(buId),
+    hasFeature("catalogScoring"),
+  ]);
   if (!bu) notFound();
+
+  const breakdown = canScore ? await getBusinessUnitBreakdown(buId) : null;
 
   return (
     <div className="space-y-6 max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px]">
@@ -51,6 +61,19 @@ export default async function BUDetailPage({ params }: { params: Promise<{ buId:
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Quality rollup */}
+      <div>
+        <h2 className="text-base font-semibold text-slate-700 mb-4">Quality</h2>
+        {breakdown ? (
+          <ScoreBreakdownPanel breakdown={breakdown} label="business unit" />
+        ) : (
+          <FeatureLockCard
+            feature="catalogScoring"
+            description="Business-unit DQ scoring rolls every asset across this unit's catalogs into one score, with a per-dimension and per-asset breakdown. Available on the Team plan."
+          />
+        )}
       </div>
 
       {/* Catalogs */}

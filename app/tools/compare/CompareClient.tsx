@@ -360,7 +360,7 @@ export function CompareClient() {
             ))}
           </div>
 
-          <SoftCTA text="Running this reconciliation monthly? Sohovi can compare datasets automatically on every sync and alert you when records change →" />
+          <SoftCTA text="Running this reconciliation every month? Sohovi keeps each result against the asset, so you can see what changed between closes →" />
 
           {/* Tabs */}
           <div>
@@ -492,12 +492,13 @@ export function CompareClient() {
             <div className="flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" style={{ color: "var(--ink-mute)" }} />
               <span className="text-[13px] font-semibold" style={{ color: "var(--ink-soft)" }}>
-                Sohovi Business — fuzzy matching & scheduled reconciliation
+                Sohovi Team — fuzzy matching & saved reconciliation history
               </span>
             </div>
             <p className="text-[13px]" style={{ color: "var(--ink-mute)" }}>
-              Match "Bob Smith" to "Robert Smith", tolerate ±$0.01 rounding differences, set date
-              tolerance windows, and run this reconciliation automatically every month.
+              Match near-miss keys like &ldquo;ACME Corp.&rdquo; to &ldquo;ACME Corp&rdquo; with a tunable
+              similarity threshold, run the comparison against a saved data asset, and keep the
+              result of every reconciliation alongside it.
             </p>
           </div>
 
@@ -512,12 +513,12 @@ export function CompareClient() {
           </div>
 
           <HardCTA
-            headline="Reconcile datasets automatically — on every sync"
-            body="Sohovi connects to your data sources directly and runs keyed comparisons automatically. Get alerted when records appear, disappear, or change — without downloading files."
+            headline="Reconcile against an asset you already track"
+            body="Run the same keyed comparison inside Sohovi, against a data asset with its own owner, rules and quality score — and keep every result next to it."
             bullets={[
-              "Scheduled reconciliation against CRMs, databases, and cloud files",
               "Fuzzy key matching — tolerates name variations, spacing, and format differences",
-              "Change history and trend tracking across every reconciliation run",
+              "Every reconciliation saved against the asset, with bucket counts over time",
+              "Connect Google Sheets, Airtable, S3 and REST endpoints as sources",
             ]}
           />
         </div>

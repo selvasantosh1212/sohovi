@@ -372,8 +372,7 @@ export function DataPreviewTable({ assetId, columnNames, rules, existingRuleKeys
                 </p>
               ) : (
                 <PlanGate
-                  minPlan="pro"
-                  feature="AI Rule Suggestions"
+                  feature="aiSuggestions"
                   description="AI-powered rule suggestions are available on the Pro plan. Upgrade to get suggested rules based on your column profiles."
                 >
                   <RuleSuggestionsPanel

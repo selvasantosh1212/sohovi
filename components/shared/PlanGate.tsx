@@ -3,15 +3,33 @@
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { Lock } from "lucide-react";
-import type { Plan } from "@/lib/plans/limits";
-
-const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, business: 2 };
+import {
+  can,
+  minPlanFor,
+  planAtLeast,
+  normalizePlan,
+  FEATURE_LABELS,
+  PLAN_LABELS,
+  type Feature,
+} from "@/lib/plans/features";
 
 interface PlanGateProps {
-  /** Minimum plan required to view `children`. */
-  minPlan: "pro" | "business";
-  /** Human-readable feature name, used in the default lock message. */
-  feature: string;
+  /**
+   * The feature being gated, as a key of `PlanLimits`. The required plan is
+   * derived from the plan config, so pricing and gating cannot drift apart.
+   */
+  feature?: Feature;
+  /**
+   * Minimum plan required to view `children`.
+   *
+   * @deprecated Pass `feature` instead — a raw plan name here is a second
+   * source of truth alongside `PLAN_LIMITS`, which is what let three Team
+   * features ship ungated. Retained so existing call sites keep working
+   * while they migrate.
+   */
+  minPlan?: "pro" | "business";
+  /** Overrides the label derived from `feature`. Required when only `minPlan` is given. */
+  featureLabel?: string;
   /** Override the default lock message. */
   description?: string;
   /** Rendered instead of the default lock card when access is denied. Pass `null` to render nothing. */
@@ -19,18 +37,27 @@ interface PlanGateProps {
   children: React.ReactNode;
 }
 
-export function PlanGate({ minPlan, feature, description, fallback, children }: PlanGateProps) {
+export function PlanGate({
+  feature,
+  minPlan,
+  featureLabel,
+  description,
+  fallback,
+  children,
+}: PlanGateProps) {
   const { user, isLoaded } = useUser();
 
   if (!isLoaded) return null;
 
-  const plan = (user?.publicMetadata?.plan as Plan | undefined) ?? "free";
-  const hasAccess = PLAN_RANK[plan] >= PLAN_RANK[minPlan];
+  const plan = normalizePlan(user?.publicMetadata?.plan) ?? "free";
 
+  const hasAccess = feature ? can(plan, feature) : planAtLeast(plan, minPlan ?? "pro");
   if (hasAccess) return <>{children}</>;
   if (fallback !== undefined) return <>{fallback}</>;
 
-  const planLabel = minPlan === "business" ? "Team" : "Pro";
+  const requiredPlan = feature ? minPlanFor(feature) : minPlan ?? "pro";
+  const planLabel = PLAN_LABELS[requiredPlan];
+  const label = featureLabel ?? (feature ? FEATURE_LABELS[feature] : "This feature");
 
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center space-y-4">
@@ -42,7 +69,7 @@ export function PlanGate({ minPlan, feature, description, fallback, children }: 
       <div>
         <h3 className="text-base font-semibold text-slate-800">{planLabel} Plan Required</h3>
         <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-          {description ?? `${feature} is available on the ${planLabel} plan. Upgrade to unlock it.`}
+          {description ?? `${label} is available on the ${planLabel} plan. Upgrade to unlock it.`}
         </p>
       </div>
       <div className="pt-1 flex items-center justify-center gap-3">

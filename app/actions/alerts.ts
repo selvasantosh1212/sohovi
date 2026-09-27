@@ -5,10 +5,14 @@ import { revalidatePath } from "next/cache";
 import { getScopeId } from "@/lib/clerk/utils";
 import type { Alert, AlertEvent } from "@/types/app.types";
 import type { BehaviorFlag } from "@/types/dq.types";
+import { sendAlertNotification } from "@/lib/notifications/deliver";
+import { getPlanForScope } from "@/lib/plans/entitlements";
+import { requireFeature, hasFeature } from "@/lib/plans/entitlements";
 
 // ---- Alerts CRUD ---------------------------------------------------------
 
 export async function getAlerts(assetId?: string): Promise<Alert[]> {
+  if (!(await hasFeature("alerts"))) return [];
   const userId = await getScopeId();
   const supabase = createServiceClient();
   let query = supabase
@@ -32,6 +36,7 @@ export interface AlertInput {
 }
 
 export async function createAlert(input: AlertInput): Promise<Alert> {
+  await requireFeature("alerts");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { data, error } = await supabase
@@ -48,6 +53,7 @@ export async function updateAlert(
   alertId: string,
   patch: Partial<Pick<Alert, "name" | "condition" | "threshold_value" | "dimension" | "column_name" | "is_active">>
 ): Promise<void> {
+  await requireFeature("alerts");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { error } = await supabase
@@ -60,6 +66,7 @@ export async function updateAlert(
 }
 
 export async function deleteAlert(alertId: string): Promise<void> {
+  await requireFeature("alerts");
   const userId = await getScopeId();
   const supabase = createServiceClient();
   const { error } = await supabase
@@ -74,6 +81,7 @@ export async function deleteAlert(alertId: string): Promise<void> {
 // ---- Alert Events --------------------------------------------------------
 
 export async function getAlertEvents(alertId?: string): Promise<AlertEvent[]> {
+  if (!(await hasFeature("alerts"))) return [];
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
@@ -102,6 +110,7 @@ export async function getAlertEvents(alertId?: string): Promise<AlertEvent[]> {
 }
 
 export async function getUnreadAlertCount(): Promise<number> {
+  if (!(await hasFeature("alerts"))) return 0;
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
@@ -121,6 +130,7 @@ export async function getUnreadAlertCount(): Promise<number> {
 }
 
 export async function markAlertEventsRead(alertId: string): Promise<void> {
+  await requireFeature("alerts");
   const userId = await getScopeId();
   const supabase = createServiceClient();
 
@@ -175,12 +185,19 @@ export async function evaluateAlerts(
     is_read: boolean;
     triggered_at: string;
   }> = [];
+  // Messages safe to send outside the app. Anomaly messages from the
+  // behavioural scorer quote actual cell values ("New dominant value \"X\"
+  // appeared in col"), which must never reach Slack or an inbox. Column names
+  // are schema, not data, so naming the column is fine.
+  const deliveryMessages: string[] = [];
   const triggeredAlertIds: string[] = [];
   const now = new Date().toISOString();
 
   for (const alert of activeAlerts as Alert[]) {
     let fire = false;
     let message = "";
+    // Defaults to `message`; only the anomaly branch needs to diverge.
+    let deliveryMessage = "";
 
     switch (alert.condition) {
       case "score_drop":
@@ -209,19 +226,31 @@ export async function evaluateAlerts(
             highSeverity.length > 0
               ? `Anomaly: ${highSeverity[0].message}`
               : `${behaviorFlags.length} behavioral anomal${behaviorFlags.length === 1 ? "y" : "ies"} detected`;
+          // Column name and metric only — never the flag's own message, which
+          // quotes values from the file.
+          const worst = highSeverity[0] ?? behaviorFlags[0];
+          const count = behaviorFlags.length;
+          deliveryMessage =
+            `${count} behavioural anomal${count === 1 ? "y" : "ies"} detected` +
+            (worst ? ` — most significant: ${worst.metric.replace(/_/g, " ")} in "${worst.column_name}"` : "") +
+            ". Open the asset to see the detail.";
         }
         break;
     }
 
     if (fire) {
       triggeredEvents.push({ alert_id: alert.id, run_id: runId, message, is_read: false, triggered_at: now });
+      deliveryMessages.push(deliveryMessage || message);
       triggeredAlertIds.push(alert.id);
     }
   }
 
   if (triggeredEvents.length === 0) return;
 
-  await supabase.from("alert_events").insert(triggeredEvents);
+  const { data: insertedEvents } = await supabase
+    .from("alert_events")
+    .insert(triggeredEvents)
+    .select("id");
 
   await Promise.all(
     triggeredAlertIds.map((id) =>
@@ -232,6 +261,39 @@ export async function evaluateAlerts(
         .eq("clerk_user_id", userId)
     )
   );
+
+  // Push the alert out of the app. Everything above is already committed, so a
+  // delivery failure is recorded against the channel rather than thrown — a
+  // dead Slack webhook must not fail the DQ run that triggered it.
+  try {
+    const { data: asset } = await supabase
+      .from("data_assets")
+      .select("name")
+      .eq("id", assetId)
+      .eq("clerk_user_id", userId)
+      .single();
+
+    const eventIds = (insertedEvents ?? []).map((e) => e.id as string);
+    const firedAlerts = (activeAlerts as Alert[]).filter((a) =>
+      triggeredAlertIds.includes(a.id)
+    );
+
+    await sendAlertNotification(
+      {
+        assetId,
+        assetName: asset?.name ?? "Untitled asset",
+        alertName: firedAlerts[0]?.name ?? "Alert",
+        message: deliveryMessages.join(" · "),
+        score: overallScore,
+      },
+      userId,
+      await getPlanForScope(),
+      eventIds,
+      triggeredAlertIds
+    );
+  } catch (err) {
+    console.error("[evaluateAlerts] notification delivery failed:", err);
+  }
 
   revalidatePath("/dashboard/alerts");
   revalidatePath("/dashboard");

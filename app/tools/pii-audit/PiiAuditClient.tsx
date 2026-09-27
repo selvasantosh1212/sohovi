@@ -305,12 +305,12 @@ export function PiiAuditClient() {
           </div>
 
           <HardCTA
-            headline="Monitor PII exposure automatically on every upload"
-            body="Sohovi's PII detection dimension flags personal data across every dataset you connect — and alerts you when new PII appears in columns that were previously clean."
+            headline="Track PII exposure across every file you run"
+            body="Sohovi flags personal data on every file you run, and keeps a catalog-wide register of exactly which columns hold it."
             bullets={[
-              "Automatic PII detection on every file upload and connector sync",
-              "Column-level alerts when PII appears in unexpected places",
-              "Full 10-dimension DQ scoring including completeness, validity, and conformity",
+              "PII detection on every file you upload or re-fetch",
+              "A catalog-level PII register — every asset, every flagged column, in one table",
+              "De-identify and measure re-identification risk in the same place",
             ]}
           />
         </div>

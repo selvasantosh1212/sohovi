@@ -18,6 +18,8 @@ import { useProfilingStore } from "@/store/profilingStore";
 import { useRuleBuilderUIStore } from "@/store/ruleBuilderUIStore";
 import { getRuleExample, type RuleExample } from "@/lib/dq-rule-examples";
 import { COLUMN_PARAMS, THRESHOLD_PRESETS, paramHint } from "@/lib/dq-rule-meta";
+import { useUser } from "@clerk/nextjs";
+import { can, minPlanFor, normalizePlan, PLAN_LABELS, GATED_RULE_TYPES } from "@/lib/plans/features";
 import type { DetectedDateFormat } from "@/types/profiling.types";
 
 const DIMENSIONS: DQDimension[] = [
@@ -120,6 +122,20 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
   const dateFormats = activeProfile?.detected_date_formats ?? null;
   const isDateColumn =
     activeProfile?.inferred_type === "date" || activeProfile?.inferred_type === "datetime";
+
+  const { user } = useUser();
+  const plan = normalizePlan(user?.publicMetadata?.plan) ?? "free";
+
+  /**
+   * Rule types the current plan cannot author. They stay visible but disabled
+   * so the upgrade path is discoverable — hiding them would just make the
+   * Team tier look empty. `createRule` enforces this server-side.
+   */
+  const lockedRuleType = (value: string): string | null => {
+    const feature = GATED_RULE_TYPES[value];
+    if (!feature || can(plan, feature)) return null;
+    return PLAN_LABELS[minPlanFor(feature)];
+  };
 
   const availableRuleTypes = RULE_TYPES[dimension] ?? [];
   const selectedRuleType = availableRuleTypes.find((r) => r.value === ruleType);
@@ -467,11 +483,17 @@ export function RuleBuilderPanel({ assetId, columnNames, existingRules = [] }: P
             <SelectValue placeholder="Select rule type…" />
           </SelectTrigger>
           <SelectContent>
-            {availableRuleTypes.map((rt) => (
-              <SelectItem key={rt.value} value={rt.value}>
-                {rt.label}
-              </SelectItem>
-            ))}
+            {availableRuleTypes.map((rt) => {
+              const lockedFor = lockedRuleType(rt.value);
+              return (
+                <SelectItem key={rt.value} value={rt.value} disabled={lockedFor !== null}>
+                  {rt.label}
+                  {lockedFor && (
+                    <span className="ml-2 text-[11px] text-slate-400">{lockedFor} plan</span>
+                  )}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>
